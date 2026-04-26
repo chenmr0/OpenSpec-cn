@@ -6,7 +6,7 @@ The explore workflow is part of the core loop (`propose`, `explore`, `apply`, `a
 
 Currently, explore references `/opsx:new` and `/opsx:ff` which are being replaced with `/opsx:propose`. But beyond just updating references, there are deeper UX questions about how explore should work.
 
-This exploration is also affected by the emerging workspace direction: for larger cross-team or cross-repo work, OpenSpec may need to treat the **initiative** as the first-class planning object and repo-local changes as execution artifacts. That means explore may sometimes be seeding an initiative, not just a single change.
+This exploration is also affected by the emerging workspace direction: for larger cross-team or cross-repo work, OpenSDD may need to treat the **initiative** as the first-class planning object and repo-local changes as execution artifacts. That means explore may sometimes be seeding an initiative, not just a single change.
 
 ## Open Questions
 

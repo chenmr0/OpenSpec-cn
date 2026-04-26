@@ -155,7 +155,7 @@ export class ZshInstaller {
   }
 
   /**
-   * Check if .zshrc has OpenSpec configuration markers
+   * Check if .zshrc has OpenSDD configuration markers
    *
    * @returns true if .zshrc exists and has markers
    */

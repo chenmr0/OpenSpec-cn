@@ -1,6 +1,6 @@
 # 命令参考
 
-这是 OpenSpec 斜杠命令的参考文档。这些命令在你的 AI 编程助手的聊天界面中调用（例如 Claude Code、Cursor、Windsurf）。
+这是 OpenSDD 斜杠命令的参考文档。这些命令在你的 AI 编程助手的聊天界面中调用（例如 Claude Code、Cursor、Windsurf）。
 
 关于工作流模式以及何时使用每个命令，请参阅[工作流](workflows.md)。关于 CLI 命令，请参阅[CLI](cli.md)。
 
@@ -559,7 +559,7 @@ AI：✓ 已归档 add-dark-mode
 
 ### `/opsx:onboard`
 
-通过完整的 OpenSpec 工作流进行引导式入门。使用你的实际代码库的交互式教程。
+通过完整的 OpenSDD 工作流进行引导式入门。使用你的实际代码库的交互式教程。
 
 **语法：**
 ```
@@ -591,7 +591,7 @@ AI：✓ 已归档 add-dark-mode
 ```text
 你：/opsx:onboard
 
-AI：欢迎使用 OpenSpec！
+AI：欢迎使用 OpenSDD！
 
      我将使用你的实际代码库引导你完成完整的工作流。
      我们会找到一个小改进点，为其创建适当的变更，
@@ -686,10 +686,10 @@ AI：欢迎使用 OpenSpec！
 
 ### 命令无法识别
 
-AI 工具无法识别 OpenSpec 命令。
+AI 工具无法识别 OpenSDD 命令。
 
 **解决方案：**
-- 确保 OpenSpec 已初始化：`opensdd init`
+- 确保 OpenSDD 已初始化：`opensdd init`
 - 重新生成技能：`opensdd update`
 - 检查 `.claude/skills/` 目录是否存在（针对 Claude Code）
 - 重启 AI 工具以获取新技能

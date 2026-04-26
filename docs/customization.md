@@ -1,6 +1,6 @@
 # 自定义
 
-OpenSpec 提供三个级别的自定义：
+OpenSDD 提供三个级别的自定义：
 
 | 级别 | 功能 | 最适合 |
 |-------|--------------|----------|
@@ -12,7 +12,7 @@ OpenSpec 提供三个级别的自定义：
 
 ## 项目配置
 
-`openspec/config.yaml` 文件是为团队自定义 OpenSpec 的最简单方法。它允许你：
+`openspec/config.yaml` 文件是为团队自定义 OpenSDD 的最简单方法。它允许你：
 
 - **设置默认模式** - 在每个命令上跳过 `--schema`
 - **注入项目上下文** - AI 看到你的技术栈、约定等
@@ -82,7 +82,7 @@ opensdd new change my-feature
 
 ### 模式解析顺序
 
-当 OpenSpec 需要模式时，按此顺序检查：
+当 OpenSDD 需要模式时，按此顺序检查：
 
 1. CLI 标志：`--schema <name>`
 2. 变更元数据（变更文件夹中的 `.openspec.yaml`）
@@ -269,7 +269,7 @@ Schema: my-workflow
 
 ---
 
-> **注意：** OpenSpec 也支持用户级 schema，位于 `~/.local/share/openspec/schemas/`，用于跨项目共享，但推荐使用项目级 schema，位于 `openspec/schemas/`，因为它们与你的代码一起进行版本控制。
+> **注意：** OpenSDD 也支持用户级 schema，位于 `~/.local/share/openspec/schemas/`，用于跨项目共享，但推荐使用项目级 schema，位于 `openspec/schemas/`，因为它们与你的代码一起进行版本控制。
 
 ---
 

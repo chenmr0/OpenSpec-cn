@@ -84,7 +84,7 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
   },
   onboard: {
     name: '入门指南',
-    description: 'OpenSpec 入门引导流程',
+    description: 'OpenSDD 入门引导流程',
   },
 };
 
@@ -209,7 +209,7 @@ function maybeWarnConfigDrift(
 export function registerConfigCommand(program: Command): void {
   const configCmd = program
     .command('config')
-    .description('查看并修改全局 OpenSpec 配置')
+    .description('查看并修改全局 OpenSDD 配置')
     .option('--scope <scope>', '配置作用域（目前仅支持 "global"）')
     .hook('preAction', (thisCommand) => {
       const opts = thisCommand.opts();
@@ -611,7 +611,7 @@ export function registerConfigCommand(program: Command): void {
         config.workflows = nextState.workflows;
         saveGlobalConfig(config);
 
-        // Check if inside an OpenSpec project
+        // Check if inside an OpenSDD project
         const projectDir = process.cwd();
         const openspecDir = path.join(projectDir, OPENSPEC_DIR_NAME);
         if (fs.existsSync(openspecDir)) {

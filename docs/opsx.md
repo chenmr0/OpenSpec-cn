@@ -4,13 +4,13 @@
 
 ## 它是什么？
 
-OPSX 现在是 OpenSpec 的标准工作流。
+OPSX 现在是 OpenSDD 的标准工作流。
 
-它是 OpenSpec 变更的**灵活、迭代式工作流**。不再有僵化的阶段——你可以随时采取任何行动。
+它是 OpenSDD 变更的**灵活、迭代式工作流**。不再有僵化的阶段——你可以随时采取任何行动。
 
 ## 为什么存在
 
-传统的 OpenSpec 工作流程虽然可用，但它是**封闭的**：
+传统的 OpenSDD 工作流程虽然可用，但它是**封闭的**：
 
 - **指令是硬编码的**——埋在 TypeScript 中，你无法修改
 - **全有或全无**——一个大命令创建所有内容，无法单独测试各个部分
@@ -39,7 +39,7 @@ OPSX 现在是 OpenSpec 的标准工作流。
 **这适用于所有人：**
 - **团队**——创建符合实际工作方式的工作流
 - **高级用户**——调整提示词以获得更好的代码库 AI 输出
-- **OpenSpec 贡献者**——无需发布即可尝试新方法
+- **OpenSDD 贡献者**——无需发布即可尝试新方法
 
 我们都在学习什么方法最有效。OPSX 让我们一起学习。
 
@@ -65,7 +65,7 @@ opensdd init
 
 这会在 `.claude/skills/`（或等效目录）中创建技能，AI 编码助手会自动检测这些技能。
 
-默认情况下，OpenSpec 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `opensdd config profile` 进行配置，然后运行 `opensdd update` 应用。
+默认情况下，OpenSDD 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `opensdd config profile` 进行配置，然后运行 `opensdd update` 应用。
 
 在设置过程中，系统会提示你创建**项目配置**（`openspec/config.yaml`）。这是可选的，但建议创建。
 

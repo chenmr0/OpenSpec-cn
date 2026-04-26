@@ -4,7 +4,7 @@
 
 This document focuses on one UX goal:
 
-> OpenSpec should have one default path, one escalation path, and fewer explicit concepts shown to the user unless the system actually needs a decision from them.
+> OpenSDD should have one default path, one escalation path, and fewer explicit concepts shown to the user unless the system actually needs a decision from them.
 
 This is a follow-up to `workspace-user-journeys.md`. That document is useful for completeness, but it exposes too much of the conceptual model too early.
 
@@ -29,7 +29,7 @@ The main issues are:
 
 2. Cross-root work feels like a workflow restart:
    - user starts in one repo
-   - OpenSpec says this is multi-repo
+   - OpenSDD says this is multi-repo
    - user creates a workspace
    - user reopens the agent there
    - user effectively starts again
@@ -47,9 +47,9 @@ The system is internally clean, but the product experience should be more progre
 The user should feel:
 
 - "I just start where I am"
-- "OpenSpec figures out whether this stays local or needs to expand"
+- "OpenSDD figures out whether this stays local or needs to expand"
 - "If it expands, it carries me forward instead of making me restart"
-- "I only see advanced concepts when OpenSpec needs a real decision from me"
+- "I only see advanced concepts when OpenSDD needs a real decision from me"
 
 ---
 
@@ -61,7 +61,7 @@ The default path should always be:
 
 1. Enter a repo or monorepo root
 2. Run `/opsx:explore` or `/opsx:propose`
-3. OpenSpec plans locally unless it has a strong reason not to
+3. OpenSDD plans locally unless it has a strong reason not to
 
 This should work for:
 
@@ -77,7 +77,7 @@ The default assumption should be:
 
 The only escalation path should be:
 
-> This work spans multiple owned areas strongly enough that OpenSpec needs to upgrade it into a coordinated initiative.
+> This work spans multiple owned areas strongly enough that OpenSDD needs to upgrade it into a coordinated initiative.
 
 That escalation may happen for:
 
@@ -87,7 +87,7 @@ That escalation may happen for:
 
 The important UX point is that these should all feel like the same escalation:
 
-- "OpenSpec is upgrading this into a coordinated initiative"
+- "OpenSDD is upgrading this into a coordinated initiative"
 
 Not:
 
@@ -111,7 +111,7 @@ At the start, users should mostly see:
 
 That is enough for the first planning step.
 
-### Concepts OpenSpec should keep implicit until needed
+### Concepts OpenSDD should keep implicit until needed
 
 These should usually stay hidden until escalation:
 
@@ -122,7 +122,7 @@ These should usually stay hidden until escalation:
 - sponsor/driver
 - manifest vs local overlay
 
-### Concepts OpenSpec should only show when a real decision is needed
+### Concepts OpenSDD should only show when a real decision is needed
 
 Show these only at the point of action:
 
@@ -146,7 +146,7 @@ The user is in a repo and types:
 /opsx:propose add-3ds
 ```
 
-OpenSpec should:
+OpenSDD should:
 
 1. inspect local context
 2. infer likely affected areas
@@ -169,7 +169,7 @@ I am selecting between multiple planning abstractions.
 
 ## The Escalation Story
 
-If OpenSpec realizes the work is no longer local, it should escalate in one motion.
+If OpenSDD realizes the work is no longer local, it should escalate in one motion.
 
 ### Desired feel
 
@@ -194,7 +194,7 @@ It should not feel like:
 
 ### What should happen during escalation
 
-If escalation is needed, OpenSpec should do as much as possible automatically:
+If escalation is needed, OpenSDD should do as much as possible automatically:
 
 1. carry forward the current change name / description
 2. preserve the already inferred affected areas
@@ -212,7 +212,7 @@ This work spans multiple owned areas:
 - web-client
 - ios-client
 
-OpenSpec can upgrade this into a coordinated initiative.
+OpenSDD can upgrade this into a coordinated initiative.
 
 Suggested next step:
 - create a coordination workspace at ~/work/openspec-workspaces/add-3ds
@@ -229,7 +229,7 @@ This is much better than making the user feel they must restart.
 
 ## The Minimum Decision Set
 
-When OpenSpec has to ask questions, it should ask the smallest useful set.
+When OpenSDD has to ask questions, it should ask the smallest useful set.
 
 ### Decision 1: Is this local or coordinated?
 
@@ -261,7 +261,7 @@ Internally this is scope selection, but the user does not need that term unless 
 
 ### Decision 3: Is this shared behavior?
 
-Only ask if OpenSpec has strong evidence of a cross-boundary contract.
+Only ask if OpenSDD has strong evidence of a cross-boundary contract.
 
 User-facing form:
 
@@ -314,7 +314,7 @@ These terms are useful, but not ideal as the first thing users must absorb.
 
 ## Recommended Default Behavior
 
-To keep the UX intuitive, OpenSpec should aggressively choose defaults.
+To keep the UX intuitive, OpenSDD should aggressively choose defaults.
 
 ### Default 1: Stay local
 
@@ -322,7 +322,7 @@ Unless there is strong evidence otherwise, planning stays in the current root.
 
 ### Default 2: Infer affected areas
 
-OpenSpec should infer affected areas from:
+OpenSDD should infer affected areas from:
 
 - request wording
 - current repo
@@ -333,7 +333,7 @@ Ask the user only when there is meaningful ambiguity.
 
 ### Default 3: Reuse existing shared owners
 
-If an existing shared contract owner already exists, OpenSpec should suggest it instead of asking an abstract ownership question.
+If an existing shared contract owner already exists, OpenSDD should suggest it instead of asking an abstract ownership question.
 
 ### Default 4: Treat unresolved roots as partial, not fatal
 
@@ -343,7 +343,7 @@ For coordinated initiatives, unresolved repos should not block planning unless t
 
 Do not force team/shared setup for solo or exploratory work.
 
-OpenSpec can start with a local coordination workspace and later offer:
+OpenSDD can start with a local coordination workspace and later offer:
 
 ```text
 This now looks collaborative. Do you want to move it into a shared coordination repo?
@@ -358,8 +358,8 @@ The team story should not feel like an admin ceremony.
 ### Desired team experience
 
 1. One person starts planning normally
-2. OpenSpec upgrades to a coordinated initiative if needed
-3. When the work becomes collaborative, OpenSpec offers to make it team-shared
+2. OpenSDD upgrades to a coordinated initiative if needed
+3. When the work becomes collaborative, OpenSDD offers to make it team-shared
 4. Teammates clone the initiative repo and run one linking command
 5. Everyone starts from the same shared initiative context
 
@@ -383,7 +383,7 @@ The implementation may require those concepts, but the UX should compress them i
 
 ## UX Heuristics For Prompting
 
-OpenSpec should avoid asking users to classify work in abstract ways if it can infer a reasonable default.
+OpenSDD should avoid asking users to classify work in abstract ways if it can infer a reasonable default.
 
 ### Good prompt
 
@@ -433,7 +433,7 @@ The latter is precise, but too abstract unless the user is already deep in the w
 
 ## The Experience We Should Aim For
 
-By default, OpenSpec should feel like:
+By default, OpenSDD should feel like:
 
 - "Start here"
 - "Describe the work"
@@ -480,9 +480,9 @@ The simplest product shape is:
 
 - one default path: local planning from where the user already is
 - one escalation path: upgrade into a coordinated initiative when needed
-- progressive disclosure: only show advanced concepts when OpenSpec needs a real decision
+- progressive disclosure: only show advanced concepts when OpenSDD needs a real decision
 
-If OpenSpec does this well, the same system can feel intuitive for:
+If OpenSDD does this well, the same system can feel intuitive for:
 
 - solo users
 - small teams

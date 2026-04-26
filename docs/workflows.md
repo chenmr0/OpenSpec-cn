@@ -1,6 +1,6 @@
 # 工作流
 
-本指南涵盖 OpenSpec 的常见工作流模式以及何时使用每种模式。关于基础设置，请参阅[入门指南](getting-started.md)。关于命令参考，请参阅[命令](commands.md)。
+本指南涵盖 OpenSDD 的常见工作流模式以及何时使用每种模式。关于基础设置，请参阅[入门指南](getting-started.md)。关于命令参考，请参阅[命令](commands.md)。
 
 ## 哲学：行动而非阶段
 

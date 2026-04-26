@@ -1,5 +1,5 @@
 {
-  description = "OpenSpec - AI-native system for spec-driven development";
+  description = "OpenSDD - AI-native system for spec-driven development";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -26,7 +26,7 @@
         in
         {
           default = pkgs.stdenv.mkDerivation (finalAttrs: {
-            pname = "openspec";
+            pname = "opensdd";
             version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
 
             src = lib.fileset.toSource {
@@ -102,7 +102,7 @@
             ];
 
             shellHook = ''
-              echo "OpenSpec development environment"
+              echo "OpenSDD development environment"
               echo "Node version: $(node --version)"
               echo "pnpm version: $(pnpm --version)"
               echo "Run 'pnpm install' to install dependencies"

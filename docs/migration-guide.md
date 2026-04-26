@@ -1,6 +1,6 @@
 # 迁移到 OPSX
 
-本指南帮助您从旧的 OpenSpec 工作流过渡到 OPSX。迁移过程设计得很流畅——您现有的工作得以保留，新系统提供更大的灵活性。
+本指南帮助您从旧的 OpenSDD 工作流过渡到 OPSX。迁移过程设计得很流畅——您现有的工作得以保留，新系统提供更大的灵活性。
 
 ## 有什么变化？
 
@@ -27,17 +27,17 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 - **`openspec/changes/` 中的活跃变更** — 完全保留。您可以使用 OPSX 命令继续它们。
 - **已归档的变更** — 不受影响。您的历史记录保持完整。
 - **`openspec/specs/` 中的主要规范** — 不受影响。这些是您的真实来源。
-- **您在 CLAUDE.md、AGENTS.md 等中的内容** — 保留。只有 OpenSpec 标记块被删除；您编写的内容保持不变。
+- **您在 CLAUDE.md、AGENTS.md 等中的内容** — 保留。只有 OpenSDD 标记块被删除；您编写的内容保持不变。
 
 ### 删除的内容
 
-仅删除被替换的 OpenSpec 管理文件：
+仅删除被替换的 OpenSDD 管理文件：
 
 | 内容 | 原因 |
 |------|-----|
 | 旧的斜杠命令目录/文件 | 被新的技能系统取代 |
 | `openspec/AGENTS.md` | 过时的工作流触发器 |
-| `CLAUDE.md`、`AGENTS.md` 等中的 OpenSpec 标记` | 不再需要 |
+| `CLAUDE.md`、`AGENTS.md` 等中的 OpenSDD 标记` | 不再需要 |
 
 **各工具的旧命令位置**（示例——您的工具可能不同）：
 
@@ -51,7 +51,7 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 迁移会检测您配置的任何工具并清理其旧文件。
 
-删除列表可能看起来很长，但这些都是 OpenSpec 最初创建的文件。您自己的内容从未被删除。
+删除列表可能看起来很长，但这些都是 OpenSDD 最初创建的文件。您自己的内容从未被删除。
 
 ### 需要您注意的事项
 
@@ -67,7 +67,7 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 旧的 `project.md` 是被动的——代理可能会读取它，可能不会，可能会忘记读取的内容。我们发现可靠性不一致。
 
-新的 `config.yaml` 上下文被**主动注入到每个 OpenSpec 规划请求中**。这意味着您的项目约定、技术栈和规则在 AI 创建制品时总是存在。更高的可靠性。
+新的 `config.yaml` 上下文被**主动注入到每个 OpenSDD 规划请求中**。这意味着您的项目约定、技术栈和规则在 AI 创建制品时总是存在。更高的可靠性。
 
 **权衡：**
 
@@ -98,9 +98,9 @@ opensdd init
 init 命令检测旧文件并引导您完成清理：
 
 ```
-升级到新的 OpenSpec
+升级到新的 OpenSDD
 
-OpenSpec 现在使用代理技能，这是编码代理中涌现的标准。
+OpenSDD 现在使用代理技能，这是编码代理中涌现的标准。
 这简化了您的设置，同时保持一切像以前一样工作。
 
 要删除的文件
@@ -109,7 +109,7 @@ OpenSpec 现在使用代理技能，这是编码代理中涌现的标准。
   • openspec/AGENTS.md
 
 要更新的文件
-OpenSpec 标记将被删除，您的内容保留：
+OpenSDD 标记将被删除，您的内容保留：
   • CLAUDE.md
   • AGENTS.md
 
@@ -118,7 +118,7 @@ OpenSpec 标记将被删除，您的内容保留：
     我们不会删除此文件。它可能包含有用的项目上下文。
 
     新的 openspec/config.yaml 有一个用于规划上下文的 "context:" 部分。
-    这包含在每次 OpenSpec 请求中，并且比旧的 project.md 方法更可靠。
+    这包含在每次 OpenSDD 请求中，并且比旧的 project.md 方法更可靠。
 
     检查 project.md，将任何有用的内容移至 config.yaml 的 context 部分，
     然后在准备好时删除该文件。
@@ -129,7 +129,7 @@ OpenSpec 标记将被删除，您的内容保留：
 **当您说是时会发生什么：**
 
 1. 旧的斜杠命令目录被删除
-2. OpenSpec 标记从 `CLAUDE.md`、`AGENTS.md` 等中剥离（您的内容保留）
+2. OpenSDD 标记从 `CLAUDE.md`、`AGENTS.md` 等中剥离（您的内容保留）
 3. `openspec/AGENTS.md` 被删除
 4. 新的技能安装在 `.claude/skills/`
 5. `openspec/config.yaml` 使用默认模式创建
@@ -258,7 +258,7 @@ rules:
 如果您不确定如何精简 project.md，请询问您的 AI 助手：
 
 ```
-我正在从 OpenSpec 的旧 project.md 迁移到新的 config.yaml 格式。
+我正在从 OpenSDD 的旧 project.md 迁移到新的 config.yaml 格式。
 
 这是我当前的 project.md：
 [粘贴您的 project.md 内容]
@@ -560,8 +560,8 @@ project/
 │       ├── openspec-explore/
 │       ├── openspec-apply-change/
 │       └── ...                   # 扩展配置文件添加 new/continue/ff 等
-├── CLAUDE.md                     # OpenSpec 标记已删除，您的内容保留
-└── AGENTS.md                     # OpenSpec 标记已删除，您的内容保留
+├── CLAUDE.md                     # OpenSDD 标记已删除，您的内容保留
+└── AGENTS.md                     # OpenSDD 标记已删除，您的内容保留
 ```
 
 ### 什么消失了
@@ -569,7 +569,7 @@ project/
 - `.claude/commands/openspec/` — 被 `.claude/skills/` 取代
 - `openspec/AGENTS.md` — 过时
 - `openspec/project.md` — 迁移到 `config.yaml`，然后删除
-- `CLAUDE.md`、`AGENTS.md 等中的 OpenSpec 标记块`
+- `CLAUDE.md`、`AGENTS.md 等中的 OpenSDD 标记块`
 
 ### 命令速查表
 

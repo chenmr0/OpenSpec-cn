@@ -9,7 +9,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getOnboardSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-onboard',
-    description: 'OpenSpec 引导式入门 - 通过讲解与在真实代码库中动手，走完一个完整的工作流周期。',
+    description: 'OpenSDD 引导式入门 - 通过讲解与在真实代码库中动手，走完一个完整的工作流周期。',
     instructions: getOnboardInstructions(),
     license: 'MIT',
     compatibility: '需要 opensdd CLI。',
@@ -18,7 +18,7 @@ export function getOnboardSkillTemplate(): SkillTemplate {
 }
 
 function getOnboardInstructions(): string {
-  return `引导用户完成他们的第一个完整OpenSpec工作流周期。这是一个教学体验——你将在他们的代码库中完成实际工作，同时解释每个步骤。
+  return `引导用户完成他们的第一个完整OpenSDD工作流周期。这是一个教学体验——你将在他们的代码库中完成实际工作，同时解释每个步骤。
 
 ---
 
@@ -45,7 +45,7 @@ opensdd --version 2>&1 || echo "未安装 CLI"
 显示：
 
 \`\`\`
-## 欢迎使用OpenSpec！
+## 欢迎使用OpenSDD！
 
 我将引导您完成一个完整的变更周期——从想法到实现——使用您代码库中的真实任务。在此过程中，您将通过实践学习工作流程。
 
@@ -123,7 +123,7 @@ git log --oneline -10 2>/dev/null || echo "没有 Git 历史"
 如果用户选择或描述的内容太大（主要功能，多天工作）：
 
 \`\`\`
-这是一个有价值的任务，但对于您的第一次OpenSpec体验来说可能太大了。
+这是一个有价值的任务，但对于您的第一次OpenSDD体验来说可能太大了。
 
 对于学习工作流程，越小越好——它让您能够看到完整周期而不会陷入实现细节。
 
@@ -176,7 +176,7 @@ git log --oneline -10 2>/dev/null || echo "没有 Git 历史"
 \`\`\`
 ## 创建变更
 
-OpenSpec中的"变更"是围绕一项工作的所有思考和规划的容器。它位于 \`openspec/changes/<name>/\` 中，保存您的产出物——提案、规格说明、设计、任务。
+OpenSDD中的"变更"是围绕一项工作的所有思考和规划的容器。它位于 \`openspec/changes/<name>/\` 中，保存您的产出物——提案、规格说明、设计、任务。
 
 让我为我们的任务创建一个。
 \`\`\`
@@ -458,7 +458,7 @@ opensdd archive "<name>"
 \`\`\`
 ## 恭喜！
 
-您刚刚完成了一个完整的OpenSpec周期：
+您刚刚完成了一个完整的OpenSDD周期：
 
 1. **探索** - 思考问题
 2. **新建** - 创建变更容器
@@ -525,7 +525,7 @@ opensdd archive "<name>"
 如果用户说他们只想看命令或跳过教程：
 
 \`\`\`
-## OpenSpec快速参考
+## OpenSDD快速参考
 
 **核心工作流：**
 
@@ -566,7 +566,7 @@ opensdd archive "<name>"
 export function getOpsxOnboardCommandTemplate(): CommandTemplate {
   return {
     name: 'OPSX: Onboard',
-    description: '引导式入门 - 通过完整的OpenSpec工作流周期进行讲解',
+    description: '引导式入门 - 通过完整的OpenSDD工作流周期进行讲解',
     category: 'Workflow',
     tags: ['workflow', 'onboarding', 'tutorial', 'learning'],
     content: getOnboardInstructions(),

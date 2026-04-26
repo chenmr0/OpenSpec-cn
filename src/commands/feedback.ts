@@ -31,7 +31,7 @@ function isGhAuthenticated(): boolean {
 }
 
 /**
- * Get OpenSpec version from package.json
+ * Get OpenSDD version from package.json
  */
 function getVersion(): string {
   try {
@@ -65,7 +65,7 @@ function generateMetadata(): string {
   const timestamp = getTimestamp();
 
   return `---
-通过 OpenSpec CLI 提交
+通过 OpenSDD CLI 提交
 - 版本: ${version}
 - 平台: ${platform}
 - 时间戳: ${timestamp}`;

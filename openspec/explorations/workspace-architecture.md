@@ -111,9 +111,9 @@ The workspace question isn't about config—it's about **where specs and changes
 2. **Multi-repo**: A change might span multiple repositories entirely
 3. **Cross-functional work**: A feature affects multiple teams (backend, web, iOS, Android)
 
-### Current OpenSpec Architecture
+### Current OpenSDD Architecture
 
-OpenSpec currently assumes:
+OpenSDD currently assumes:
 - One `openspec/` per repo, always at root
 - CLI doesn't walk up directories—expects you're at root
 - Changes can touch ANY spec (no scoping)
@@ -224,7 +224,7 @@ proto/
 
 ---
 
-## Part 4: Three Models for OpenSpec
+## Part 4: Three Models for OpenSDD
 
 ### Model A: Flat Root (Current)
 
@@ -429,7 +429,7 @@ For multi-repo setups, Model C (or the coordination half of Model D) is almost f
 
 If we add workspace support, it could be:
 
-> **A workspace is a collection of OpenSpec roots that can be operated on together.**
+> **A workspace is a collection of OpenSDD roots that can be operated on together.**
 
 ```yaml
 # ~/.config/openspec/workspaces.yaml (or similar)
@@ -506,7 +506,7 @@ If we introduce workspaces:
 
 | Concept | Definition |
 |---------|------------|
-| **Project** | Single OpenSpec root (one `openspec/` directory) |
+| **Project** | Single OpenSDD root (one `openspec/` directory) |
 | **Workspace** | Collection of projects that can be operated on together |
 
 A workspace would enable:
@@ -516,10 +516,10 @@ A workspace would enable:
 
 **Question:** Do we need explicit workspace tracking, or just ad-hoc multi-root (like Claude Code's `/add-dir`)?
 
-### 4. Does OpenSpec need to understand dependencies?
+### 4. Does OpenSDD need to understand dependencies?
 
 If `checkout-web` depends on `checkout-contract`:
-- Should OpenSpec know this relationship?
+- Should OpenSDD know this relationship?
 - Should a change to `checkout-contract` warn about downstream specs?
 - Or is dependency tracking "out of scope"?
 
@@ -553,10 +553,10 @@ Based on research, teams love:
 ### Possible North Stars
 
 **Ambitious:**
-> OpenSpec automatically understands your repo structure, detects cross-cutting specs, and helps you create changes that flow to the right places.
+> OpenSDD automatically understands your repo structure, detects cross-cutting specs, and helps you create changes that flow to the right places.
 
 **Simpler:**
-> You organize specs however you want. OpenSpec just works.
+> You organize specs however you want. OpenSDD just works.
 
 **Practical:**
 > Nested specs for organization. Explicit dependencies for cross-cutting. No magic.
@@ -594,9 +594,9 @@ If needed, a separate change for:
 
 ## Part 9: Spec Philosophy (Behavior First, Lightweight, Agent-Aligned)
 
-### What is a spec in OpenSpec?
+### What is a spec in OpenSDD?
 
-For OpenSpec, a spec should be treated as a **verifiable behavior contract at a boundary**:
+For OpenSDD, a spec should be treated as a **verifiable behavior contract at a boundary**:
 - What users, integrators, or operators can observe and rely on
 - What can be validated with tests, checks, or explicit review
 - What should remain stable even if internal implementation changes
@@ -627,7 +627,7 @@ This keeps day-to-day usage lightweight while preserving clarity where failures 
 
 ### Human exploration -> agent-authored specs
 
-OpenSpec is often agent-authored from human exploration. To make that reliable:
+OpenSDD is often agent-authored from human exploration. To make that reliable:
 
 - Humans provide intent, constraints, and examples from exploration
 - Agents convert that into concise, behavior-first requirements and scenarios
@@ -664,7 +664,7 @@ Choose Model D (Hybrid) from Part 4, but make the workspace manifest **optional 
 
 ### Decision: Initiative-First Planning with Linked Repo-Local Changes
 
-For larger multi-team work, repo-centric planning is the wrong primary abstraction. Teams and repos are many-to-many facets over the same work. OpenSpec should treat the **initiative / plan** as the first-class planning object, then link repo-local changes to it.
+For larger multi-team work, repo-centric planning is the wrong primary abstraction. Teams and repos are many-to-many facets over the same work. OpenSDD should treat the **initiative / plan** as the first-class planning object, then link repo-local changes to it.
 
 This is especially important because a change today bundles:
 
@@ -762,7 +762,7 @@ Cross-repo links must use **stable project identifiers**, not filesystem paths.
 The CLI resolves project identifiers to local paths using an offline-first chain:
 
 1. **Explicit paths** passed for the current run (e.g., CLI flags, ad-hoc multi-root).
-2. **Local OpenSpec repo registry** — a persistent mapping in `~/.config/openspec/` or `~/.local/share/openspec/` (see `src/core/global-config.ts`).
+2. **Local OpenSDD repo registry** — a persistent mapping in `~/.config/openspec/` or `~/.local/share/openspec/` (see `src/core/global-config.ts`).
 3. **Parent directory scanning** — scan known parent directories for git checkouts whose remotes match the target identifier.
 4. **Unresolved** — if no local path is found, leave the target unresolved and continue with a partial workspace. The CLI must not fail.
 
@@ -783,7 +783,7 @@ references:
 - The CLI **does** surface references to humans and agents when planning, viewing, or applying changes.
 - Stronger guarantees (e.g., staleness warnings, cross-repo validation) are an opt-in layer added later — via `lint`, `doctor`, or a feature flag — not baseline behavior.
 
-This avoids accidentally committing OpenSpec to a full dependency graph system before the use cases justify it.
+This avoids accidentally committing OpenSDD to a full dependency graph system before the use cases justify it.
 
 ### Decision: Explicit Owner Repo for Shared Contracts
 

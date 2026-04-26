@@ -198,7 +198,7 @@ export class PowerShellInstaller {
           continue; // Already configured, skip
         }
 
-        // Add OpenSpec completion configuration with markers
+        // Add OpenSDD completion configuration with markers
         const openspecBlock = [
           '',
           '# OPENSPEC:START - OpenSDD 补全（管理块，请勿手动编辑）',
@@ -256,7 +256,7 @@ export class PowerShellInstaller {
         const startIndex = profileContent.indexOf(startMarker);
 
         if (startIndex === -1) {
-          continue; // No OpenSpec block found
+          continue; // No OpenSDD block found
         }
 
         const endIndex = profileContent.indexOf(endMarker, startIndex);

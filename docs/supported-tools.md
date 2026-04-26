@@ -1,15 +1,15 @@
 # 支持的工具
 
-OpenSpec 兼容多种 AI 编程助手。运行 `opensdd init` 时，OpenSpec 会根据你当前的配置文件/工作流选择和交付方式来配置所选工具。
+OpenSDD 兼容多种 AI 编程助手。运行 `opensdd init` 时，OpenSDD 会根据你当前的配置文件/工作流选择和交付方式来配置所选工具。
 
 ## 工作原理
 
-对于每个选定的工具，OpenSpec 可以安装：
+对于每个选定的工具，OpenSDD 可以安装：
 
 1. **技能**（如果交付方式包含技能）：`.../skills/openspec-*/SKILL.md`
 2. **命令**（如果交付方式包含命令）：工具特定的 `opsx-*` 命令文件
 
-默认情况下，OpenSpec 使用 `core` 配置文件，包含以下工作流：
+默认情况下，OpenSDD 使用 `core` 配置文件，包含以下工作流：
 - `propose`
 - `explore`
 - `apply`
@@ -76,7 +76,7 @@ opensdd init --profile core
 
 ## 依赖工作流的安装
 
-OpenSpec 根据选定的工作流安装工作流产出物：
+OpenSDD 根据选定的工作流安装工作流产出物：
 
 - **Core 配置文件（默认）：** `propose`、`explore`、`apply`、`archive`
 - **自定义选择：** 所有工作流 ID 的任意子集：
@@ -86,7 +86,7 @@ OpenSpec 根据选定的工作流安装工作流产出物：
 
 ## 生成的技能名称
 
-当通过配置文件/工作流配置选中时，OpenSpec 会生成以下技能：
+当通过配置文件/工作流配置选中时，OpenSDD 会生成以下技能：
 
 - `openspec-propose`
 - `openspec-explore`

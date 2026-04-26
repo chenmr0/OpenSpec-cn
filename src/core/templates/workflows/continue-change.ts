@@ -9,7 +9,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-continue-change',
-    description: '通过创建下一个产出物继续处理 OpenSpec 变更。当用户想要推进其变更、创建下一个产出物或继续其工作流程时使用。',
+    description: '通过创建下一个产出物继续处理 OpenSDD 变更。当用户想要推进其变更、创建下一个产出物或继续其工作流程时使用。',
     instructions: `通过创建下一个产出物继续处理变更。
 
 **输入**：可选指定变更名称。如果省略，检查是否可以从对话上下文中推断。如果模糊或不明确，你**必须**提示获取可用变更。

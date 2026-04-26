@@ -1,9 +1,8 @@
 {
   "name": "opensdd",
   "version": "1.3.1",
-  "description": "面向AI编程助手的规范驱动开发框架OpenSpec的简体中文汉化版本",
+  "description": "面向AI编程助手的规范驱动开发框架OpenSDD的简体中文汉化版本",
   "keywords": [
-    "openspec",
     "opensdd",
     "specs",
     "sdd",
@@ -17,7 +16,7 @@
     "url": "https://github.com/studyzy/OpenSDD"
   },
   "license": "MIT",
-  "author": "OpenSpec Contributors",
+  "author": "OpenSDD Contributors",
   "type": "module",
   "publishConfig": {
     "access": "public"

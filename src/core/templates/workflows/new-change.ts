@@ -9,7 +9,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getNewChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-new-change',
-    description: '使用实验性的产出物工作流启动一个新的 OpenSpec 变更。当用户想要通过结构化的分步方法创建新功能、修复或修改时使用。',
+    description: '使用实验性的产出物工作流启动一个新的 OpenSDD 变更。当用户想要通过结构化的分步方法创建新功能、修复或修改时使用。',
     instructions: `使用实验性的产出物驱动方法启动新变更。
 
 **输入**：用户的请求应当包含变更名称（kebab-case）或对想要构建内容的描述。

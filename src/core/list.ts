@@ -85,7 +85,7 @@ export class ListCommand {
       try {
         await fs.access(changesDir);
       } catch {
-        throw new Error("未找到OpenSpec更改目录。请先运行 'opensdd init'。");
+        throw new Error("未找到OpenSDD更改目录。请先运行 'opensdd init'。");
       }
 
       // Get all directories in changes (excluding archive)

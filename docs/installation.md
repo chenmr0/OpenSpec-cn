@@ -32,7 +32,7 @@ bun add -g @fission-ai/openspec@latest
 
 ## Nix
 
-无需安装，直接运行 OpenSpec：
+无需安装，直接运行 OpenSDD：
 
 ```bash
 nix run github:Fission-AI/OpenSpec -- init
@@ -69,7 +69,7 @@ opensdd --version
 
 ## 下一步
 
-安装完成后，在你的项目中初始化 OpenSpec：
+安装完成后，在你的项目中初始化 OpenSDD：
 
 ```bash
 cd your-project

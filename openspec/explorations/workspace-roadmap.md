@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document proposes a lightweight roadmap for workspace, monorepo, and multi-repo support in OpenSpec.
+This document proposes a lightweight roadmap for workspace, monorepo, and multi-repo support in OpenSDD.
 
 It assumes:
 
@@ -37,7 +37,7 @@ Based on the current exploration work, several things look increasingly clear.
 
 ### 1. Nested spec organization is needed
 
-OpenSpec needs a better way to organize:
+OpenSDD needs a better way to organize:
 
 - shared contracts
 - local implementation specs
@@ -45,7 +45,7 @@ OpenSpec needs a better way to organize:
 
 ### 2. Informational references are low-risk and useful
 
-References help agents and humans navigate related specs without requiring OpenSpec to build a dependency graph system on day one.
+References help agents and humans navigate related specs without requiring OpenSDD to build a dependency graph system on day one.
 
 ### 3. Initiatives plus linked per-repo changes are the right primitive
 
@@ -299,7 +299,7 @@ Coordination data helps planning, but does not replace the source of truth.
 
 ### 6. Hidden local state must stay thin
 
-If OpenSpec uses local path caches or machine-specific mappings, they should be:
+If OpenSDD uses local path caches or machine-specific mappings, they should be:
 
 - repairable
 - replaceable

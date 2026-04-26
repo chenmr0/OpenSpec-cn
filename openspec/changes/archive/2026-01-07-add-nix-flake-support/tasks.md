@@ -30,7 +30,7 @@
 - [x] 5.1 Set meta.description
 - [x] 5.2 Set meta.homepage
 - [x] 5.3 Set meta.license (MIT)
-- [x] 5.4 Set meta.mainProgram = "openspec"
+- [x] 5.4 Set meta.mainProgram = "opensdd"
 
 ## 6. Configure App Entry Point
 

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes the exact user experience for OpenSpec across:
+This document describes the exact user experience for OpenSDD across:
 
 1. Single-repo projects
 2. Monorepos
@@ -15,8 +15,8 @@ It is intentionally UX-first. The goal is to define:
 - What commands they run
 - What the agent sees
 - Where artifacts are stored
-- How OpenSpec decides which specs to read
-- How OpenSpec behaves when roots are missing, ambiguous, or partially available
+- How OpenSDD decides which specs to read
+- How OpenSDD behaves when roots are missing, ambiguous, or partially available
 
 This is a proposed UX model, not an implementation spec.
 
@@ -26,7 +26,7 @@ This is a proposed UX model, not an implementation spec.
 
 Users should not need one mental model for repos and a separate mental model for monorepos.
 
-OpenSpec should operate on **scopes**.
+OpenSDD should operate on **scopes**.
 
 A scope is an owned planning and implementation boundary. Depending on the codebase, a scope may be:
 
@@ -40,9 +40,9 @@ The user experience should be:
 
 - Pick the thing you want to change
 - Confirm which scopes are involved
-- OpenSpec reads only the relevant specs
-- OpenSpec stores each artifact in the owning place
-- If the work spans multiple owning places, OpenSpec creates a neutral coordination workspace
+- OpenSDD reads only the relevant specs
+- OpenSDD stores each artifact in the owning place
+- If the work spans multiple owning places, OpenSDD creates a neutral coordination workspace
 
 ### Durable Objects
 
@@ -74,7 +74,7 @@ Some behaviors are true across multiple scopes, apps, or repos:
 
 These are not just "references between local specs." They are first-class shared contracts.
 
-OpenSpec should model them explicitly as:
+OpenSDD should model them explicitly as:
 
 1. **Canonical shared contract**
    A spec that defines what must be true across boundaries.
@@ -89,7 +89,7 @@ The first-principles rule is:
 
 > A cross-boundary spec may have many consumers, but it must still have one canonical owner.
 
-If there is no owner yet, the shared behavior can live temporarily as an initiative note during exploration, but OpenSpec should not promote it into a canonical spec until ownership is explicit.
+If there is no owner yet, the shared behavior can live temporarily as an initiative note during exploration, but OpenSDD should not promote it into a canonical spec until ownership is explicit.
 
 ---
 
@@ -97,7 +97,7 @@ If there is no owner yet, the shared behavior can live temporarily as an initiat
 
 ### 1. Same top-level workflow everywhere
 
-Users should still recognize the existing OpenSpec workflow:
+Users should still recognize the existing OpenSDD workflow:
 
 - `openspec init`
 - `openspec update`
@@ -106,7 +106,7 @@ Users should still recognize the existing OpenSpec workflow:
 - `/opsx:apply`
 - `/opsx:archive`
 
-The new behavior is that OpenSpec may ask:
+The new behavior is that OpenSDD may ask:
 
 - "Which scope does this affect?"
 - "Does this span multiple owning roots?"
@@ -116,7 +116,7 @@ The new behavior is that OpenSpec may ask:
 
 Users should not have to pre-register all repos or modules just in case.
 
-OpenSpec should support:
+OpenSDD should support:
 
 - ad hoc discovery
 - one-time local linking
@@ -126,7 +126,7 @@ OpenSpec should support:
 
 If a change spans multiple repos, the planning artifact should not be forced into one repo.
 
-Instead, OpenSpec should create a neutral coordination workspace for the initiative.
+Instead, OpenSDD should create a neutral coordination workspace for the initiative.
 
 ### 4. Canonical storage follows ownership
 
@@ -139,21 +139,21 @@ Instead, OpenSpec should create a neutral coordination workspace for the initiat
 
 Cross-scope or cross-repo `references` should initially be documentation-only.
 
-OpenSpec may surface them to users and agents, but should not require them to resolve or validate across roots in the first version.
+OpenSDD may surface them to users and agents, but should not require them to resolve or validate across roots in the first version.
 
 ### 6. Shared contracts need explicit ownership
 
-When the user describes behavior that spans multiple boundaries, OpenSpec should help them decide whether they are creating:
+When the user describes behavior that spans multiple boundaries, OpenSDD should help them decide whether they are creating:
 
 - a local spec
 - a shared contract
 - an initiative note that is not yet canonical
 
-If the work is a real long-lived contract, OpenSpec should prompt for a canonical owner rather than burying it in whichever repo the user happened to be standing in.
+If the work is a real long-lived contract, OpenSDD should prompt for a canonical owner rather than burying it in whichever repo the user happened to be standing in.
 
 ### 7. Do not force "shared ownership" as implicit co-ownership
 
-OpenSpec should help teams create **shared contract ownership**, not ambiguous co-ownership.
+OpenSDD should help teams create **shared contract ownership**, not ambiguous co-ownership.
 
 That means:
 
@@ -164,7 +164,7 @@ That means:
 
 ### 8. Use the current repo only as a starting point, not as truth
 
-When a user starts in `web-client` and describes a checkout behavior spanning web, iOS, Android, and backend, OpenSpec should treat the current cwd as a clue about likely consumers, not as proof that `web-client` should own the shared contract.
+When a user starts in `web-client` and describes a checkout behavior spanning web, iOS, Android, and backend, OpenSDD should treat the current cwd as a clue about likely consumers, not as proof that `web-client` should own the shared contract.
 
 ---
 
@@ -172,13 +172,13 @@ When a user starts in `web-client` and describes a checkout behavior spanning we
 
 ### Project
 
-A single OpenSpec root where canonical specs and changes can live.
+A single OpenSDD root where canonical specs and changes can live.
 
 In practice a project may be:
 
 - a repo root with `openspec/`
 - a monorepo root with one `openspec/`
-- a nested owned scope if OpenSpec later supports nested roots
+- a nested owned scope if OpenSDD later supports nested roots
 
 ### Scope
 
@@ -301,7 +301,7 @@ monorepo/
 
 ## Discovery Model
 
-OpenSpec needs to answer two separate questions:
+OpenSDD needs to answer two separate questions:
 
 1. What scopes are involved?
 2. Where are they on disk right now?
@@ -310,7 +310,7 @@ These are not the same problem.
 
 ### Scope discovery
 
-OpenSpec discovers candidate scopes from:
+OpenSDD discovers candidate scopes from:
 
 - the current repo root
 - `openspec/specs/**`
@@ -332,10 +332,10 @@ User shorthand may be accepted:
 - `Fission-AI/web-client`
 - `fission/web-client`
 
-OpenSpec resolves these to local paths using this order:
+OpenSDD resolves these to local paths using this order:
 
 1. explicit path passed for this run
-2. saved local OpenSpec registry
+2. saved local OpenSDD registry
 3. local git remote scanning
 4. user prompt
 
@@ -343,7 +343,7 @@ Relative paths like `../web-client` may be used as temporary hints for a single 
 
 ### Shared manifest vs local overlay
 
-For team use, OpenSpec should separate:
+For team use, OpenSDD should separate:
 
 1. **Shared coordination state**
    Stable information that can be committed and shared with teammates.
@@ -426,7 +426,7 @@ Examples:
 
 ### What we should tell teams
 
-OpenSpec should communicate this clearly:
+OpenSDD should communicate this clearly:
 
 > If the work is collaborative, treat the coordination workspace as a lightweight shared planning repo or committed workspace. Commit stable initiative metadata there, and keep machine-specific repo path mappings local.
 
@@ -446,7 +446,7 @@ This section answers a key product question:
 
 ### First-principles heuristic
 
-OpenSpec should help teams choose the owner that can most credibly do all of the following:
+OpenSDD should help teams choose the owner that can most credibly do all of the following:
 
 1. define the guarantee
 2. review and approve changes to that guarantee
@@ -464,7 +464,7 @@ The owner is the boundary where the contract is most stable and most authoritati
 
 ### Ownership decision questions
 
-When OpenSpec detects a likely shared contract, it should ask or infer from these questions:
+When OpenSDD detects a likely shared contract, it should ask or infer from these questions:
 
 1. Is this behavior meant to be true across multiple scopes for the long term?
 2. Is it an external contract, an internal product rule, or an implementation detail?
@@ -482,7 +482,7 @@ Example:
 - `packages/contracts/checkout` already exists in a monorepo
 - `contracts` repo already exists in multi-repo environment
 
-OpenSpec should default to that existing owner.
+OpenSDD should default to that existing owner.
 
 #### Outcome B: Shared contract belongs in an existing domain owner
 
@@ -491,7 +491,7 @@ Example:
 - an API request/response contract belongs with the API/backend owner
 - a shared auth token contract belongs with the auth platform owner
 
-OpenSpec should suggest that existing domain owner if there is no dedicated shared area.
+OpenSDD should suggest that existing domain owner if there is no dedicated shared area.
 
 #### Outcome C: A new shared contract scope should be created
 
@@ -501,7 +501,7 @@ Example:
 - no existing shared owner exists
 - this will likely recur and needs long-term governance
 
-OpenSpec should help create a new shared contract scope.
+OpenSDD should help create a new shared contract scope.
 
 #### Outcome D: Keep it as initiative-only for now
 
@@ -511,9 +511,9 @@ Example:
 - the boundary is unclear
 - no one can yet answer who should own the canonical guarantee
 
-OpenSpec should allow the behavior to remain in initiative notes temporarily and explicitly mark it as non-canonical until ownership is chosen.
+OpenSDD should allow the behavior to remain in initiative notes temporarily and explicitly mark it as non-canonical until ownership is chosen.
 
-### What OpenSpec should suggest by default
+### What OpenSDD should suggest by default
 
 #### For monorepos
 
@@ -533,9 +533,9 @@ Default suggestion order:
 3. create a dedicated shared contracts repo or scope
 4. keep as initiative-only until clarified
 
-### What OpenSpec should not do
+### What OpenSDD should not do
 
-OpenSpec should not:
+OpenSDD should not:
 
 - silently assign ownership to the repo where the user started
 - duplicate the canonical shared spec across all consumers
@@ -546,7 +546,7 @@ OpenSpec should not:
 
 ## Shared Contract Creation UX
 
-When the user describes a likely cross-boundary behavior, OpenSpec should treat this as a first-class planning moment.
+When the user describes a likely cross-boundary behavior, OpenSDD should treat this as a first-class planning moment.
 
 ### Detection cues
 
@@ -559,7 +559,7 @@ Signals that a shared contract may be needed:
 
 ### Prompt shape
 
-During `/opsx:propose` or `/opsx:explore`, OpenSpec should ask something like:
+During `/opsx:propose` or `/opsx:explore`, OpenSDD should ask something like:
 
 ```text
 This looks like behavior shared across multiple scopes:
@@ -586,7 +586,7 @@ Where should the canonical shared contract live?
 
 ### Creating a new shared contract scope
 
-If the user chooses "create a new shared contract scope," OpenSpec should guide them.
+If the user chooses "create a new shared contract scope," OpenSDD should guide them.
 
 #### Monorepo
 
@@ -601,7 +601,7 @@ Suggested new shared scopes:
 Who should own review for this contract?
 ```
 
-OpenSpec then:
+OpenSDD then:
 
 1. creates the canonical shared spec in the chosen shared scope
 2. records selected consumers
@@ -620,11 +620,11 @@ Choose where the canonical contract should live:
 - Assign it to an existing domain owner repo
 ```
 
-OpenSpec should avoid auto-creating a brand-new repo. It can scaffold the plan and record the decision, but repo creation may be organizationally sensitive and usually belongs outside the CLI.
+OpenSDD should avoid auto-creating a brand-new repo. It can scaffold the plan and record the decision, but repo creation may be organizationally sensitive and usually belongs outside the CLI.
 
 ### Temporary initiative-only mode
 
-If ownership is unclear, OpenSpec should support:
+If ownership is unclear, OpenSDD should support:
 
 - storing the shared behavior in the initiative workspace as a draft note
 - marking it explicitly as non-canonical
@@ -645,12 +645,12 @@ No matter the setting, the user experience should always reduce to this:
 1. Start where you are
 2. Describe the work
 3. Confirm the affected scopes
-4. Let OpenSpec determine whether this is:
+4. Let OpenSDD determine whether this is:
    - local only
    - multi-scope in one root
    - cross-root coordination
-5. OpenSpec creates artifacts in the right places
-6. OpenSpec tells the user where to continue planning and where to implement
+5. OpenSDD creates artifacts in the right places
+6. OpenSDD tells the user where to continue planning and where to implement
 
 ### What changes by scale
 
@@ -698,7 +698,7 @@ If these invariants hold, the UX remains coherent across solo, team, and org-wid
 
 Cross-root UX only works if the agent can actually see the relevant roots.
 
-OpenSpec should support three agent capability levels.
+OpenSDD should support three agent capability levels.
 
 ### Level 1: Strong multi-root support
 
@@ -707,7 +707,7 @@ The tool can explicitly attach multiple directories to one session.
 Desired UX:
 
 - User opens the coordination workspace
-- OpenSpec tells the user exactly which roots to attach
+- OpenSDD tells the user exactly which roots to attach
 - Agent reads from all attached roots
 
 ### Level 2: Single cwd but filesystem access to linked roots
@@ -717,7 +717,7 @@ The tool runs from one working directory but can still read sibling absolute pat
 Desired UX:
 
 - User opens the coordination workspace
-- OpenSpec writes agent-readable absolute paths into the workspace instructions
+- OpenSDD writes agent-readable absolute paths into the workspace instructions
 - Agent can read those roots directly
 
 ### Level 3: Practically single-root
@@ -727,14 +727,14 @@ The tool can only reliably operate within one repo at a time.
 Desired UX:
 
 - Coordination workspace is used for planning only
-- OpenSpec guides the user into repo-local implementation sessions afterward
+- OpenSDD guides the user into repo-local implementation sessions afterward
 - `/opsx:apply` runs in each repo separately
 
 This must be treated as a first-class case, not a fallback afterthought.
 
 ---
 
-## Current OpenSpec Flow To Preserve
+## Current OpenSDD Flow To Preserve
 
 Today the flow is:
 
@@ -742,18 +742,18 @@ Today the flow is:
 2. User runs `openspec init`
 3. User opens an agent in that repo
 4. User runs `/opsx:explore` or `/opsx:propose`
-5. OpenSpec stores changes in `openspec/changes/<change>/`
+5. OpenSDD stores changes in `openspec/changes/<change>/`
 6. `/opsx:apply` implements within that repo
 
 That should remain the exact feel for single-repo work.
 
 The only extension is:
 
-- if OpenSpec detects a cross-root initiative, it explicitly upgrades the workflow into a coordination workspace flow
+- if OpenSDD detects a cross-root initiative, it explicitly upgrades the workflow into a coordination workspace flow
 
 ---
 
-## Journey 1: Single Repo, Standard OpenSpec Project
+## Journey 1: Single Repo, Standard OpenSDD Project
 
 ### Starting state
 
@@ -769,13 +769,13 @@ They enter the repo:
 cd ~/work/acme-app
 ```
 
-They initialize OpenSpec:
+They initialize OpenSDD:
 
 ```bash
 openspec init
 ```
 
-OpenSpec creates:
+OpenSDD creates:
 
 ```text
 openspec/
@@ -794,7 +794,7 @@ The user types:
 /opsx:propose add-dark-mode
 ```
 
-OpenSpec should:
+OpenSDD should:
 
 1. detect a single local project
 2. detect a single default scope: the repo
@@ -825,7 +825,7 @@ The user types:
 /opsx:apply
 ```
 
-OpenSpec reads:
+OpenSDD reads:
 
 - proposal
 - specs
@@ -842,7 +842,7 @@ The user types:
 /opsx:archive
 ```
 
-OpenSpec archives the change in this repo, as today.
+OpenSDD archives the change in this repo, as today.
 
 ### Storage outcome
 
@@ -855,7 +855,7 @@ OpenSpec archives the change in this repo, as today.
 
 - Multiple active changes in repo: prompt user to select one
 - Missing spec directories: proceed if allowed by current schema behavior
-- User runs from subdirectory: OpenSpec should either walk up or clearly tell them to run from repo root
+- User runs from subdirectory: OpenSDD should either walk up or clearly tell them to run from repo root
 
 ---
 
@@ -889,9 +889,9 @@ The user types:
 /opsx:propose add-invoice-filtering
 ```
 
-OpenSpec detects this is still one project root, but there are multiple candidate scopes.
+OpenSDD detects this is still one project root, but there are multiple candidate scopes.
 
-If the user’s request clearly mentions one area, OpenSpec may infer:
+If the user’s request clearly mentions one area, OpenSDD may infer:
 
 - `apps/web`
 
@@ -909,7 +909,7 @@ The user picks `apps/web`.
 
 ### Expected behavior
 
-OpenSpec should:
+OpenSDD should:
 
 1. create a single monorepo-local change under `openspec/changes/add-invoice-filtering/`
 2. tag that change with `apps/web`
@@ -950,7 +950,7 @@ The user types:
 /opsx:propose add-3ds-checkout
 ```
 
-OpenSpec detects likely affected scopes:
+OpenSDD detects likely affected scopes:
 
 - `packages/contracts`
 - `services/api`
@@ -970,7 +970,7 @@ Which scopes should be included?
 
 ### Expected behavior
 
-OpenSpec creates:
+OpenSDD creates:
 
 ```text
 platform/openspec/changes/add-3ds-checkout/
@@ -978,13 +978,13 @@ platform/openspec/changes/add-3ds-checkout/
 
 The change includes scope metadata listing all three selected scopes.
 
-OpenSpec reads:
+OpenSDD reads:
 
 - shared contract specs
 - API specs for billing/checkout
 - web checkout specs
 
-OpenSpec ignores unrelated specs by default.
+OpenSDD ignores unrelated specs by default.
 
 ### Implementation
 
@@ -994,7 +994,7 @@ The user runs:
 /opsx:apply
 ```
 
-OpenSpec should:
+OpenSDD should:
 
 1. show that multiple scopes are affected
 2. sequence tasks accordingly
@@ -1023,7 +1023,7 @@ Some monorepos are operationally equivalent to multi-repo systems:
 - many developers should not edit each other’s planning setup
 - cross-team work is exceptional
 
-This means OpenSpec cannot assume:
+This means OpenSDD cannot assume:
 
 - one monorepo root automatically equals one planning unit
 
@@ -1058,7 +1058,7 @@ The user types:
 /opsx:propose add-checkout-loading-state
 ```
 
-OpenSpec detects this is limited to `apps/web`.
+OpenSDD detects this is limited to `apps/web`.
 
 The user should experience this exactly like a single-scope change.
 
@@ -1070,14 +1070,14 @@ The user types:
 /opsx:propose add-3ds
 ```
 
-OpenSpec detects:
+OpenSDD detects:
 
 - `packages/contracts`
 - `services/billing`
 - `apps/web`
 - possibly `apps/mobile`
 
-At this point OpenSpec must make a product decision.
+At this point OpenSDD must make a product decision.
 
 #### Recommended behavior
 
@@ -1097,7 +1097,7 @@ How would you like to plan this work?
 
 ### Coordination-style monorepo initiative
 
-If the user chooses the coordination flow, OpenSpec creates:
+If the user chooses the coordination flow, OpenSDD creates:
 
 1. a neutral initiative workspace
 2. linked scope-local changes inside the monorepo root or scope-owned folders
@@ -1122,7 +1122,7 @@ The user is in:
 ~/work/web-client
 ```
 
-They already use OpenSpec there.
+They already use OpenSDD there.
 
 They open Claude in `web-client` and type:
 
@@ -1138,7 +1138,7 @@ During exploration or proposal generation, it becomes clear that the work also a
 
 ### Critical UX requirement
 
-At this point OpenSpec should not silently create one cross-repo change inside `web-client`.
+At this point OpenSDD should not silently create one cross-repo change inside `web-client`.
 
 That would be misleading, because:
 
@@ -1146,9 +1146,9 @@ That would be misleading, because:
 - the agent does not yet have the other roots
 - canonical specs belong in other repos
 
-### Expected OpenSpec behavior
+### Expected OpenSDD behavior
 
-OpenSpec interrupts the default single-repo flow and says:
+OpenSDD interrupts the default single-repo flow and says:
 
 ```text
 This work spans multiple owning roots:
@@ -1157,7 +1157,7 @@ This work spans multiple owning roots:
 - github.com/Fission-AI/web-client
 - github.com/Fission-AI/ios-client
 
-For cross-repo work, OpenSpec recommends creating a coordination workspace.
+For cross-repo work, OpenSDD recommends creating a coordination workspace.
 
 Suggested location:
 ~/work/openspec-workspaces/add-3ds
@@ -1165,7 +1165,7 @@ Suggested location:
 Create it now?
 ```
 
-If the user agrees, OpenSpec creates the workspace.
+If the user agrees, OpenSDD creates the workspace.
 
 If the user wants another location, they can choose it.
 
@@ -1177,7 +1177,7 @@ Proposed CLI feel:
 openspec workspace create add-3ds --at ~/work/openspec-workspaces/add-3ds
 ```
 
-OpenSpec writes:
+OpenSDD writes:
 
 ```text
 ~/work/openspec-workspaces/add-3ds/
@@ -1192,7 +1192,7 @@ OpenSpec writes:
 
 ### Repo resolution
 
-OpenSpec now resolves local paths for:
+OpenSDD now resolves local paths for:
 
 - `github.com/Fission-AI/contracts`
 - `github.com/Fission-AI/billing-service`
@@ -1207,7 +1207,7 @@ Using:
 
 ### Agent handoff
 
-OpenSpec then tells the user:
+OpenSDD then tells the user:
 
 ```text
 Next step:
@@ -1218,7 +1218,7 @@ Next step:
    - /Users/me/work/web-client
    - /Users/me/work/ios-client
 
-OpenSpec has generated workspace instructions at:
+OpenSDD has generated workspace instructions at:
 .openspec-workspace/agents/claude.md
 ```
 
@@ -1230,7 +1230,7 @@ The user now starts the agent in the coordination workspace and runs:
 /opsx:propose add-3ds
 ```
 
-Or OpenSpec may have already scaffolded the initiative and tell the agent to continue it.
+Or OpenSDD may have already scaffolded the initiative and tell the agent to continue it.
 
 ### Storage outcome
 
@@ -1292,9 +1292,9 @@ Or a future higher-level shortcut:
 openspec initiative new add-3ds
 ```
 
-### OpenSpec prompts
+### OpenSDD prompts
 
-OpenSpec asks:
+OpenSDD asks:
 
 ```text
 Which repos or scopes are involved?
@@ -1307,13 +1307,13 @@ The user enters:
 - `github.com/Fission-AI/web-client`
 - `github.com/Fission-AI/ios-client`
 
-OpenSpec resolves local clones and writes the workspace files.
+OpenSDD resolves local clones and writes the workspace files.
 
 ### Agent setup
 
 The user opens the coordination workspace in their agent.
 
-OpenSpec-generated agent instructions contain:
+OpenSDD-generated agent instructions contain:
 
 - initiative summary
 - available roots
@@ -1348,7 +1348,7 @@ Same as Journey 5, but the user never had to start from one repo first.
 
 Some users will intentionally want the initiative to live outside any single repo from the start.
 
-OpenSpec should support that directly.
+OpenSDD should support that directly.
 
 ---
 
@@ -1370,7 +1370,7 @@ Or a team-owned repo such as:
 github.com/Fission-AI/initiatives
 ```
 
-Inside it, OpenSpec creates:
+Inside it, OpenSDD creates:
 
 ```text
 initiatives/
@@ -1397,7 +1397,7 @@ The team commits:
 
 ### What stays local
 
-Each teammate keeps local path mappings outside the shared repo, for example in OpenSpec local config/data:
+Each teammate keeps local path mappings outside the shared repo, for example in OpenSDD local config/data:
 
 - `github.com/Fission-AI/contracts` -> `/Users/alice/src/contracts`
 - `github.com/Fission-AI/contracts` -> `/home/bob/work/contracts`
@@ -1413,7 +1413,7 @@ Each teammate:
 
 ### Agent startup behavior
 
-OpenSpec generates agent instructions using:
+OpenSDD generates agent instructions using:
 
 - committed shared manifest
 - local path overlay
@@ -1441,7 +1441,7 @@ The work spans:
 
 ### Expected setup
 
-OpenSpec should support the initiative being created in a shared coordination repo owned by the sponsoring or driving team.
+OpenSDD should support the initiative being created in a shared coordination repo owned by the sponsoring or driving team.
 
 That sponsor is responsible for:
 
@@ -1466,7 +1466,7 @@ But the sponsor does not automatically own:
 
 ### User experience
 
-When another team member opens the shared coordination workspace, OpenSpec should make this explicit:
+When another team member opens the shared coordination workspace, OpenSDD should make this explicit:
 
 ```text
 Initiative sponsor:
@@ -1509,7 +1509,7 @@ But only has these locally:
 
 ### Expected behavior
 
-OpenSpec should still allow planning.
+OpenSDD should still allow planning.
 
 It creates the coordination workspace and records:
 
@@ -1572,7 +1572,7 @@ This also matters for large teams, because not every teammate will have every pa
 
 This is one of the most important behavioral rules.
 
-OpenSpec should never blindly read all specs from all roots.
+OpenSDD should never blindly read all specs from all roots.
 
 ### Single repo
 
@@ -1629,7 +1629,7 @@ They are not validation blockers.
 
 ### Shared contract read order
 
-When a selected change involves a shared contract, OpenSpec should prefer this read order:
+When a selected change involves a shared contract, OpenSDD should prefer this read order:
 
 1. initiative metadata, if present
 2. canonical shared contract
@@ -1681,7 +1681,7 @@ It should not become a second spec source of truth.
 
 ### Rule 5: Shared contracts are canonical only after ownership is explicit
 
-If a cross-boundary behavior has not yet been assigned a canonical owner, OpenSpec should store it as initiative-level draft material rather than pretending it is already a canonical spec.
+If a cross-boundary behavior has not yet been assigned a canonical owner, OpenSDD should store it as initiative-level draft material rather than pretending it is already a canonical spec.
 
 ### Rule 6: Shared coordination workspaces store stable collaboration data, not local machine state
 
@@ -1715,7 +1715,7 @@ They run:
 /opsx:apply
 ```
 
-OpenSpec responds:
+OpenSDD responds:
 
 ```text
 This initiative has linked changes in:
@@ -1743,7 +1743,7 @@ The user is in the coordination workspace and runs:
 /opsx:apply
 ```
 
-OpenSpec should say:
+OpenSDD should say:
 
 ```text
 This initiative spans multiple repos.
@@ -1798,7 +1798,7 @@ The agent discovers the request spans:
 ```text
 This looks like a cross-boundary behavior shared by multiple scopes.
 
-Should OpenSpec treat this as:
+Should OpenSDD treat this as:
 - A shared contract
 - Independent local changes only
 - An initiative note for now
@@ -1806,7 +1806,7 @@ Should OpenSpec treat this as:
 
 The user chooses shared contract.
 
-OpenSpec then asks:
+OpenSDD then asks:
 
 ```text
 Where should the canonical shared contract live?
@@ -1817,7 +1817,7 @@ Where should the canonical shared contract live?
 
 ### Expected storage result
 
-OpenSpec creates:
+OpenSDD creates:
 
 - canonical shared contract in chosen shared scope
 - repo-local change under monorepo root
@@ -1853,7 +1853,7 @@ They run:
 /opsx:propose add-3ds
 ```
 
-OpenSpec detects this likely requires a shared contract.
+OpenSDD detects this likely requires a shared contract.
 
 ### Expected prompt
 
@@ -1866,13 +1866,13 @@ Choose how to proceed:
 - Keep it as initiative-only for now
 ```
 
-If the user selects an existing contracts repo, OpenSpec:
+If the user selects an existing contracts repo, OpenSDD:
 
 1. creates a repo-local change in that repo for the shared contract
 2. links consumer repo changes to it
 3. records references from consumers to the canonical contract
 
-If the user keeps it initiative-only, OpenSpec:
+If the user keeps it initiative-only, OpenSDD:
 
 1. stores the draft cross-boundary behavior in initiative notes
 2. marks it as non-canonical
@@ -1902,7 +1902,7 @@ The user in the coordination workspace runs:
 /opsx:archive
 ```
 
-OpenSpec checks linked repo changes:
+OpenSDD checks linked repo changes:
 
 - archived
 - ready to archive
@@ -1961,7 +1961,7 @@ No workspace concepts shown.
 4. run `openspec update`
 5. open agent in monorepo root
 
-During planning, OpenSpec asks for scope selection when needed.
+During planning, OpenSDD asks for scope selection when needed.
 
 No separate workspace admin step is required.
 
@@ -1984,7 +1984,7 @@ The system should not require a platform team to pre-register every repo before 
 
 ## Agent Instruction Requirements
 
-When OpenSpec creates a coordination workspace, it should generate agent-facing files.
+When OpenSDD creates a coordination workspace, it should generate agent-facing files.
 
 Minimum contents:
 
@@ -2054,7 +2054,7 @@ Example:
 
 Expected behavior:
 
-- OpenSpec recommends creating a coordination workspace
+- OpenSDD recommends creating a coordination workspace
 - It does not bury the whole initiative inside `web-client`
 
 ### 2. User wants the initiative stored elsewhere
@@ -2169,37 +2169,37 @@ Expected behavior:
 
 ## Product Decisions This UX Implies
 
-If OpenSpec adopts these journeys, several design conclusions follow.
+If OpenSDD adopts these journeys, several design conclusions follow.
 
 ### 1. Multi-repo planning needs a first-class coordination workspace
 
-Without this, OpenSpec has no honest answer to where the user should stand or where the cross-repo initiative should live.
+Without this, OpenSDD has no honest answer to where the user should stand or where the cross-repo initiative should live.
 
 ### 2. Repo-local changes and canonical specs should stay in owners
 
-Without this, OpenSpec creates duplicate or misleading sources of truth.
+Without this, OpenSDD creates duplicate or misleading sources of truth.
 
 ### 3. Large monorepos cannot be treated as always-simple single roots
 
-OpenSpec must support both:
+OpenSDD must support both:
 
 - one-root monorepo changes
 - coordination-style monorepo initiatives
 
 ### 4. Discovery and resolution are different systems
 
-OpenSpec must separately handle:
+OpenSDD must separately handle:
 
 - identifying scopes
 - resolving local paths for durable project identifiers
 
 ### 5. Agent startup context needs explicit generation
 
-Cross-root planning only works reliably if OpenSpec writes deterministic workspace context for the agent.
+Cross-root planning only works reliably if OpenSDD writes deterministic workspace context for the agent.
 
 ### 6. References should stay informational in v1
 
-If OpenSpec validates cross-root references by default, it has effectively shipped a dependency graph system.
+If OpenSDD validates cross-root references by default, it has effectively shipped a dependency graph system.
 
 That should be a later, optional capability.
 
@@ -2211,7 +2211,7 @@ Without this, teams will either:
 - assign ownership accidentally
 - or avoid creating cross-boundary specs altogether
 
-OpenSpec should help users choose among:
+OpenSDD should help users choose among:
 
 - existing shared owner
 - existing domain owner
@@ -2220,7 +2220,7 @@ OpenSpec should help users choose among:
 
 ### 8. Shared coordination needs a two-layer storage model
 
-To support teams and orgs cleanly, OpenSpec should distinguish:
+To support teams and orgs cleanly, OpenSDD should distinguish:
 
 - committed shared initiative metadata
 - local machine-specific path resolution
@@ -2236,9 +2236,9 @@ Without that split, the UX will either:
 
 These journeys intentionally leave some implementation choices open.
 
-1. Should a coordination workspace always be user-visible on disk, or may it optionally live in global OpenSpec data directories?
+1. Should a coordination workspace always be user-visible on disk, or may it optionally live in global OpenSDD data directories?
 2. Should monorepo coordination-style initiatives reuse the same workspace concept as multi-repo, or use a lighter in-repo variant?
-3. Should OpenSpec support nested `openspec/` roots, or keep one root and model scopes separately?
+3. Should OpenSDD support nested `openspec/` roots, or keep one root and model scopes separately?
 4. What is the minimum metadata required to represent selected scopes and linked changes?
 5. What is the exact format split between committed shared workspace state and local overlay state?
 6. Which agents should receive generated workspace instructions, and in what format?

@@ -9,8 +9,8 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 export function getApplyChangeSkillTemplate(): SkillTemplate {
   return {
     name: 'openspec-apply-change',
-    description: '实现 OpenSpec 变更中的任务。当用户想要开始实现、继续实现或处理任务时使用。',
-    instructions: `实现 OpenSpec 变更中的任务。
+    description: '实现 OpenSDD 变更中的任务。当用户想要开始实现、继续实现或处理任务时使用。',
+    instructions: `实现 OpenSDD 变更中的任务。
 
 **输入**：可选指定变更名称。如果省略，检查是否可以从对话上下文中推断。如果模糊或不明确，你**必须**提示获取可用变更。
 
@@ -164,10 +164,10 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 export function getOpsxApplyCommandTemplate(): CommandTemplate {
   return {
     name: 'OPSX: Apply',
-    description: '实现 OpenSpec 变更中的任务（实验性）',
+    description: '实现 OpenSDD 变更中的任务（实验性）',
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
-    content: `实现 OpenSpec 变更中的任务。
+    content: `实现 OpenSDD 变更中的任务。
 
 **输入**：可选择指定变更名称（例如，\`/opsx:apply add-auth\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
 

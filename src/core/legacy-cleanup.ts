@@ -451,7 +451,7 @@ export function formatCleanupSummary(result: CleanupResult): string {
     }
 
     for (const file of result.modifiedFiles) {
-      lines.push(`  ✓ 已从 ${file} 移除 OpenSpec 标记`);
+      lines.push(`  ✓ 已从 ${file} 移除 OpenSDD 标记`);
     }
   }
 
@@ -521,7 +521,7 @@ function buildUpdatesList(detection: LegacyDetectionResult): Array<{ path: strin
 
   // All config files with markers get updated (markers removed, file preserved)
   for (const file of detection.configFilesToUpdate) {
-    updates.push({ path: file, explanation: '正在移除 OpenSpec 标记' });
+    updates.push({ path: file, explanation: '正在移除 OpenSDD 标记' });
   }
 
   return updates;
@@ -546,9 +546,9 @@ export function formatDetectionSummary(detection: LegacyDetectionResult): string
   }
 
   // Header - welcoming upgrade message
-  lines.push(chalk.bold('升级到新版本 OpenSpec'));
+  lines.push(chalk.bold('升级到新版本 OpenSDD'));
   lines.push('');
-  lines.push('OpenSpec 现在使用 agent skills，这是编码助手的');
+  lines.push('OpenSDD 现在使用 agent skills，这是编码助手的');
   lines.push('新兴标准。这将简化您的设置，同时保持一切');
   lines.push('正常工作。');
   lines.push('');
@@ -566,7 +566,7 @@ export function formatDetectionSummary(detection: LegacyDetectionResult): string
   if (updates.length > 0) {
     if (removals.length > 0) lines.push('');
     lines.push(chalk.bold('要更新的文件'));
-    lines.push(chalk.dim('将移除 OpenSpec 标记，保留您的内容:'));
+    lines.push(chalk.dim('将移除 OpenSDD 标记，保留您的内容:'));
     for (const { path } of updates) {
       lines.push(`  • ${path}`);
     }
@@ -643,7 +643,7 @@ export function formatProjectMdMigrationHint(): string {
   lines.push(chalk.dim('    我们不会删除这个文件。它可能包含有用的项目上下文。'));
   lines.push('');
   lines.push(chalk.dim('    新的 openspec/config.yaml 有一个 "context:" 部分用于规划'));
-  lines.push(chalk.dim('    上下文。这包含在每个 OpenSpec 请求中，比旧'));
+  lines.push(chalk.dim('    上下文。这包含在每个 OpenSDD 请求中，比旧'));
   lines.push(chalk.dim('    的 project.md 方法更可靠。'));
   lines.push('');
   lines.push(chalk.dim('    查看 project.md，将任何有用的内容移动到 config.yaml 的 context'));

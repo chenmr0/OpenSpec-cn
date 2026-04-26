@@ -30,20 +30,20 @@
   <sub>🧪 <strong>New:</strong> <a href="docs/experimental-workflow.md">Experimental Workflow (OPSX)</a> — schema-driven, hackable, fluid. Iterate on workflows without code changes.</sub>
 </p>
 
-# OpenSpec 简体中文版
+# OpenSDD 简体中文版
 
-> **注意：** 这是 OpenSpec 的简体中文本地化版本。所有命令输出、错误信息、模板和提示均已翻译为简体中文。
+> **注意：** 这是 OpenSDD 的简体中文本地化版本。所有命令输出、错误信息、模板和提示均已翻译为简体中文。
 >
 > - 📦 包名：`@studyzy/opensdd`
 > - 🔧 命令：`opensdd` (取代原版的 `openspec`)
 > - 🌐 原版英文项目：[Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec)
 > - 📝 本项目地址：[studyzy/OpenSDD](https://github.com/studyzy/OpenSDD)
 
-OpenSpec 通过规范驱动开发，让人工智能编程助手与人类开发者在对需求达成共识后再开始编码工作。**无需API密钥即可使用。**
+OpenSDD 通过规范驱动开发，让人工智能编程助手与人类开发者在对需求达成共识后再开始编码工作。**无需API密钥即可使用。**
 
-## 为什么选择 OpenSpec？
+## 为什么选择 OpenSDD？
 
-AI编程助手虽然功能强大，但当需求仅存在于聊天记录中时，其行为往往难以预测。OpenSpec引入了一种轻量级的规范工作流，在实现之前锁定意图，为您提供确定性和可审查的输出结果。
+AI编程助手虽然功能强大，但当需求仅存在于聊天记录中时，其行为往往难以预测。OpenSDD引入了一种轻量级的规范工作流，在实现之前锁定意图，为您提供确定性和可审查的输出结果。
 
 核心优势：
 - 人类与AI利益相关方在工作开始前就规范达成共识
@@ -51,14 +51,14 @@ AI编程助手虽然功能强大，但当需求仅存在于聊天记录中时，
 - 共享可见性，清晰了解哪些内容处于提案、活跃或归档状态
 - 兼容您已使用的AI工具：支持自定义斜杠命令，其他场景使用上下文规则
 
-## OpenSpec 与其他方案对比 (概览)
+## OpenSDD 与其他方案对比 (概览)
 
 - **轻量级**：简单的工作流程，无需API密钥，最小化设置
-- **面向存量项目优先**：在0→1之外同样表现优异。OpenSpec将真实来源与提案分离：`openspec/specs/`（当前真实状态）和 `openspec/changes/`（提案更新）。这使得跨功能的差异明确且可管理
+- **面向存量项目优先**：在0→1之外同样表现优异。OpenSDD将真实来源与提案分离：`openspec/specs/`（当前真实状态）和 `openspec/changes/`（提案更新）。这使得跨功能的差异明确且可管理
 - **变更追踪**：提案、任务和规范增量共同存在；归档时将批准的更新合并回规范
-- **与 spec-kit & Kiro 对比**：这些工具在全新功能（0→1）方面表现出色，而OpenSpec在修改现有行为（1→n）时同样卓越，特别是当更新涉及多个规范时
+- **与 spec-kit & Kiro 对比**：这些工具在全新功能（0→1）方面表现出色，而OpenSDD在修改现有行为（1→n）时同样卓越，特别是当更新涉及多个规范时
 
-完整对比请参阅[OpenSpec与其他方案对比](#how-openspec-compares)。
+完整对比请参阅[OpenSDD与其他方案对比](#how-openspec-compares)。
 
 ## 工作原理
 
@@ -98,7 +98,7 @@ AI编程助手虽然功能强大，但当需求仅存在于聊天记录中时，
 <details>
 <summary><strong>原生斜杠命令支持</strong> (点击展开)</summary>
 
-这些工具内置了OpenSpec命令。出现提示时选择OpenSpec集成选项。
+这些工具内置了OpenSDD命令。出现提示时选择OpenSDD集成选项。
 
 | 工具 | 命令 |
 |------|----------|
@@ -131,7 +131,7 @@ Kilo Code会自动发现团队工作流。将生成的文件保存在 `.kilocode
 <details>
 <summary><strong>AGENTS.md 兼容</strong> (点击展开)</summary>
 
-这些工具会自动从 `openspec/AGENTS.md` 读取工作流指令。如果需要提醒，请要求它们遵循OpenSpec工作流。了解更多关于 [AGENTS.md 规范](https://agents.md/)。
+这些工具会自动从 `openspec/AGENTS.md` 读取工作流指令。如果需要提醒，请要求它们遵循OpenSDD工作流。了解更多关于 [AGENTS.md 规范](https://agents.md/)。
 
 | 工具 |
 |-------|
@@ -165,7 +165,7 @@ opensdd --version
 
 **选项 B：使用 Nix（NixOS 和 Nix 包管理器）**
 
-直接运行 OpenSpec 而无需安装：
+直接运行 OpenSDD 而无需安装：
 ```bash
 nix run github:studyzy/OpenSDD -- init
 ```
@@ -196,7 +196,7 @@ nix profile install github:studyzy/OpenSDD
 opensdd --version
 ```
 
-#### 步骤2：在项目中初始化OpenSpec
+#### 步骤2：在项目中初始化OpenSDD
 
 导航到您的项目目录：
 ```bash
@@ -210,7 +210,7 @@ opensdd init
 
 **初始化过程中会发生什么：**
 - 系统会提示您选择任何原生支持的AI工具（Claude Code、CodeBuddy、Cursor、OpenCode、Qoder等）；其他助手始终依赖共享的 `AGENTS.md` 存根
-- OpenSpec会自动为您选择的工具配置斜杠命令，并始终在项目根目录写入受管理的 `AGENTS.md` 交接文件
+- OpenSDD会自动为您选择的工具配置斜杠命令，并始终在项目根目录写入受管理的 `AGENTS.md` 交接文件
 - 在您的项目中创建一个新的 `openspec/` 目录结构
 
 **设置完成后：**
@@ -255,16 +255,16 @@ opensdd init
 
 ### 创建您的第一个变更
 
-这是一个展示完整OpenSpec工作流程的真实示例。这适用于任何AI工具。具有原生斜杠命令的工具会自动识别快捷键。
+这是一个展示完整OpenSDD工作流程的真实示例。这适用于任何AI工具。具有原生斜杠命令的工具会自动识别快捷键。
 
 #### 1. 起草提案
 首先要求您的AI创建变更提案：
 
 ```text
-您: 创建添加按角色和团队筛选配置文件搜索功能的OpenSpec变更提案
+您: 创建添加按角色和团队筛选配置文件搜索功能的OpenSDD变更提案
      (斜杠命令工具的快捷方式: /openspec:proposal 添加配置文件搜索筛选器)
 
-AI: 我将为配置文件筛选器创建OpenSpec变更提案。
+AI: 我将为配置文件筛选器创建OpenSDD变更提案。
      *在 openspec/changes/add-profile-filters/ 中搭建proposal.md、tasks.md和规范增量*。
 ```
 
@@ -318,7 +318,7 @@ AI: 我将归档 add-profile-filters 变更。
 $ opensdd archive add-profile-filters --yes  # 无提示归档已完成的变更
 ```
 
-**注意：** 具有原生斜杠命令的工具（Claude Code、CodeBuddy、Cursor、Codex、Qoder、RooCode）可以使用显示的快捷方式。所有其他工具都通过自然语言请求工作，如"创建OpenSpec提案"、"应用OpenSpec变更"或"归档变更"。
+**注意：** 具有原生斜杠命令的工具（Claude Code、CodeBuddy、Cursor、Codex、Qoder、RooCode）可以使用显示的快捷方式。所有其他工具都通过自然语言请求工作，如"创建OpenSDD提案"、"应用OpenSDD变更"或"归档变更"。
 
 ## 命令参考
 
@@ -330,7 +330,7 @@ opensdd validate <变更名称> # 检查规范格式和结构
 opensdd archive <变更名称> [--yes|-y]   # 将完成的变更移动到archive/（使用--yes为非交互式）
 ```
 
-## 示例：AI如何创建OpenSpec文件
+## 示例：AI如何创建OpenSDD文件
 
 当您要求AI助手"添加双因素认证"时，它会创建：
 
@@ -399,7 +399,7 @@ openspec/
 
 **重要提示：** 您无需手动创建这些文件。您的AI助手会根据您的需求和现有代码库生成它们。
 
-## 理解OpenSpec文件
+## 理解OpenSDD文件
 
 ### 增量格式
 
@@ -414,27 +414,27 @@ openspec/
 - 每个需求至少需要一个 `#### 场景:` 块
 - 在需求文本中使用SHALL/MUST
 
-## How OpenSpec Compares（OpenSpec与其他方案对比）
+## How OpenSpec Compares（OpenSDD与其他方案对比）
 
 ### 对比 spec-kit
-OpenSpec的双文件夹模型（`openspec/specs/` 用于当前真实状态，`openspec/changes/` 用于提案更新）将状态和差异分开。当您修改现有功能或涉及多个规范时，这种模型具有良好的扩展性。spec-kit在全新项目/0→1方面表现出色，但在跨规范更新和演进功能方面提供的结构较少。
+OpenSDD的双文件夹模型（`openspec/specs/` 用于当前真实状态，`openspec/changes/` 用于提案更新）将状态和差异分开。当您修改现有功能或涉及多个规范时，这种模型具有良好的扩展性。spec-kit在全新项目/0→1方面表现出色，但在跨规范更新和演进功能方面提供的结构较少。
 
 ### 对比 Kiro.dev
-OpenSpec将每个功能的变更分组到一个文件夹中（`openspec/changes/功能名称/`），便于一起跟踪相关的规范、任务和设计。Kiro将更新分散到多个规范文件夹中，这可能会使功能跟踪更加困难。
+OpenSDD将每个功能的变更分组到一个文件夹中（`openspec/changes/功能名称/`），便于一起跟踪相关的规范、任务和设计。Kiro将更新分散到多个规范文件夹中，这可能会使功能跟踪更加困难。
 
 ### 对比无规范
-没有规范的情况下，AI编程助手会根据模糊的提示生成代码，常常遗漏需求或添加不需要的功能。OpenSpec通过在编写任何代码之前就期望行为达成共识，带来了可预测性。
+没有规范的情况下，AI编程助手会根据模糊的提示生成代码，常常遗漏需求或添加不需要的功能。OpenSDD通过在编写任何代码之前就期望行为达成共识，带来了可预测性。
 
 ## 团队采用
 
-1. **初始化OpenSpec** – 在您的仓库中运行 `opensdd init`。
+1. **初始化OpenSDD** – 在您的仓库中运行 `opensdd init`。
 2. **从新功能开始** – 要求您的AI将即将进行的工作捕获为变更提案。
 3. **逐步增长** – 每个变更都会归档到记录您系统的活跃规范中。
 4. **保持灵活性** – 不同的团队成员可以使用Claude Code、CodeBuddy、Cursor或任何AGENTS.md兼容的工具，同时共享相同的规范。
 
 每当有人切换工具时，运行 `opensdd update`，以便您的代理获取最新的指令和斜杠命令绑定。
 
-## 更新OpenSpec
+## 更新OpenSDD
 
 1. **升级包**
    ```bash
@@ -482,7 +482,7 @@ OpenSpec将每个功能的变更分组到一个文件夹中（`openspec/changes/
 </details>
 
 <details>
-<summary><strong>遥测</strong> – OpenSpec收集匿名使用统计（退出：<code>OPENSPEC_TELEMETRY=0</code>）</summary>
+<summary><strong>遥测</strong> – OpenSDD收集匿名使用统计（退出：<code>OPENSPEC_TELEMETRY=0</code>）</summary>
 
 我们仅收集命令名称和版本以了解使用模式。不收集参数、路径、内容或个人身份信息。在CI环境中自动禁用。
 

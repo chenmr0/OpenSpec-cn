@@ -9,8 +9,8 @@ import type { SkillTemplate } from '../types.js';
 export function getFeedbackSkillTemplate(): SkillTemplate {
   return {
     name: 'feedback',
-    description: '收集并提交有关 OpenSpec 的用户反馈，包含上下文增强和匿名化。',
-    instructions: `帮助用户提交有关 OpenSpec 的反馈。
+    description: '收集并提交有关 OpenSDD 的用户反馈，包含上下文增强和匿名化。',
+    instructions: `帮助用户提交有关 OpenSDD 的反馈。
 
 **目标**：引导用户完成收集、增强和提交反馈的过程，同时通过匿名化确保隐私。
 

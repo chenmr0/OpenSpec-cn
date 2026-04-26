@@ -29,7 +29,7 @@ const COMMON_FLAGS = {
 } as const;
 
 /**
- * Registry of all OpenSpec CLI commands with their flags and metadata.
+ * Registry of all OpenSDD CLI commands with their flags and metadata.
  * This registry is used to generate shell completion scripts.
  */
 export const COMMAND_REGISTRY: CommandDefinition[] = [
@@ -157,7 +157,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'feedback',
-    description: '提交关于 OpenSpec 的反馈',
+    description: '提交关于 OpenSDD 的反馈',
     acceptsPositional: true,
     flags: [
       {
@@ -169,7 +169,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'change',
-    description: '管理 OpenSpec 变更提案（已弃用）',
+    description: '管理 OpenSDD 变更提案（已弃用）',
     flags: [],
     subcommands: [
       {
@@ -216,7 +216,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'spec',
-    description: '管理 OpenSpec 规范',
+    description: '管理 OpenSDD 规范',
     flags: [],
     subcommands: [
       {
@@ -269,7 +269,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'completion',
-    description: '管理 OpenSpec CLI 的 Shell 补全',
+    description: '管理 OpenSDD CLI 的 Shell 补全',
     flags: [],
     subcommands: [
       {
@@ -308,7 +308,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'config',
-    description: '查看并修改全局 OpenSpec 配置',
+    description: '查看并修改全局 OpenSDD 配置',
     flags: [
       {
         name: 'scope',
