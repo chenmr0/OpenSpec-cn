@@ -186,17 +186,6 @@ opensdd update
 ## 其他
 
 <details>
-<summary><strong>遥测（Telemetry）</strong></summary>
-
-OpenSpec 会收集匿名使用统计。
-
-我们只收集命令名与版本号，用于理解使用模式；不会收集参数、路径、内容或任何个人信息。CI 中会自动禁用。
-
-**退出（Opt-out）：** `export OPENSPEC_TELEMETRY=0` 或 `export DO_NOT_TRACK=1`
-
-</details>
-
-<details>
 <summary><strong>维护者与顾问</strong></summary>
 
 核心维护者与顾问列表见 [MAINTAINERS.md](MAINTAINERS.md)。

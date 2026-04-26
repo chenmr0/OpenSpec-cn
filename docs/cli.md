@@ -787,10 +787,10 @@ opensdd config path
 opensdd config list
 
 # 获取特定值
-opensdd config get telemetry.enabled
+opensdd config get user.name
 
 # 设置值
-opensdd config set telemetry.enabled false
+opensdd config set user.name "我的名字"
 
 # 显式设置字符串值
 opensdd config set user.name "我的名字" --string
@@ -920,8 +920,6 @@ opensdd completion uninstall
 
 | 变量 | 描述 |
 |----------|-------------|
-| `OPENSPEC_TELEMETRY` | Set to `0` to disable telemetry |
-| `DO_NOT_TRACK` | Set to `1` to disable telemetry (standard DNT signal) |
 | `OPENSPEC_CONCURRENCY` | 批量校验的默认并发数（默认：6） |
 | `EDITOR` 或 `VISUAL` | 用于 `opensdd config edit` 的编辑器 |
 | `NO_COLOR` | 设置时禁用彩色输出 |
