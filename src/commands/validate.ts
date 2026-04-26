@@ -95,10 +95,10 @@ export class ValidateCommand {
 
   private printNonInteractiveHint(): void {
     console.error('没有要验证的内容。请尝试以下之一：');
-    console.error('  openspec-cn validate --all');
-    console.error('  openspec-cn validate --changes');
-    console.error('  openspec-cn validate --specs');
-    console.error('  openspec-cn validate <项目名称>');
+    console.error('  opensdd validate --all');
+    console.error('  opensdd validate --changes');
+    console.error('  opensdd validate --specs');
+    console.error('  opensdd validate <项目名称>');
     console.error('或在交互式终端中运行。');
   }
 
@@ -119,7 +119,7 @@ export class ValidateCommand {
 
     if (!opts.typeOverride && isChange && isSpec) {
       console.error(`模糊的项目 '${itemName}' 同时匹配变更和规范。`);
-      console.error('传递 --type change|spec，或使用：openspec-cn change validate / openspec-cn spec validate');
+      console.error('传递 --type change|spec，或使用：opensdd change validate / opensdd spec validate');
       process.exitCode = 1;
       return;
     }
@@ -171,7 +171,7 @@ export class ValidateCommand {
     if (type === 'change') {
       bullets.push('- 确保变更在specs/中有增量：使用标题## 新增|修改|移除|重命名需求');
       bullets.push('- 每个需求必须至少包含一个#### 场景:块');
-      bullets.push('- 调试解析的增量：openspec-cn change show <id> --json --deltas-only');
+      bullets.push('- 调试解析的增量：opensdd change show <id> --json --deltas-only');
     } else {
       bullets.push('- 确保规范包含## 目的和## 需求部分');
       bullets.push('- 每个需求必须至少包含一个#### 场景:块');

@@ -432,7 +432,7 @@ describe('ZshInstaller', () => {
 
       expect(content).toContain('# OPENSPEC:START');
       expect(content).toContain('# OPENSPEC:END');
-      expect(content).toContain('OpenSpec-cn shell 补全配置');
+      expect(content).toContain('OpenSDD shell 补全配置');
       expect(content).toContain(`fpath=("${completionsDir}" $fpath)`);
       expect(content).toContain('autoload -Uz compinit');
       expect(content).toContain('compinit');
@@ -734,7 +734,7 @@ describe('ZshInstaller', () => {
       const result = await installer.uninstall();
 
       expect(result.success).toBe(true);
-      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSpec-cn 配置');
+      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSDD 配置');
 
       // Verify .zshrc config was removed
       content = await fs.readFile(zshrcPath, 'utf-8');
@@ -761,7 +761,7 @@ describe('ZshInstaller', () => {
       const result = await installer.uninstall();
 
       expect(result.success).toBe(true);
-      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSpec-cn 配置');
+      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSDD 配置');
     });
 
     it('should include both messages when removing script and .zshrc', async () => {
@@ -771,7 +771,7 @@ describe('ZshInstaller', () => {
 
       expect(result.success).toBe(true);
       expect(result.message).toContain('移除补全脚本');
-      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSpec-cn 配置');
+      expect(result.message).toContain('已从 ~/.zshrc 移除 OpenSDD 配置');
     });
   });
 });

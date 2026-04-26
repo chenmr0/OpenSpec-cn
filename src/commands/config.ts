@@ -198,7 +198,7 @@ function maybeWarnConfigDrift(
   if (!hasProjectConfigDrift(projectDir, state.workflows, state.delivery)) {
     return;
   }
-  console.log(colorize('警告：全局配置未应用于此项目。请运行 `openspec-cn update` 来同步。'));
+  console.log(colorize('警告：全局配置未应用于此项目。请运行 `opensdd update` 来同步。'));
 }
 
 /**
@@ -299,7 +299,7 @@ export function registerConfigCommand(program: Command): void {
       if (!keyValidation.valid && !allowUnknown) {
         const reason = keyValidation.reason ? ` ${keyValidation.reason}。` : '';
         console.error(`错误：无效的配置键 "${key}"。${reason}`);
-        console.error('使用 "openspec-cn config list" 查看可用键。');
+        console.error('使用 "opensdd config list" 查看可用键。');
         console.error('传递 --allow-unknown 以跳过此检查。');
         process.exitCode = 1;
         return;
@@ -354,7 +354,7 @@ export function registerConfigCommand(program: Command): void {
     .action(async (options: { all?: boolean; yes?: boolean }) => {
       if (!options.all) {
         console.error('错误：重置时必须指定 --all 参数');
-        console.error('用法：openspec-cn config reset --all [-y]');
+        console.error('用法：opensdd config reset --all [-y]');
         process.exitCode = 1;
         return;
       }
@@ -454,14 +454,14 @@ export function registerConfigCommand(program: Command): void {
     .command('profile [preset]')
     .description('配置工作流档案（交互式选择器或预设快捷方式）')
     .action(async (preset?: string) => {
-      // Preset shortcut: `openspec-cn config profile core`
+      // Preset shortcut: `opensdd config profile core`
       if (preset === 'core') {
         const config = getGlobalConfig();
         config.profile = 'core';
         config.workflows = [...CORE_WORKFLOWS];
         // Preserve delivery setting
         saveGlobalConfig(config);
-        console.log('配置已更新。请在您的项目中运行 `openspec-cn update` 来应用。');
+        console.log('配置已更新。请在您的项目中运行 `opensdd update` 来应用。');
         return;
       }
 
@@ -473,7 +473,7 @@ export function registerConfigCommand(program: Command): void {
 
       // Non-interactive check
       if (!process.stdout.isTTY) {
-        console.error('需要交互模式。使用 `openspec-cn config profile core` 或通过环境/标志设置配置。');
+        console.error('需要交互模式。使用 `opensdd config profile core` 或通过环境/标志设置配置。');
         process.exitCode = 1;
         return;
       }
@@ -622,17 +622,17 @@ export function registerConfigCommand(program: Command): void {
 
           if (applyNow) {
             try {
-              execSync('npx openspec-cn update', { stdio: 'inherit', cwd: projectDir });
-              console.log('请在其他项目中运行 `openspec-cn update` 来应用。');
+              execSync('npx opensdd update', { stdio: 'inherit', cwd: projectDir });
+              console.log('请在其他项目中运行 `opensdd update` 来应用。');
             } catch {
-              console.error('`openspec-cn update` 失败。请手动运行以应用档案变更。');
+              console.error('`opensdd update` 失败。请手动运行以应用档案变更。');
               process.exitCode = 1;
             }
             return;
           }
         }
 
-        console.log('配置已更新。请在您的项目中运行 `openspec-cn update` 来应用。');
+        console.log('配置已更新。请在您的项目中运行 `opensdd update` 来应用。');
       } catch (error) {
         if (isPromptCancellationError(error)) {
           console.log('档案配置已取消。');

@@ -778,7 +778,7 @@ E1 updated`);
       
       await expect(
         archiveCommand.execute('any-change', { yes: true })
-      ).rejects.toThrow("未找到OpenSpec更改目录。请先运行 'openspec-cn init'。");
+      ).rejects.toThrow("未找到OpenSpec更改目录。请先运行 'opensdd init'。");
     });
   });
 

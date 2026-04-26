@@ -20,7 +20,7 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 
 1. **获取活动变更**
 
-   运行 \`openspec-cn list --json\` 获取所有活动变更。
+   运行 \`opensdd list --json\` 获取所有活动变更。
 
    如果不存在活动变更，通知用户并停止。
 
@@ -37,7 +37,7 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 
    对于每个选定的变更，收集：
 
-   a. **产出物状态** - 运行 \`openspec-cn status --change "<name>" --json\`
+   a. **产出物状态** - 运行 \`opensdd status --change "<name>" --json\`
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 
@@ -246,7 +246,7 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 - 归档目录目标使用当前日期：YYYY-MM-DD-<name>
 - 如果归档目标已存在，该变更失败但继续处理其他变更`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -267,7 +267,7 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
 
 1. **获取活动变更**
 
-   运行 \`openspec-cn list --json\` 获取所有活动变更。
+   运行 \`opensdd list --json\` 获取所有活动变更。
 
    如果不存在活动变更，通知用户并停止。
 
@@ -284,7 +284,7 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
 
    对于每个选定的变更，收集：
 
-   a. **产出物状态** - 运行 \`openspec-cn status --change "<name>" --json\`
+   a. **产出物状态** - 运行 \`opensdd status --change "<name>" --json\`
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 

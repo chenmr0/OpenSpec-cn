@@ -468,10 +468,10 @@ proposal → specs → design → tasks → implement
 
 ```bash
 # 从零开始创建
-openspec-cn schema init research-first
+opensdd schema init research-first
 
 # 或从现有模式派生
-openspec-cn schema fork spec-driven research-first
+opensdd schema fork spec-driven research-first
 ```
 
 **示例自定义模式：**

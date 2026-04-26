@@ -27,7 +27,7 @@
 | `/opsx:bulk-archive` | 批量归档多个变更 |
 | `/opsx:onboard` | 通过完整工作流的引导式教程 |
 
-默认全局配置文件为 `core`。要启用扩展工作流命令，运行 `openspec-cn config profile` 选择工作流，然后在项目中运行 `openspec-cn update`。
+默认全局配置文件为 `core`。要启用扩展工作流命令，运行 `opensdd config profile` 选择工作流，然后在项目中运行 `opensdd update`。
 
 ---
 
@@ -663,7 +663,7 @@ AI：欢迎使用 OpenSpec！
 
 **解决方案：**
 - 明确指定变更名称：`/opsx:apply add-dark-mode`
-- 检查变更文件夹是否存在：`openspec-cn list`
+- 检查变更文件夹是否存在：`opensdd list`
 - 验证是否在正确的项目目录中
 
 ### "No artifacts ready"
@@ -671,7 +671,7 @@ AI：欢迎使用 OpenSpec！
 所有制品要么已完成，要么被缺失的依赖项阻塞。
 
 **解决方案：**
-- 运行 `openspec-cn status --change <name>` 查看阻塞状态
+- 运行 `opensdd status --change <name>` 查看阻塞状态
 - 检查所需的制品是否存在
 - 首先创建缺失的依赖制品
 
@@ -680,17 +680,17 @@ AI：欢迎使用 OpenSpec！
 指定的 schema 不存在。
 
 **解决方案：**
-- 列出可用 schema：`openspec-cn schemas`
+- 列出可用 schema：`opensdd schemas`
 - 检查 schema 名称拼写
-- 如果是自定义 schema，请创建：`openspec-cn schema init <name>`
+- 如果是自定义 schema，请创建：`opensdd schema init <name>`
 
 ### 命令无法识别
 
 AI 工具无法识别 OpenSpec 命令。
 
 **解决方案：**
-- 确保 OpenSpec 已初始化：`openspec-cn init`
-- 重新生成技能：`openspec-cn update`
+- 确保 OpenSpec 已初始化：`opensdd init`
+- 重新生成技能：`opensdd update`
 - 检查 `.claude/skills/` 目录是否存在（针对 Claude Code）
 - 重启 AI 工具以获取新技能
 

@@ -117,7 +117,7 @@ describe('BashInstaller', () => {
 
       expect(content).toContain('# OPENSPEC:START');
       expect(content).toContain('# OPENSPEC:END');
-      expect(content).toContain('OpenSpec-cn shell 补全配置');
+      expect(content).toContain('OpenSDD shell 补全配置');
     });
 
     it('should include instructions when auto-config is disabled', async () => {
@@ -273,7 +273,7 @@ describe('BashInstaller', () => {
 
       expect(content).toContain('# OPENSPEC:START');
       expect(content).toContain('# OPENSPEC:END');
-      expect(content).toContain('OpenSpec-cn shell 补全配置');
+      expect(content).toContain('OpenSDD shell 补全配置');
       expect(content).toContain(completionsDir);
     });
 

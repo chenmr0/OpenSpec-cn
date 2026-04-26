@@ -99,7 +99,7 @@ export class ShowCommand {
 
     if (!params.typeOverride && isChange && isSpec) {
       console.error(`模糊的项目 '${itemName}' 同时匹配变更和规范。`);
-      console.error('传递 --type change|spec，或使用：openspec-cn change show / openspec-cn spec show');
+      console.error('传递 --type change|spec，或使用：opensdd change show / opensdd spec show');
       process.exitCode = 1;
       return;
     }
@@ -116,9 +116,9 @@ export class ShowCommand {
 
   private printNonInteractiveHint(): void {
     console.error('没有可显示的内容。请尝试以下方式之一：');
-    console.error('  openspec-cn show <item>');
-    console.error('  openspec-cn change show');
-    console.error('  openspec-cn spec show');
+    console.error('  opensdd show <item>');
+    console.error('  opensdd change show');
+    console.error('  opensdd spec show');
     console.error('或在交互式终端中运行。');
   }
 

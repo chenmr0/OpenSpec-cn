@@ -83,7 +83,7 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
 开始时，快速检查存在什么：
 \`\`\`bash
-openspec-cn list --json
+opensdd list --json
 \`\`\`
 
 这会告诉你：
@@ -289,7 +289,7 @@ openspec-cn list --json
 - **要探索代码库** - 将讨论建立在现实基础上
 - **要质疑假设** - 包括用户的和你自己的`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -380,7 +380,7 @@ export function getOpsxExploreCommandTemplate(): CommandTemplate {
 
 开始时，快速检查存在什么：
 \`\`\`bash
-openspec-cn list --json
+opensdd list --json
 \`\`\`
 
 这会告诉你：

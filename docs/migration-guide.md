@@ -82,17 +82,17 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 ## 运行迁移
 
-`openspec-cn init` 和 `openspec-cn update` 都会检测旧文件并引导您完成相同的清理过程。使用适合您情况的任何一种：
+`opensdd init` 和 `opensdd update` 都会检测旧文件并引导您完成相同的清理过程。使用适合您情况的任何一种：
 
 - 新安装默认使用 `core` 配置文件（`propose`、`explore`、`apply`、`archive`）。
 - 迁移安装会通过在需要时写入 `custom` 配置文件来保留您之前安装的工作流。
 
-### 使用 `openspec-cn init`
+### 使用 `opensdd init`
 
 如果您想添加新工具或重新配置哪些工具被设置，请运行此命令：
 
 ```bash
-openspec-cn init
+opensdd init
 ```
 
 init 命令检测旧文件并引导您完成清理：
@@ -134,12 +134,12 @@ OpenSpec 标记将被删除，您的内容保留：
 4. 新的技能安装在 `.claude/skills/`
 5. `openspec/config.yaml` 使用默认模式创建
 
-### 使用 `openspec-cn update`
+### 使用 `opensdd update`
 
 如果您只想迁移并将现有工具刷新到最新版本，请运行此命令：
 
 ```bash
-openspec-cn update
+opensdd update
 ```
 
 update 命令同样会检测和清理旧文件，然后刷新生成的技能/命令以匹配您当前的配置文件和交付方式设置。
@@ -149,7 +149,7 @@ update 命令同样会检测和清理旧文件，然后刷新生成的技能/命
 对于脚本化迁移：
 
 ```bash
-openspec-cn init --force --tools claude
+opensdd init --force --tools claude
 ```
 
 `--force` 标志跳过提示并自动接受清理。
@@ -299,7 +299,7 @@ AI 将帮助您识别什么是必不可少的，什么可以被修剪。
 | `/opsx:bulk-archive` | 批量归档多个变更 |
 | `/opsx:onboard` | 引导式端到端入门工作流 |
 
-通过 `openspec-cn config profile` 启用扩展命令，然后运行 `openspec-cn update`。
+通过 `opensdd config profile` 启用扩展命令，然后运行 `opensdd update`。
 
 ### 从旧版映射的命令
 
@@ -430,7 +430,7 @@ OPSX 读取现有制品并从您离开的地方继续。
 **需要查看状态吗？**
 
 ```bash
-openspec-cn status --change add-my-feature
+opensdd status --change add-my-feature
 ```
 
 ---
@@ -480,7 +480,7 @@ rules:
 列出所有可用的模式：
 
 ```bash
-openspec-cn schemas
+opensdd schemas
 ```
 
 ### 自定义模式
@@ -488,13 +488,13 @@ openspec-cn schemas
 创建您自己的工作流：
 
 ```bash
-openspec-cn schema init my-workflow
+opensdd schema init my-workflow
 ```
 
 或派生现有模式：
 
 ```bash
-openspec-cn schema fork spec-driven my-workflow
+opensdd schema fork spec-driven my-workflow
 ```
 
 详情请参阅[自定义](customization.md)。
@@ -508,7 +508,7 @@ openspec-cn schema fork spec-driven my-workflow
 您正在 CI 或非交互式环境中运行。使用：
 
 ```bash
-openspec-cn init --force
+opensdd init --force
 ```
 
 ### 迁移后命令未出现
@@ -524,7 +524,7 @@ openspec-cn init --force
 运行此命令以查看有效的制品 ID：
 
 ```bash
-openspec-cn schemas --json
+opensdd schemas --json
 ```
 
 ### 配置未应用

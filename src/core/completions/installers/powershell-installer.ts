@@ -150,7 +150,7 @@ export class PowerShellInstaller {
    */
   private generateProfileConfig(scriptPath: string): string {
     return [
-      '# OpenSpec-cn shell 补全配置',
+      '# OpenSDD shell 补全配置',
       `if (Test-Path "${scriptPath}") {`,
       `    . "${scriptPath}"`,
       '}',
@@ -201,7 +201,7 @@ export class PowerShellInstaller {
         // Add OpenSpec completion configuration with markers
         const openspecBlock = [
           '',
-          '# OPENSPEC:START - OpenSpec-cn 补全（管理块，请勿手动编辑）',
+          '# OPENSPEC:START - OpenSDD 补全（管理块，请勿手动编辑）',
           scriptLine,
           '# OPENSPEC:END',
           '',
@@ -379,7 +379,7 @@ export class PowerShellInstaller {
       '',
       `如需启用补全，请在您的 PowerShell 配置文件 (${profilePath}) 中添加以下内容：`,
       '',
-      '  # 加载 OpenSpec-cn 补全',
+      '  # 加载 OpenSDD 补全',
       `  if (Test-Path "${installedPath}") {`,
       `      . "${installedPath}"`,
       '  }',

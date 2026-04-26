@@ -20,7 +20,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有增量规范（在 \`specs/\` 目录下）的变更。
 
@@ -138,7 +138,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 - 在进行时显示你正在更改的内容
 - 操作应该是幂等的 - 运行两次应给出相同的结果`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -159,7 +159,7 @@ export function getOpsxSyncCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有增量规范（在 \`specs/\` 目录下）的变更。
 

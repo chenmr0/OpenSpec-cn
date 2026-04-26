@@ -137,7 +137,7 @@ export function generateSkillContent(
 name: ${template.name}
 description: ${template.description}
 license: ${template.license || 'MIT'}
-compatibility: ${template.compatibility || '需要 openspec-cn CLI。'}
+compatibility: ${template.compatibility || '需要 opensdd CLI。'}
 metadata:
   author: ${template.metadata?.author || 'openspec'}
   version: "${template.metadata?.version || '1.0'}"

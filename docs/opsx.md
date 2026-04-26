@@ -59,13 +59,13 @@ OPSX 现在是 OpenSpec 的标准工作流。
 ## 设置
 
 ```bash
-# 确保已安装 openspec-cn — 技能会自动生成
-openspec-cn init
+# 确保已安装 opensdd — 技能会自动生成
+opensdd init
 ```
 
 这会在 `.claude/skills/`（或等效目录）中创建技能，AI 编码助手会自动检测这些技能。
 
-默认情况下，OpenSpec 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `openspec-cn config profile` 进行配置，然后运行 `openspec-cn update` 应用。
+默认情况下，OpenSpec 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `opensdd config profile` 进行配置，然后运行 `opensdd update` 应用。
 
 在设置过程中，系统会提示你创建**项目配置**（`openspec/config.yaml`）。这是可选的，但建议创建。
 
@@ -75,7 +75,7 @@ openspec-cn init
 
 ### 创建配置
 
-配置在 `openspec-cn init` 期间创建，或手动创建：
+配置在 `opensdd init` 期间创建，或手动创建：
 
 ```yaml
 # openspec/config.yaml
@@ -142,7 +142,7 @@ rules:
 
 **"规则中有未知的制品 ID：X"**
 - 检查制品 ID 是否与你的模式匹配（参见上面的列表）
-- 运行 `openspec-cn schemas --json` 查看每个模式的制品 ID
+- 运行 `opensdd schemas --json` 查看每个模式的制品 ID
 
 **配置未生效：**
 - 确保文件位于 `openspec/config.yaml`（不是 `.yml`）
@@ -490,7 +490,7 @@ rules:
   ┌──────────────────────────────────────────────────────────────────────────┐
   │  步骤 1：查询当前状态                                                       │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ openspec-cn status --change "add-auth" --json                   │  │
+  │  │  $ opensdd status --change "add-auth" --json                   │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "artifacts": [                                                  │  │
@@ -504,7 +504,7 @@ rules:
   │                                                                          │
   │  步骤 2：获取就绪制品的丰富指令                                               │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ openspec-cn instructions specs --change "add-auth" --json       │  │
+  │  │  $ opensdd instructions specs --change "add-auth" --json       │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "template": "# Specification\n\n## ADDED Requirements...",      │  │
@@ -564,16 +564,16 @@ rules:
 
 ```bash
 # 从零开始创建新模式（交互式）
-openspec-cn schema init my-workflow
+opensdd schema init my-workflow
 
 # 或分叉现有模式作为起点
-openspec-cn schema fork spec-driven my-workflow
+opensdd schema fork spec-driven my-workflow
 
 # 验证模式结构
-openspec-cn schema validate my-workflow
+opensdd schema validate my-workflow
 
 # 查看模式的解析位置（对调试有用）
-openspec-cn schema which my-workflow
+opensdd schema which my-workflow
 ```
 
 模式存储在 `openspec/schemas/`（项目本地，版本控制）或 `~/.local/share/openspec/schemas/`（用户全局）。
@@ -629,19 +629,19 @@ artifacts:
 
 ```bash
 # 列出可用模式
-openspec-cn schemas
+opensdd schemas
 
 # 查看所有模式及其解析来源
-openspec-cn schema which --all
+opensdd schema which --all
 
 # 交互式创建新模式
-openspec-cn schema init my-workflow
+opensdd schema init my-workflow
 
 # 分叉现有模式以进行定制
-openspec-cn schema fork spec-driven my-workflow
+opensdd schema fork spec-driven my-workflow
 
 # 使用前验证模式结构
-openspec-cn schema validate my-workflow
+opensdd schema validate my-workflow
 ```
 
 ## 技巧
@@ -650,7 +650,7 @@ openspec-cn schema validate my-workflow
 - 当你知道想要什么时使用 `/opsx:ff`，探索时使用 `/opsx:continue`
 - 在 `/opsx:apply` 期间，如果有问题——修复制品，然后继续
 - 任务通过 `tasks.md` 中的复选框跟踪进度
-- 随时检查状态：`openspec-cn status --change "name"`
+- 随时检查状态：`opensdd status --change "name"`
 
 ## 反馈
 

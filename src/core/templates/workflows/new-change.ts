@@ -31,20 +31,20 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 
    **仅当用户提到以下内容时才使用不同的模式：**
    - 特定模式名称 → 使用 \`--schema <name>\`
-   - "显示工作流" 或 "有哪些工作流" → 运行 \`openspec-cn schemas --json\` 并让他们选择
+   - "显示工作流" 或 "有哪些工作流" → 运行 \`opensdd schemas --json\` 并让他们选择
 
    **否则**：省略 \`--schema\` 以使用默认值。
 
 3. **创建变更目录**
    \`\`\`bash
-   openspec-cn new change "<name>"
+   opensdd new change "<name>"
    \`\`\`
    仅当用户请求特定工作流时才添加 \`--schema <name>\`。
    这将在 \`openspec/changes/<name>/\` 下使用所选 Schema 创建一个脚手架变更。
 
 4. **显示产出物状态**
    \`\`\`bash
-   openspec-cn status --change "<name>"
+   opensdd status --change "<name>"
    \`\`\`
    这会显示哪些产出物需要创建，以及哪些已就绪（依赖项已满足）。
 
@@ -52,7 +52,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    第一个产出物取决于所使用的 Schema（例如：spec-driven 通常先生成 \`proposal\`）。
    检查 status 输出，找到第一个状态为 "ready" 的产出物。
    \`\`\`bash
-   openspec-cn instructions <first-artifact-id> --change "<name>"
+   opensdd instructions <first-artifact-id> --change "<name>"
    \`\`\`
    这会输出创建第一个产出物所需的模板和上下文。
 
@@ -75,7 +75,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
 - 如果同名变更已存在，建议继续处理该变更
 - 如果使用非默认工作流，请传递 --schema`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -107,27 +107,27 @@ export function getOpsxNewCommandTemplate(): CommandTemplate {
 
    **仅当用户提到以下内容时才使用不同的模式：**
    - 特定模式名称 → 使用 \`--schema <name>\`
-   - "显示工作流" 或 "有哪些工作流" → 运行 \`openspec-cn schemas --json\` 并让他们选择
+   - "显示工作流" 或 "有哪些工作流" → 运行 \`opensdd schemas --json\` 并让他们选择
 
    **否则**：省略 \`--schema\` 以使用默认值。
 
 3. **创建变更目录**
    \`\`\`bash
-   openspec-cn new change "<name>"
+   opensdd new change "<name>"
    \`\`\`
    仅当用户请求特定工作流时才添加 \`--schema <name>\`。
    这将在 \`openspec/changes/<name>/\` 下使用所选 Schema 创建一个脚手架变更。
 
 4. **显示产出物状态**
    \`\`\`bash
-   openspec-cn status --change "<name>"
+   opensdd status --change "<name>"
    \`\`\`
    这会显示哪些产出物需要创建，以及哪些已就绪（依赖项已满足）。
 
 5. **获取第一个产出物的指令**
    第一个产出物取决于 Schema。检查状态输出，找到第一个状态为 "ready" 的产出物。
    \`\`\`bash
-   openspec-cn instructions <first-artifact-id> --change "<name>"
+   opensdd instructions <first-artifact-id> --change "<name>"
    \`\`\`
    这会输出创建第一个产出物所需的模板和上下文。
 

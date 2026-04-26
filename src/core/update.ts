@@ -85,7 +85,7 @@ export class UpdateCommand {
 
     // 1. Check openspec directory exists
     if (!await FileSystemUtils.directoryExists(openspecPath)) {
-      throw new Error(`未找到OpenSpec目录。请先运行 'openspec-cn init'。`);
+      throw new Error(`未找到OpenSpec目录。请先运行 'opensdd init'。`);
     }
 
     // 2. Perform one-time migration if needed before any legacy upgrade generation.
@@ -116,7 +116,7 @@ export class UpdateCommand {
 
     if (configuredTools.length === 0 && newlyConfiguredTools.length === 0) {
       console.log(chalk.yellow('未找到配置的工具。'));
-      console.log(chalk.dim('运行 "openspec-cn init" 来设置工具。'));
+      console.log(chalk.dim('运行 "opensdd init" 来设置工具。'));
       return;
     }
 
@@ -272,7 +272,7 @@ export class UpdateCommand {
       console.log('  /opsx:continue  创建下一个产出物');
       console.log('  /opsx:apply     实施任务');
       console.log();
-      console.log(`了解更多: ${chalk.cyan('https://github.com/studyzy/OpenSpec-cn')}`);
+      console.log(`了解更多: ${chalk.cyan('https://github.com/studyzy/OpenSDD')}`);
     }
 
     const configuredAndNewTools = [...new Set([...configuredTools, ...newlyConfiguredTools])];
@@ -345,7 +345,7 @@ export class UpdateCommand {
       console.log();
       console.log(
         chalk.yellow(
-          `检测到新的${toolNoun}：${newToolNames.join(', ')}。运行 'openspec-cn init' 以添加${isSingleTool ? '它' : '它们'}。`
+          `检测到新的${toolNoun}：${newToolNames.join(', ')}。运行 'opensdd init' 以添加${isSingleTool ? '它' : '它们'}。`
         )
       );
     }
@@ -364,7 +364,7 @@ export class UpdateCommand {
     const extraWorkflows = installedWorkflows.filter((w) => !profileSet.has(w));
 
     if (extraWorkflows.length > 0) {
-      console.log(chalk.dim(`注意：有 ${extraWorkflows.length} 个额外工作流不在当前配置文件中（使用 \`openspec-cn config profile\` 管理）`));
+      console.log(chalk.dim(`注意：有 ${extraWorkflows.length} 个额外工作流不在当前配置文件中（使用 \`opensdd config profile\` 管理）`));
     }
   }
 

@@ -35,7 +35,7 @@ const COMMON_FLAGS = {
 export const COMMAND_REGISTRY: CommandDefinition[] = [
   {
     name: 'init',
-    description: '在您的项目中初始化 OpenSpec',
+    description: '在您的项目中初始化 OpenSDD',
     acceptsPositional: true,
     positionalType: 'path',
     flags: [
@@ -48,7 +48,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'update',
-    description: '更新 OpenSpec 指令文件',
+    description: '更新 OpenSDD 指令文件',
     acceptsPositional: true,
     positionalType: 'path',
     flags: [],

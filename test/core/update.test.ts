@@ -77,7 +77,7 @@ describe('UpdateCommand', () => {
       });
 
       await expect(updateCommand.execute(testDir)).rejects.toThrow(
-        "未找到OpenSpec目录。请先运行 'openspec-cn init'。"
+        "未找到OpenSpec目录。请先运行 'opensdd init'。"
       );
     });
 
@@ -106,7 +106,7 @@ describe('UpdateCommand', () => {
 name: openspec-explore (old)
 description: Old description
 license: MIT
-compatibility: 需要 openspec-cn CLI。
+compatibility: 需要 opensdd CLI。
 metadata:
   author: openspec
   version: "0.9"
@@ -1659,7 +1659,7 @@ content
       expect(consolidatedCalls).toHaveLength(1);
       expect(consolidatedCalls[0]).toContain('GitHub Copilot');
       expect(consolidatedCalls[0]).toContain('Windsurf');
-      expect(consolidatedCalls[0]).toContain("openspec-cn init");
+      expect(consolidatedCalls[0]).toContain("opensdd init");
 
       const repeatedSingularCalls = calls.filter(call =>
         call.includes('Detected new tool:')

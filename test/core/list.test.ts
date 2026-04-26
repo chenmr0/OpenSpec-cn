@@ -35,7 +35,7 @@ describe('ListCommand', () => {
       const listCommand = new ListCommand();
       
       await expect(listCommand.execute(tempDir, 'changes')).rejects.toThrow(
-        "未找到OpenSpec更改目录。请先运行 'openspec-cn init'。"
+        "未找到OpenSpec更改目录。请先运行 'opensdd init'。"
       );
     });
 

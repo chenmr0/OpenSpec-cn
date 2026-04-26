@@ -37,7 +37,7 @@ describe('change validate (interactive behavior)', () => {
       expect(err).toBeDefined();
       expect(err.status).not.toBe(0);
       expect(err.stderr.toString()).toContain('可用ID：');
-      expect(err.stderr.toString()).toContain('openspec-cn list');
+      expect(err.stderr.toString()).toContain('opensdd list');
     } finally {
       process.chdir(originalCwd);
       process.env = originalEnv;

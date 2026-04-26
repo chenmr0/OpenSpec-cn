@@ -75,7 +75,7 @@ export class ViewCommand {
     }
 
     console.log('\n' + '═'.repeat(60));
-    console.log(chalk.dim(`\n使用 ${chalk.white('openspec-cn list --changes')} 或 ${chalk.white('openspec-cn list --specs')} 查看详细信息`));
+    console.log(chalk.dim(`\n使用 ${chalk.white('opensdd list --changes')} 或 ${chalk.white('opensdd list --specs')} 查看详细信息`));
   }
 
   private async getChangesData(openspecDir: string): Promise<{

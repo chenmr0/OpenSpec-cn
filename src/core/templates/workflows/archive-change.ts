@@ -18,7 +18,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    仅显示活动变更（未归档的）。
    如果可用，包括每个变更使用的 Schema。
@@ -27,7 +27,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 2. **检查产出物完成状态**
 
-   运行 \`openspec-cn status --change "<name>" --json\` 检查产出物完成情况。
+   运行 \`opensdd status --change "<name>" --json\` 检查产出物完成情况。
 
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema
@@ -107,14 +107,14 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 **防护措施**
 - 如果未提供变更，始终提示选择
-- 使用产出物图（openspec-cn status --json）进行完成度检查
+- 使用产出物图（opensdd status --json）进行完成度检查
 - 不要在警告时阻止归档 - 只需告知并确认
 - 移动到归档时保留 .openspec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要
 - 如果请求同步，使用 openspec-sync-specs 方法（代理驱动）
 - 如果存在增量规格说明，始终运行同步评估并在提示前显示综合摘要`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -133,7 +133,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    仅显示活动变更（未归档的）。
    如果可用，包括每个变更使用的 Schema。
@@ -142,7 +142,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 2. **检查产出物完成状态**
 
-   运行 \`openspec-cn status --change "<name>" --json\` 检查产出物完成情况。
+   运行 \`opensdd status --change "<name>" --json\` 检查产出物完成情况。
 
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema
@@ -269,7 +269,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 **防护措施**
 - 如果未提供变更，始终提示选择
-- 使用产出物图（openspec-cn status --json）进行完成度检查
+- 使用产出物图（opensdd status --json）进行完成度检查
 - 不要在警告时阻止归档 - 只需告知并确认
 - 移动到归档时保留 .openspec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要

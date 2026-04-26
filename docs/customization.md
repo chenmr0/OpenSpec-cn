@@ -21,7 +21,7 @@ OpenSpec 提供三个级别的自定义：
 ### 快速设置
 
 ```bash
-openspec-cn init
+opensdd init
 ```
 
 这会引导你交互式创建配置。或者手动创建一个：
@@ -51,10 +51,10 @@ rules:
 
 ```bash
 # 无配置
-openspec-cn new change my-feature --schema spec-driven
+opensdd new change my-feature --schema spec-driven
 
 # 有配置 - 模式自动应用
-openspec-cn new change my-feature
+opensdd new change my-feature
 ```
 
 **上下文和规则注入：**
@@ -112,7 +112,7 @@ your-project/
 自定义的最快方法是派生内置模式：
 
 ```bash
-openspec-cn schema fork spec-driven my-workflow
+opensdd schema fork spec-driven my-workflow
 ```
 
 这将整个 `spec-driven` 模式复制到 `openspec/schemas/my-workflow/`，你可以在那里自由编辑。
@@ -137,10 +137,10 @@ openspec/schemas/my-workflow/
 
 ```bash
 # 交互式
-openspec-cn schema init research-first
+opensdd schema init research-first
 
 # 非交互式
-openspec-cn schema init rapid \
+opensdd schema init rapid \
   --description "快速迭代工作流" \
   --artifacts "proposal,tasks" \
   --default
@@ -226,7 +226,7 @@ apply:
 在使用自定义 schema 之前，先验证它：
 
 ```bash
-openspec-cn schema validate my-workflow
+opensdd schema validate my-workflow
 ```
 
 这会检查：
@@ -241,7 +241,7 @@ openspec-cn schema validate my-workflow
 
 ```bash
 # 在命令上指定
-openspec-cn new change feature --schema my-workflow
+opensdd new change feature --schema my-workflow
 
 # 或者在 config.yaml 中设为默认值
 schema: my-workflow
@@ -253,10 +253,10 @@ schema: my-workflow
 
 ```bash
 # 查看特定 schema 的解析来源
-openspec-cn schema which my-workflow
+opensdd schema which my-workflow
 
 # 列出所有可用 schema
-openspec-cn schema which --all
+opensdd schema which --all
 ```
 
 输出显示它来自你的项目、用户目录还是包：
@@ -311,7 +311,7 @@ apply:
 派生默认配置并添加审查步骤：
 
 ```bash
-openspec-cn schema fork spec-driven with-review
+opensdd schema fork spec-driven with-review
 ```
 
 然后编辑 `schema.yaml` 添加：

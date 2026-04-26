@@ -45,8 +45,8 @@ export function getFeedbackSkillTemplate(): SkillTemplate {
    - 允许用户要求修改
 
 5. **确认后提交**
-   - 使用 \`openspec-cn feedback\` 命令进行提交
-   - 格式：\`openspec-cn feedback "标题" --body "正文内容"\`
+   - 使用 \`opensdd feedback\` 命令进行提交
+   - 格式：\`opensdd feedback "标题" --body "正文内容"\`
    - 该命令将自动添加元数据（版本、平台、时间戳）
 
 **草案示例**
@@ -107,7 +107,7 @@ export function getFeedbackSkillTemplate(): SkillTemplate {
 
 只有在用户确认后才继续提交。`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }

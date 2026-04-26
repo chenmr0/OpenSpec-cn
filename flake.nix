@@ -73,10 +73,10 @@
 
             meta = with pkgs.lib; {
               description = "AI-native system for spec-driven development";
-              homepage = "https://github.com/studyzy/OpenSpec-cn";
+              homepage = "https://github.com/studyzy/OpenSDD";
               license = licenses.mit;
               maintainers = [ ];
-              mainProgram = "openspec-cn";
+              mainProgram = "opensdd";
             };
           });
         }
@@ -85,7 +85,7 @@
       apps = forAllSystems (system: {
         default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/openspec-cn";
+          program = "${self.packages.${system}.default}/bin/opensdd";
         };
       });
 

@@ -706,18 +706,16 @@ export class InitCommand {
       console.log(chalk.bold('开始使用：'));
       console.log('  开始您的第一个变更：/opsx:new "您的想法"');
     } else {
-      console.log("完成。运行 'openspec-cn config profile' 配置您的工作流程。");
+      console.log("完成。运行 'opensdd config profile' 配置您的工作流程。");
     }
 
     // Links
     console.log();
-    console.log(`了解更多：${chalk.cyan('https://github.com/studyzy/OpenSpec-cn')}`);
-    console.log(`反馈：   ${chalk.cyan('https://github.com/studyzy/OpenSpec-cn/issues')}`);
 
     // Restart instruction if any tools were configured
     if (results.createdTools.length > 0 || results.refreshedTools.length > 0) {
       console.log();
-      console.log(chalk.white('重启您的 IDE 以使斜杠命令生效。'));
+      console.log(chalk.white('重启您的 AgentCli 以使斜杠命令生效。'));
     }
 
     console.log();

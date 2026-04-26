@@ -32,7 +32,7 @@ async function createTempGlobalConfig(baseDir: string): Promise<{ XDG_CONFIG_HOM
 }
 
 async function prepareFixture(fixtureName: string): Promise<string> {
-  const base = await fs.mkdtemp(path.join(tmpdir(), 'openspec-cn-cli-e2e-'));
+  const base = await fs.mkdtemp(path.join(tmpdir(), 'opensdd-cli-e2e-'));
   tempRoots.push(base);
   const projectDir = path.join(base, 'project');
   await fs.mkdir(projectDir, { recursive: true });
@@ -55,7 +55,7 @@ describe('openspec CLI e2e basics', () => {
   it('shows help output', async () => {
     const result = await runCLI(['--help']);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain('Usage: openspec-cn');
+    expect(result.stdout).toContain('Usage: opensdd');
     expect(result.stderr).toBe('');
 
   });

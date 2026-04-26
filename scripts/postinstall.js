@@ -70,7 +70,7 @@ async function main() {
     }
 
     // Completions are opt-in — just print a hint
-    console.log(`\n提示：运行 'openspec-cn completion install' 以安装 shell 补全`);
+    console.log(`\n提示：运行 'opensdd completion install' 以安装 shell 补全`);
   } catch (error) {
     // Fail gracefully - never break npm install
   }

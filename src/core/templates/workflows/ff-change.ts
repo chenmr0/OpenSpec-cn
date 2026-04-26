@@ -27,13 +27,13 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
 
 2. **创建变更目录**
    \`\`\`bash
-   openspec-cn new change "<name>"
+   opensdd new change "<name>"
    \`\`\`
    这将在 \`openspec/changes/<name>/\` 创建一个脚手架变更。
 
 3. **获取产出物构建顺序**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以获取：
    - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["tasks"]\`）
@@ -48,7 +48,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
    a. **对于每个 \`ready\`（依赖项已满足）的产出物**：
       - 获取指令：
         \`\`\`bash
-        openspec-cn instructions <artifact-id> --change "<name>" --json
+        opensdd instructions <artifact-id> --change "<name>" --json
         \`\`\`
       - 指令 JSON 包括：
         - \`context\`：项目背景（对你的约束 - 不要包含在输出中）
@@ -63,7 +63,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
       - 显示简短进度："✓ 已创建 <artifact-id>"
 
    b. **继续直到所有 \`applyRequires\` 产出物完成**
-      - 创建每个产出物后，重新运行 \`openspec-cn status --change "<name>" --json\`
+      - 创建每个产出物后，重新运行 \`opensdd status --change "<name>" --json\`
       - 检查 \`applyRequires\` 中的每个产出物 ID 在 artifacts 数组中是否具有 \`status: "done"\`
       - 当所有 \`applyRequires\` 产出物完成时停止
 
@@ -73,7 +73,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
 
 5. **显示最终状态**
    \`\`\`bash
-   openspec-cn status --change "<name>"
+   opensdd status --change "<name>"
    \`\`\`
 
 **输出**
@@ -86,7 +86,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
 
 **产出物创建指南**
 
-- 遵循每个产出物类型的 \`openspec-cn instructions\` 中的 \`instruction\` 字段
+- 遵循每个产出物类型的 \`opensdd instructions\` 中的 \`instruction\` 字段
 - Schema 定义了每个产出物应包含的内容，遵循它
 - 在创建新产出物之前阅读依赖产出物以获取上下文
 - 使用 \`template\` 作为输出文件的结构 - 填充其各个部分
@@ -101,7 +101,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
 - 如果同名变更已存在，建议继续处理该变更
 - 在继续下一个之前，验证写入后每个产出物文件是否存在`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -129,13 +129,13 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
 
 2. **创建变更目录**
    \`\`\`bash
-   openspec-cn new change "<name>"
+   opensdd new change "<name>"
    \`\`\`
    这将在 \`openspec/changes/<name>/\` 创建一个脚手架变更。
 
 3. **获取产出物构建顺序**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以获取：
    - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["tasks"]\`）
@@ -150,7 +150,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
    a. **对于每个 \`ready\`（依赖项已满足）的产出物**：
       - 获取指令：
         \`\`\`bash
-        openspec-cn instructions <artifact-id> --change "<name>" --json
+        opensdd instructions <artifact-id> --change "<name>" --json
         \`\`\`
       - 指令 JSON 包括：
         - \`context\`：项目背景（对你的约束 - 不要包含在输出中）
@@ -165,7 +165,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
       - 显示简短进度："✓ 已创建 <artifact-id>"
 
    b. **继续直到所有 \`applyRequires\` 产出物完成**
-      - 创建每个产出物后，重新运行 \`openspec-cn status --change "<name>" --json\`
+      - 创建每个产出物后，重新运行 \`opensdd status --change "<name>" --json\`
       - 检查 \`applyRequires\` 中的每个产出物 ID 在 artifacts 数组中是否具有 \`status: "done"\`
       - 当所有 \`applyRequires\` 产出物完成时停止
 
@@ -175,7 +175,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
 
 5. **显示最终状态**
    \`\`\`bash
-   openspec-cn status --change "<name>"
+   opensdd status --change "<name>"
    \`\`\`
 
 **输出**
@@ -188,7 +188,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
 
 **产出物创建指南**
 
-- 遵循每个产出物类型的 \`openspec-cn instructions\` 中的 \`instruction\` 字段
+- 遵循每个产出物类型的 \`opensdd instructions\` 中的 \`instruction\` 字段
 - Schema 定义了每个产出物应包含的内容，遵循它
 - 在创建新产出物之前阅读依赖产出物以获取上下文
 - 使用 \`template\` 作为起点，根据上下文填写

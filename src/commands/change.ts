@@ -44,7 +44,7 @@ export class ChangeCommand {
         } else {
           console.error(`未指定变更。可用ID：${changes.join(', ')}`);
         }
-        console.error('提示：使用 "openspec-cn change list" 查看可用变更。');
+        console.error('提示：使用 "opensdd change list" 查看可用变更。');
         process.exitCode = 1;
         return;
       }
@@ -201,7 +201,7 @@ export class ChangeCommand {
         } else {
           console.error(`未指定变更。可用ID：${changes.join(', ')}`);
         }
-        console.error('提示：使用 "openspec-cn change list" 查看可用变更。');
+        console.error('提示：使用 "opensdd change list" 查看可用变更。');
         process.exitCode = 1;
         return;
       }
@@ -285,7 +285,7 @@ export class ChangeCommand {
     const bullets: string[] = [];
     bullets.push('- 确保变更在specs/中有增量：使用标题## 新增|修改|移除|重命名需求');
     bullets.push('- 每个需求必须至少包含一个#### 场景:块');
-    bullets.push('- 调试解析的增量：openspec-cn change show <id> --json --deltas-only');
+    bullets.push('- 调试解析的增量：opensdd change show <id> --json --deltas-only');
     console.error('后续步骤：');
     bullets.forEach(b => console.error(`  ${b}`));
   }

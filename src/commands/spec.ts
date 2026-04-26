@@ -115,7 +115,7 @@ export function registerSpecCommand(rootProgram: typeof program) {
 
   // Deprecation notice for noun-based commands
   specCommand.hook('preAction', () => {
-    console.error('警告："openspec-cn spec ..." 命令已弃用。请使用动词开头的命令（例如："openspec-cn show"、"openspec-cn validate --specs"）。');
+    console.error('警告："opensdd spec ..." 命令已弃用。请使用动词开头的命令（例如："opensdd show"、"opensdd validate --specs"）。');
   });
 
   specCommand

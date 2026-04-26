@@ -1,4 +1,4 @@
-# @studyzy/openspec-cn
+# @studyzy/opensdd
 
 ## 1.3.1
 
@@ -107,7 +107,7 @@
 
 ### 重大变更
 
-- [#578](https://github.com/Fission-AI/OpenSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/OpenSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) 感谢 [@TabishB](https://github.com/TabishB)！- ## OpenSpec-cn 1.0 —— OPSX 版本
+- [#578](https://github.com/Fission-AI/OpenSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/OpenSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) 感谢 [@TabishB](https://github.com/TabishB)！- ## OpenSDD 1.0 —— OPSX 版本
 
   工作流已从底层彻底重构。OPSX 用基于动作的系统取代了旧的阶段锁定式 `/openspec:*` 命令，AI 现在能够理解已有的工件、可创建的内容，以及每个动作会解锁什么。
 
@@ -209,7 +209,7 @@
 
   **新功能**
 
-  - **项目级配置** — 可通过 `openspec/config.yaml` 为每个项目配置 OpenSpec-cn 行为，包括自定义规则注入、上下文文件和 schema 解析设置
+  - **项目级配置** — 可通过 `openspec/config.yaml` 为每个项目配置 OpenSDD 行为，包括自定义规则注入、上下文文件和 schema 解析设置
   - **项目本地 schema** — 可在项目的 `openspec/schemas/` 目录中定义项目专属的工件 schema
   - **schema 管理命令** — 新增 `openspec schema` 命令（`list`、`show`、`export`、`validate`），用于查看和管理工件 schema（实验性）
 
@@ -226,7 +226,7 @@
   **新功能**
 
   - **反馈命令** — 可直接通过 CLI 使用 `openspec feedback` 提交反馈；该命令会自动附带元数据创建 GitHub Issue，并在失败时优雅回退为手动提交方式
-  - **Nix flake 支持** — 可通过新的 `flake.nix` 使用 Nix 安装和开发 OpenSpec-cn，并支持自动化 flake 维护与 CI 校验
+  - **Nix flake 支持** — 可通过新的 `flake.nix` 使用 Nix 安装和开发 OpenSDD，并支持自动化 flake 维护与 CI 校验
 
   **问题修复**
 
@@ -261,7 +261,7 @@
 
   **新功能**
 
-  - **支持 Continue IDE** – OpenSpec-cn 现在可为 [Continue](https://continue.dev/) 生成斜杠命令，与 Cursor、Windsurf、Claude Code 等一起扩展编辑器集成选项
+  - **支持 Continue IDE** – OpenSDD 现在可为 [Continue](https://continue.dev/) 生成斜杠命令，与 Cursor、Windsurf、Claude Code 等一起扩展编辑器集成选项
   - **支持 Bash、Fish 和 PowerShell 的 shell 补全** – 运行 `openspec completion install` 即可在你偏好的 shell 中启用 Tab 补全
   - **`/opsx:explore` 命令** – 新增一个“思考伙伴”模式，用于在正式提交变更之前探索想法和调查问题
   - **Codebuddy 斜杠命令改进** – 更新 frontmatter 格式以提升兼容性
@@ -273,7 +273,7 @@
 
   **其他**
 
-  - 新增可选的匿名使用统计，用于帮助了解 OpenSpec-cn 的使用情况。该功能默认**需要手动关闭**——设置 `OPENSPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 可禁用。仅收集命令名和版本号，不收集参数、文件路径或内容，并会在 CI 环境中自动禁用。
+  - 新增可选的匿名使用统计，用于帮助了解 OpenSDD 的使用情况。该功能默认**需要手动关闭**——设置 `OPENSPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 可禁用。仅收集命令名和版本号，不收集参数、文件路径或内容，并会在 CI 环境中自动禁用。
 
 ## 0.18.0
 
@@ -438,7 +438,7 @@
 
 ### 次要变更
 
-- 312e1d6：新增 Amazon Q Developer CLI 集成。OpenSpec-cn 现已支持 Amazon Q Developer，可自动在 `.amazonq/prompts/` 目录中生成提示词，使你能够通过 Amazon Q 的 `@` 语法使用 OpenSpec-cn 的斜杠命令。
+- 312e1d6：新增 Amazon Q Developer CLI 集成。OpenSDD 现已支持 Amazon Q Developer，可自动在 `.amazonq/prompts/` 目录中生成提示词，使你能够通过 Amazon Q 的 `@` 语法使用 OpenSDD 的斜杠命令。
 
 ## 0.10.0
 
@@ -450,13 +450,13 @@
 
 ### 补丁变更
 
-- 2ae0484：修复跨平台路径处理问题。本次发布修复了 `joinPath` 行为与斜杠命令路径解析，以确保 OpenSpec-cn 能在所有平台上正确运行。
+- 2ae0484：修复跨平台路径处理问题。本次发布修复了 `joinPath` 行为与斜杠命令路径解析，以确保 OpenSDD 能在所有平台上正确运行。
 
 ## 0.9.1
 
 ### 补丁变更
 
-- 8210970：修复选择 Codex 集成时 OpenSpec-cn 在 Windows 上无法运行的问题。本次发布包含跨平台路径处理和规范化修复，以确保 OpenSpec-cn 在 Windows 系统中正确工作。
+- 8210970：修复选择 Codex 集成时 OpenSDD 在 Windows 上无法运行的问题。本次发布包含跨平台路径处理和规范化修复，以确保 OpenSDD 在 Windows 系统中正确工作。
 
 ## 0.9.0
 
@@ -468,7 +468,7 @@
 
 ### 次要变更
 
-- 新增 GitHub Copilot 斜杠命令支持。OpenSpec-cn 现在会将提示词写入 `.github/prompts/openspec-{proposal,apply,archive}.prompt.md`，并使用 YAML frontmatter 与 `$ARGUMENTS` 占位符，同时在 `openspec update` 时刷新这些文件。
+- 新增 GitHub Copilot 斜杠命令支持。OpenSDD 现在会将提示词写入 `.github/prompts/openspec-{proposal,apply,archive}.prompt.md`，并使用 YAML frontmatter 与 `$ARGUMENTS` 占位符，同时在 `openspec update` 时刷新这些文件。
 
 ## 0.8.1
 
@@ -481,7 +481,7 @@
 ### 次要变更
 
 - c29b06d：新增 Windsurf 支持。
-- 新增 Codex 斜杠命令支持。OpenSpec-cn 现在会直接将提示词写入 Codex 的全局目录（`~/.codex/prompts` 或 `$CODEX_HOME/prompts`），并在 `openspec update` 时刷新它们。
+- 新增 Codex 斜杠命令支持。OpenSDD 现在会直接将提示词写入 Codex 的全局目录（`~/.codex/prompts` 或 `$CODEX_HOME/prompts`），并在 `openspec update` 时刷新它们。
 
 ## 0.7.0
 
@@ -524,7 +524,7 @@
 
 ### 次要变更
 
-- 新增 OpenSpec-cn 变更提案，以改进 CLI 和提升用户体验
+- 新增 OpenSDD 变更提案，以改进 CLI 和提升用户体验
 - 新增 Opencode 斜杠命令支持，用于 AI 驱动的开发工作流
 
 ### 补丁变更

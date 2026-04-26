@@ -18,7 +18,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有实现任务的变更（存在任务产出物）。
    如果可用，包括每个变更使用的 Schema。
@@ -28,7 +28,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -37,7 +37,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 3. **获取变更目录并加载产出物**
 
    \`\`\`bash
-   openspec-cn instructions apply --change "<name>" --json
+   opensdd instructions apply --change "<name>" --json
    \`\`\`
 
    这会返回变更目录和 \`contextFiles\`（产出物 ID -> 具体文件路径数组）。从 \`contextFiles\` 读取所有可用产出物。
@@ -168,7 +168,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 - 具体的、可操作的建议
 - 不要使用模糊的建议，如 "考虑审查"`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -187,7 +187,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`openspec-cn list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有实现任务的变更（存在任务产出物）。
    如果可用，包括每个变更使用的 Schema。
@@ -197,7 +197,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -206,7 +206,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 3. **获取变更目录并加载产出物**
 
    \`\`\`bash
-   openspec-cn instructions apply --change "<name>" --json
+   opensdd instructions apply --change "<name>" --json
    \`\`\`
 
    这会返回变更目录和 \`contextFiles\`（产出物 ID -> 具体文件路径数组）。从 \`contextFiles\` 读取所有可用产出物。

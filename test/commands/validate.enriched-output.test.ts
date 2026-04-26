@@ -39,7 +39,7 @@ describe('validate command enriched human output', () => {
       expect(code).not.toBe(0);
       expect(stderr).toContain('存在问题');
       expect(stderr).toContain('后续步骤：');
-      expect(stderr).toContain('openspec-cn change show');
+      expect(stderr).toContain('opensdd change show');
     } finally {
       process.chdir(originalCwd);
     }

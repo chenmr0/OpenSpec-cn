@@ -101,7 +101,7 @@ export class BashInstaller {
    */
   private generateBashrcConfig(completionsDir: string): string {
     return [
-      '# OpenSpec-cn shell 补全配置',
+      '# OpenSDD shell 补全配置',
       `if [ -d "${completionsDir}" ]; then`,
       `  for f in "${completionsDir}"/*; do`,
       '    [ -f "$f" ] && . "$f"',
@@ -314,7 +314,7 @@ export class BashInstaller {
       '',
       '如需启用补全，请在您的 ~/.bashrc 文件中添加以下内容：',
       '',
-      `  # 加载 OpenSpec-cn 补全`,
+      `  # 加载 OpenSDD 补全`,
       `  if [ -d "${completionsDir}" ]; then`,
       `    for f in "${completionsDir}"/*; do`,
       '      [ -f "$f" ] && . "$f"',

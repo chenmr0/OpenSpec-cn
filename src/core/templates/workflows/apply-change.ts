@@ -21,13 +21,13 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 \`openspec-cn list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
+   - 如果不明确，运行 \`opensdd list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
 
    始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/opsx:apply <other>\`）。
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -36,7 +36,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 3. **获取应用指令**
 
    \`\`\`bash
-   openspec-cn instructions apply --change "<name>" --json
+   opensdd instructions apply --change "<name>" --json
    \`\`\`
 
    这返回：
@@ -156,7 +156,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 - **可以随时调用**：在所有产出物完成之前（如果存在任务），部分实现之后，与其他操作交错
 - **允许产出物更新**：如果实现揭示了设计问题，建议更新产出物 - 不是阶段锁定的，流畅地工作`,
     license: 'MIT',
-    compatibility: '需要 openspec-cn CLI。',
+    compatibility: '需要 opensdd CLI。',
     metadata: { author: 'openspec', version: '1.0' },
   };
 }
@@ -178,13 +178,13 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 \`openspec-cn list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
+   - 如果不明确，运行 \`opensdd list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
 
    始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/opsx:apply <other>\`）。
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   openspec-cn status --change "<name>" --json
+   opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -193,7 +193,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 3. **获取应用指令**
 
    \`\`\`bash
-   openspec-cn instructions apply --change "<name>" --json
+   opensdd instructions apply --change "<name>" --json
    \`\`\`
 
    这返回：

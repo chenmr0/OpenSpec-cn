@@ -154,7 +154,7 @@ describe('artifact-workflow CLI commands', () => {
       const result = await runCLI(['status'], { cwd: tempDir });
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('没有活跃的变更');
-      expect(result.stdout).toContain('openspec-cn new change');
+      expect(result.stdout).toContain('opensdd new change');
     });
 
     it('exits gracefully with JSON when no changes exist', async () => {

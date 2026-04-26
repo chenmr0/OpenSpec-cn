@@ -64,7 +64,7 @@ nix profile install github:Fission-AI/OpenSpec
 ## 验证安装
 
 ```bash
-openspec-cn --version
+opensdd --version
 ```
 
 ## 下一步
@@ -73,7 +73,7 @@ openspec-cn --version
 
 ```bash
 cd your-project
-openspec-cn init
+opensdd init
 ```
 
 完整流程请参见 [快速上手](getting-started.md)。

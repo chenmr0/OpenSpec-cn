@@ -49,8 +49,8 @@ OPSX（流畅行动）：
 如果你需要显式的脚手架与构建命令（`/opsx:new`、`/opsx:continue`、`/opsx:ff`、`/opsx:verify`、`/opsx:sync`、`/opsx:bulk-archive`、`/opsx:onboard`），可以通过以下方式启用：
 
 ```bash
-openspec-cn config profile
-openspec-cn update
+opensdd config profile
+opensdd update
 ```
 
 ## 工作流模式（扩展模式）
@@ -413,7 +413,7 @@ AI：正在验证 add-dark-mode...
 
 ### 清晰命名变更
 
-好命名会让 `openspec-cn list` 更好用：
+好命名会让 `opensdd list` 更好用：
 
 ```text
 好的：                         避免：

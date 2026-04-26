@@ -108,7 +108,7 @@ export class ZshInstaller {
    */
   private generateZshrcConfig(completionsDir: string): string {
     return [
-      '# OpenSpec-cn shell 补全配置',
+      '# OpenSDD shell 补全配置',
       `fpath=("${completionsDir}" $fpath)`,
       'autoload -Uz compinit',
       'compinit',
@@ -441,7 +441,7 @@ export class ZshInstaller {
         messages.push(`已从 ${targetPath} 移除补全脚本`);
       }
       if (zshrcCleaned && !isOhMyZsh) {
-        messages.push('已从 ~/.zshrc 移除 OpenSpec-cn 配置');
+        messages.push('已从 ~/.zshrc 移除 OpenSDD 配置');
       }
 
       return {

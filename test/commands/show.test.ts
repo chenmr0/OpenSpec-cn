@@ -42,9 +42,9 @@ describe('top-level show command', () => {
       expect(err.status).not.toBe(0);
       const stderr = err.stderr.toString();
       expect(stderr).toContain('没有可显示的内容');
-      expect(stderr).toContain('openspec-cn show <item>');
-      expect(stderr).toContain('openspec-cn change show');
-      expect(stderr).toContain('openspec-cn spec show');
+      expect(stderr).toContain('opensdd show <item>');
+      expect(stderr).toContain('opensdd change show');
+      expect(stderr).toContain('opensdd spec show');
     } finally {
       process.chdir(originalCwd);
       process.env = originalEnv;

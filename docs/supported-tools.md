@@ -1,6 +1,6 @@
 # 支持的工具
 
-OpenSpec 兼容多种 AI 编程助手。运行 `openspec-cn init` 时，OpenSpec 会根据你当前的配置文件/工作流选择和交付方式来配置所选工具。
+OpenSpec 兼容多种 AI 编程助手。运行 `opensdd init` 时，OpenSpec 会根据你当前的配置文件/工作流选择和交付方式来配置所选工具。
 
 ## 工作原理
 
@@ -15,7 +15,7 @@ OpenSpec 兼容多种 AI 编程助手。运行 `openspec-cn init` 时，OpenSpec
 - `apply`
 - `archive`
 
-你可以通过 `openspec-cn config profile` 启用扩展工作流（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），然后运行 `openspec-cn update`。
+你可以通过 `opensdd config profile` 启用扩展工作流（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），然后运行 `opensdd update`。
 
 ## 工具目录参考
 
@@ -60,16 +60,16 @@ OpenSpec 兼容多种 AI 编程助手。运行 `openspec-cn init` 时，OpenSpec
 
 ```bash
 # 配置特定工具
-openspec-cn init --tools claude,cursor
+opensdd init --tools claude,cursor
 
 # 配置所有支持的工具
-openspec-cn init --tools all
+opensdd init --tools all
 
 # 跳过工具配置
-openspec-cn init --tools none
+opensdd init --tools none
 
 # 覆盖此次运行的配置文件
-openspec-cn init --profile core
+opensdd init --profile core
 ```
 
 **可用工具 ID（`--tools`）：** `amazon-q`, `antigravity`, `auggie`, `bob`, `claude`, `cline`, `codex`, `codebuddy`, `continue`, `costrict`, `crush`, `cursor`, `factory`, `forgecode`, `gemini`, `github-copilot`, `iflow`, `junie`, `kilocode`, `kiro`, `lingma`, `opencode`, `pi`, `qoder`, `qwen`, `roocode`, `trae`, `windsurf`

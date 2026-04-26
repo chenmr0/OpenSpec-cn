@@ -104,7 +104,7 @@ context: |
 
 ```bash
 # 检查指令 - 应该显示您的语言上下文
-openspec-cn instructions proposal --change my-change
+opensdd instructions proposal --change my-change
 
 # 输出将包含您的语言上下文
 ```
