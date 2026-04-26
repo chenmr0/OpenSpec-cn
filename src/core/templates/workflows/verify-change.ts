@@ -54,7 +54,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 5. **验证完整性**
 
    **任务完成情况**：
-   - 如果 \`contextFiles.tasks\` 存在，读取其中的每个文件路径
+   - 如果 \`contextFiles.plan\` 存在，读取其中的每个文件路径
    - 解析复选框：\`- [ ]\`（未完成）vs \`- [x]\`（已完成）
    - 统计已完成 vs 总任务数
    - 如果存在未完成的任务：
@@ -154,7 +154,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
 **优雅降级**
 
-- 如果只存在 tasks.md：仅验证任务完成情况，跳过规范/设计检查
+- 如果只存在 plan.md：仅验证任务完成情况，跳过规范/设计检查
 - 如果存在任务 + 规范：验证完整性和正确性，跳过设计
 - 如果存在完整产出物：验证所有三个维度
 - 始终注明跳过了哪些检查以及原因
@@ -223,7 +223,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 5. **验证完整性**
 
    **任务完成情况**：
-   - 如果 \`contextFiles.tasks\` 存在，读取其中的每个文件路径
+   - 如果 \`contextFiles.plan\` 存在，读取其中的每个文件路径
    - 解析复选框：\`- [ ]\`（未完成）vs \`- [x]\`（已完成）
    - 统计已完成 vs 总任务数
    - 如果存在未完成的任务：
@@ -323,7 +323,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 
 **优雅降级**
 
-- 如果只存在 tasks.md：仅验证任务完成情况，跳过规范/设计检查
+- 如果只存在 plan.md：仅验证任务完成情况，跳过规范/设计检查
 - 如果存在任务 + 规范：验证完整性和正确性，跳过设计
 - 如果存在完整产出物：验证所有三个维度
 - 始终注明跳过了哪些检查以及原因

@@ -106,7 +106,7 @@ opensdd list --json
 1. **阅读现有产出物以获取上下文**
    - \`openspec/changes/<name>/proposal.md\`
    - \`openspec/changes/<name>/design.md\`
-   - \`openspec/changes/<name>/tasks.md\`
+   - \`openspec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -121,7 +121,7 @@ opensdd list --json
     | 需求变更        | \`specs/<capability>/spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`proposal.md\`                |
-    | 识别出新工作        | \`tasks.md\`                   |
+    | 识别出新工作        | \`plan.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：
@@ -405,7 +405,7 @@ opensdd list --json
 1. **阅读现有产出物以获取上下文**
    - \`openspec/changes/<name>/proposal.md\`
    - \`openspec/changes/<name>/design.md\`
-   - \`openspec/changes/<name>/tasks.md\`
+   - \`openspec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -420,7 +420,7 @@ opensdd list --json
     | 需求变更        | \`specs/<capability>/spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`proposal.md\`                |
-    | 识别出新工作        | \`tasks.md\`                   |
+    | 识别出新工作        | \`plan.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：

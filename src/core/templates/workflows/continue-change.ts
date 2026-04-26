@@ -98,12 +98,12 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 
 常见的产出物模式：
 
-**spec-driven Schema**（proposal → specs → design → tasks）：
-- **proposal.md**：如果变更不清楚，先向用户确认。填写“为什么”“变更内容”“功能”“影响”。
-  - "功能"部分很关键——列出的每个功能都需要一个 spec 文件。
-- **specs/<capability>/spec.md**：为提案"功能"部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
+**spec-driven Schema**（proposal → specs → design → plan）：
+- **proposal.md**：如果变更不清楚，先向用户确认。填写”为什么””变更内容””功能””影响”。
+  - “功能”部分很关键——列出的每个功能都需要一个 spec 文件。
+- **specs/<capability>/spec.md**：为提案”功能”部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
 - **design.md**：记录技术决策、系统设计和实现方法。
-- **tasks.md**：把实现拆分为带复选框的任务。
+- **plan.md**：把实现拆分为带复选框的任务。
 
 对于其他 Schema，遵循 CLI 输出中的 \`instruction\` 字段。
 
@@ -217,12 +217,12 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 
 常见的产出物模式：
 
-**spec-driven Schema**（proposal → specs → design → tasks）：
-- **proposal.md**：如果变更不清楚，先向用户确认。填写“为什么”“变更内容”“功能”“影响”。
-  - "功能"部分很关键——列出的每个功能都需要一个 spec 文件。
-- **specs/<capability>/spec.md**：为提案"功能"部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
+**spec-driven Schema**（proposal → specs → design → plan）：
+- **proposal.md**：如果变更不清楚，先向用户确认。填写”为什么””变更内容””功能””影响”。
+  - “功能”部分很关键——列出的每个功能都需要一个 spec 文件。
+- **specs/<capability>/spec.md**：为提案”功能”部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
 - **design.md**：记录技术决策、系统设计和实现方法。
-- **tasks.md**：把实现拆分为带复选框的任务。
+- **plan.md**：把实现拆分为带复选框的任务。
 
 对于其他 Schema，遵循 CLI 输出中的 \`instruction\` 字段。
 

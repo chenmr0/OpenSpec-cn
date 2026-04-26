@@ -41,7 +41,7 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 
-   b. **任务完成度** - 读取 \`openspec/changes/<name>/tasks.md\`
+   b. **任务完成度** - 读取 \`openspec/changes/<name>/plan.md\`
       - 统计 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）
       - 如果不存在任务文件，标注为"无任务"
 
@@ -288,7 +288,7 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 
-   b. **任务完成度** - 读取 \`openspec/changes/<name>/tasks.md\`
+   b. **任务完成度** - 读取 \`openspec/changes/<name>/plan.md\`
       - 统计 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）
       - 如果不存在任务文件，标注为"无任务"
 

@@ -36,7 +36,7 @@ export function getFfChangeSkillTemplate(): SkillTemplate {
    opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以获取：
-   - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["tasks"]\`）
+   - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["plan"]\`）
    - \`artifacts\`: 所有产出物及其状态和依赖项的列表
 
 4. **按顺序创建产出物直到准备好应用**
@@ -138,7 +138,7 @@ export function getOpsxFfCommandTemplate(): CommandTemplate {
    opensdd status --change "<name>" --json
    \`\`\`
    解析 JSON 以获取：
-   - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["tasks"]\`）
+   - \`applyRequires\`: 实现前所需的产出物 ID 数组（例如：\`["plan"]\`）
    - \`artifacts\`: 所有产出物及其状态和依赖项的列表
 
 4. **按顺序创建产出物直到准备好应用**

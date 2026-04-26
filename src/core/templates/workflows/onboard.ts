@@ -53,7 +53,7 @@ opensdd --version 2>&1 || echo "未安装 CLI"
 1. 在您的代码库中选择一个小的真实任务
 2. 简要探索问题
 3. 创建一个变更（我们工作的容器）
-4. 构建产出物：提案 → 规格说明 → 设计 → 任务
+4. 构建产出物：提案 → 规格说明 → 设计 → 计划
 5. 实现任务
 6. 归档完成的变更
 
@@ -196,7 +196,7 @@ openspec/changes/<name>/
 ├── proposal.md    ← 为什么我们要做这个（空，我们将填充它）
 ├── design.md      ← 我们将如何构建它（空）
 ├── specs/         ← 详细需求（空）
-└── tasks.md       ← 实现检查清单（空）
+└── plan.md        ← 实现检查清单（空）
 \`\`\`
 
 现在让我们填充第一个产出物——提案。
@@ -390,7 +390,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 
 **暂停** - 等待用户确认他们准备好实现。
 
-保存到 \`openspec/changes/<name>/tasks.md\`。
+保存到 \`openspec/changes/<name>/plan.md\`。
 
 ---
 
@@ -408,7 +408,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 1. 宣布："正在处理任务N：[描述]"
 2. 在代码库中实现变更
 3. 自然地引用规格说明/设计："规格说明说X，所以我做Y"
-4. 在 tasks.md 中标记完成：\`- [ ]\` → \`- [x]\`
+4. 在 plan.md 中标记完成：\`- [ ]\` → \`- [x]\`
 5. 简要状态："✓ 任务N完成"
 
 保持叙述轻量——不要过度解释每一行代码。

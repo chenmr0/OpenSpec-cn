@@ -277,10 +277,10 @@ const DEFAULT_ARTIFACTS: Array<{
     template: 'design.md',
   },
   {
-    id: 'tasks',
+    id: 'plan',
     description: '包含可追踪任务的实施清单',
-    generates: 'tasks.md',
-    template: 'tasks.md',
+    generates: 'plan.md',
+    template: 'plan.md',
   },
 ];
 
@@ -667,7 +667,7 @@ export function registerSchemaCommand(program: Command): void {
     .description('创建一个新的项目本地 Schema')
     .option('--json', '以 JSON 格式输出')
     .option('--description <text>', 'Schema 描述')
-    .option('--artifacts <list>', '逗号分隔的 Artifact ID (proposal,specs,design,tasks)')
+    .option('--artifacts <list>', '逗号分隔的 Artifact ID (proposal,specs,design,plan)')
     .option('--default', '设为项目默认 Schema')
     .option('--no-default', '不提示设为默认')
     .option('--force', '覆盖现有 Schema')
@@ -820,7 +820,7 @@ export function registerSchemaCommand(program: Command): void {
             artifact.requires = ['proposal'];
           } else if (id === 'design' && selectedArtifactIds.includes('specs')) {
             artifact.requires = ['specs'];
-          } else if (id === 'tasks') {
+          } else if (id === 'plan') {
             const requires: string[] = [];
             if (selectedArtifactIds.includes('design')) requires.push('design');
             else if (selectedArtifactIds.includes('specs')) requires.push('specs');
@@ -838,11 +838,11 @@ export function registerSchemaCommand(program: Command): void {
           artifacts: selectedArtifacts,
         };
 
-        // Add apply phase if tasks is included
-        if (selectedArtifactIds.includes('tasks')) {
+        // Add apply phase if plan is included
+        if (selectedArtifactIds.includes('plan')) {
           schema.apply = {
-            requires: ['tasks'],
-            tracks: 'tasks.md',
+            requires: ['plan'],
+            tracks: 'plan.md',
           };
         }
 
@@ -988,7 +988,7 @@ function createDefaultTemplate(artifactId: string): string {
 <!-- 列出风险和权衡 -->
 `;
 
-    case 'tasks':
+    case 'plan':
       return `## 实施任务
 
 - [ ] 任务 1

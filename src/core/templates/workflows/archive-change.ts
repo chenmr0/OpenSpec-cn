@@ -40,7 +40,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 3. **检查任务完成状态**
 
-   阅读任务文件（通常是 \`tasks.md\`）以检查未完成的任务。
+   阅读任务文件（通常是 \`plan.md\`）以检查未完成的任务。
 
    统计标记为 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）的任务。
 
@@ -155,7 +155,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 3. **检查任务完成状态**
 
-   阅读任务文件（通常是 \`tasks.md\`）以检查未完成的任务。
+   阅读任务文件（通常是 \`plan.md\`）以检查未完成的任务。
 
    统计标记为 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）的任务。
 

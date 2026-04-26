@@ -18,7 +18,7 @@ rules:
     - Requirements involving paths must specify cross-platform behavior
     - Be explicit about mechanisms, not just outcomes (say HOW, not just WHAT)
     - If we generate artifacts, specify deletion/modification by explicit list lookup, not pattern matching
-  tasks:
+  plan:
     - Add Windows CI verification as a task when changes involve file paths
     - Include cross-platform testing considerations
   design:

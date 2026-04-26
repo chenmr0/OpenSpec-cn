@@ -213,7 +213,7 @@ export function printInstructionsText(instructions: ArtifactInstructions, isBloc
 // -----------------------------------------------------------------------------
 
 /**
- * Parses tasks.md content and extracts task items with their completion status.
+ * Parses plan.md content and extracts task items with their completion status.
  */
 function parseTasksFile(content: string): TaskItem[] {
   const tasks: TaskItem[] = [];

@@ -31,7 +31,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
-   - 哪个产出物包含任务（对于 spec-driven 通常是 "tasks"，检查其他产出物的状态）
+   - 哪个产出物包含任务（对于 spec-driven 通常是 "plan"，检查其他产出物的状态）
 
 3. **获取应用指令**
 
@@ -40,7 +40,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
    \`\`\`
 
    这返回：
-   - \`contextFiles\`：产出物 ID -> 具体文件路径数组（因 Schema 而异，可能是 proposal/specs/design/tasks 或 spec/tests/implementation/docs）
+   - \`contextFiles\`：产出物 ID -> 具体文件路径数组（因 Schema 而异，可能是 proposal/specs/design/plan 或 spec/tests/implementation/docs）
    - 进度（总计、完成、剩余）
    - 带有状态的任务列表
    - 基于当前状态的动态指令
@@ -54,7 +54,7 @@ export function getApplyChangeSkillTemplate(): SkillTemplate {
 
    阅读 apply instructions 输出中 \`contextFiles\` 列出的每个文件路径。
    文件取决于正在使用的 Schema：
-   - **spec-driven**: proposal, specs, design, tasks
+   - **spec-driven**: proposal, specs, design, plan
    - 其他模式：遵循 CLI 输出中的 contextFiles
 
 5. **显示当前进度**
@@ -188,7 +188,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
-   - 哪个产出物包含任务（对于 spec-driven 通常是 "tasks"，检查其他产出物的状态）
+   - 哪个产出物包含任务（对于 spec-driven 通常是 "plan"，检查其他产出物的状态）
 
 3. **获取应用指令**
 
@@ -211,7 +211,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 
    阅读 apply instructions 输出中 \`contextFiles\` 列出的每个文件路径。
    文件取决于正在使用的 Schema：
-   - **spec-driven**: proposal, specs, design, tasks
+   - **spec-driven**: proposal, specs, design, plan
    - 其他模式：遵循 CLI 输出中的 contextFiles
 
 5. **显示当前进度**

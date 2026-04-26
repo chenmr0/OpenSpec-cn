@@ -103,7 +103,7 @@ export class ChangeCommand {
       const changeDetails = await Promise.all(
         changes.map(async (changeName) => {
           const proposalPath = path.join(changesPath, changeName, 'proposal.md');
-          const tasksPath = path.join(changesPath, changeName, 'tasks.md');
+          const tasksPath = path.join(changesPath, changeName, 'plan.md');
           
           try {
             const content = await fs.readFile(proposalPath, 'utf-8');
@@ -156,7 +156,7 @@ export class ChangeCommand {
       // Long format: id: title and minimal counts
       for (const changeName of sorted) {
         const proposalPath = path.join(changesPath, changeName, 'proposal.md');
-        const tasksPath = path.join(changesPath, changeName, 'tasks.md');
+        const tasksPath = path.join(changesPath, changeName, 'plan.md');
         try {
           const content = await fs.readFile(proposalPath, 'utf-8');
           const title = this.extractTitle(content, changeName);
