@@ -2,27 +2,30 @@
  * OpenCode Command Adapter
  *
  * Formats commands for OpenCode following its frontmatter specification.
+ * Commands are placed under .opencode/commands/sdd/ so they appear as
+ * `/sdd/<id>` in the OpenCode UI.
  */
 
 import path from 'path';
 import type { CommandContent, ToolCommandAdapter } from '../types.js';
-import { transformToHyphenCommands } from '../../../utils/command-references.js';
+import { transformToOpenCodeCommands, OPENCODE_COMMAND_MAP } from '../../../utils/command-references.js';
 
 /**
  * OpenCode adapter for command generation.
- * File path: .opencode/commands/opsx-<id>.md
+ * File path: .opencode/commands/sdd/<id>.md
  * Frontmatter: description
  */
 export const opencodeAdapter: ToolCommandAdapter = {
   toolId: 'opencode',
 
   getFilePath(commandId: string): string {
-    return path.join('.opencode', 'commands', `opsx-${commandId}.md`);
+    const slug = OPENCODE_COMMAND_MAP[commandId] ?? commandId;
+    return path.join('.opencode', 'commands', 'sdd', `${slug}.md`);
   },
 
   formatFile(content: CommandContent): string {
-    // Transform command references from colon to hyphen format for OpenCode
-    const transformedBody = transformToHyphenCommands(content.body);
+    // Transform command references from /opsx:xxx or /opsx-xxx to /sdd/<mapped>
+    const transformedBody = transformToOpenCodeCommands(content.body);
 
     return `---
 description: ${content.description}
