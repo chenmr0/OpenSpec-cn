@@ -415,7 +415,7 @@ artifacts:
     requires: []              # 无依赖，可首先创建
 
   - id: specs
-    generates: specs/**/*.md
+    generates: spec.md
     requires: [proposal]      # 需要提案后才能创建
 
   - id: design

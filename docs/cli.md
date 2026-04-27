@@ -320,7 +320,7 @@ opensdd validate --all --strict --concurrency 12
 ```
 正在验证 add-dark-mode...
   ✓ proposal.md 有效
-  ✓ specs/ui/spec.md 有效
+  ✓ spec.md 有效
   ⚠ design.md: 缺少 "Technical Approach" 部分
 
 发现 1 个警告
@@ -456,7 +456,7 @@ opensdd status --change add-dark-mode --json
   "artifacts": [
     {"id": "proposal", "outputPath": "proposal.md", "status": "done"},
     {"id": "design", "outputPath": "design.md", "status": "ready"},
-    {"id": "specs", "outputPath": "specs/**/*.md", "status": "done"},
+    {"id": "specs", "outputPath": "spec.md", "status": "done"},
     {"id": "tasks", "outputPath": "tasks.md", "status": "blocked", "missingDeps": ["design"]}
   ]
 }

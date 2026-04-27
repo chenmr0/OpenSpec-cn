@@ -267,8 +267,8 @@ const DEFAULT_ARTIFACTS: Array<{
   {
     id: 'specs',
     description: '包含需求和场景的详细规格说明',
-    generates: 'specs/**/*.md',
-    template: 'specs/spec.md',
+    generates: 'spec.md',
+    template: 'spec.md',
   },
   {
     id: 'design',

@@ -397,7 +397,7 @@ rules:
 │   │      generates: proposal.md                                         │   │
 │   │      requires: []              ◄── 依赖关系                          │   │
 │   │    - id: specs                                                      │   │
-│   │      generates: specs/**/*.md  ◄── Glob 模式                        │   │
+│   │      generates: spec.md  ◄── 规范文件                        │   │
 │   │      requires: [proposal]      ◄── 提案后启用                        │   │
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                    │                                                        │
@@ -471,7 +471,7 @@ rules:
   │  • 创建 proposal.md                     │
   │  • 创建 tasks.md                        │
   │  • 创建 design.md                       │
-  │  • 创建 specs/<capability>/spec.md      │
+  │  • 创建 spec.md                          │
   │                                         │
   │  不感知已存在的内容或                      │
   │  制品之间的依赖关系                        │

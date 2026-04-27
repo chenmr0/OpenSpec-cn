@@ -101,7 +101,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 **spec-driven Schema**（proposal → specs → design → plan）：
 - **proposal.md**：如果变更不清楚，先向用户确认。填写”为什么””变更内容””功能””影响”。
   - “功能”部分很关键——列出的每个功能都需要一个 spec 文件。
-- **specs/<capability>/spec.md**：为提案”功能”部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
+- **spec.md**：将所有需求规范写入单个文件，按能力分区组织。
 - **design.md**：记录技术决策、系统设计和实现方法。
 - **plan.md**：把实现拆分为带复选框的任务。
 
@@ -220,7 +220,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 **spec-driven Schema**（proposal → specs → design → plan）：
 - **proposal.md**：如果变更不清楚，先向用户确认。填写”为什么””变更内容””功能””影响”。
   - “功能”部分很关键——列出的每个功能都需要一个 spec 文件。
-- **specs/<capability>/spec.md**：为提案”功能”部分列出的每个功能创建一个 spec（使用 capability 名称，而不是 change 名称）。
+- **spec.md**：将所有需求规范写入单个文件，按能力分区组织。
 - **design.md**：记录技术决策、系统设计和实现方法。
 - **plan.md**：把实现拆分为带复选框的任务。
 

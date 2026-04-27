@@ -192,7 +192,7 @@ apply:
 | 字段 | 目的 |
 |-------|---------|
 | `id` | 唯一标识符，用于命令和规则 |
-| `generates` | 输出文件名（支持通配符如 `specs/**/*.md`） |
+| `generates` | 输出文件名（支持通配符如 `spec.md`） |
 | `template` | `templates/` 目录中的模板文件 |
 | `instruction` | AI 创建此制品的指令 |
 | `requires` | 依赖项 - 哪些制品必须先存在 |

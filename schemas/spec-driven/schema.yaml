@@ -15,7 +15,7 @@ artifacts:
     requires: []
 
   - id: specs
-    generates: "specs/**/*.md"
+    generates: spec.md
     description: 包含 WHEN/THEN 场景的需求规范
     template: spec.md
     instruction: |
@@ -23,9 +23,7 @@ artifacts:
 
       基于头脑风暴阶段探索和批准的设计，提取每个能力的 WHEN/THEN 场景。
 
-      为提案中列出的每个功能创建一个规范文件：
-      - 新增功能：使用精确的 kebab-case 名称（specs/<capability>/spec.md）。
-      - 修改功能：使用项目目录中原有的规范文件夹名称。
+      将所有需求规范写入 spec.md 文件，按能力分区组织。
 
       增量操作（使用 ## 标题）：
       - **ADDED Requirements**: 新功能

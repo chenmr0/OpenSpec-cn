@@ -307,7 +307,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 这种格式——当/那么/并且——使需求可测试。您可以将它们字面地读作测试用例。
 \`\`\`
 
-保存到 \`openspec/changes/<name>/specs/<capability>/spec.md\`。
+保存到 \`openspec/changes/<name>/spec.md\`。
 
 ---
 

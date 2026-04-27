@@ -117,8 +117,8 @@ opensdd list --json
 
     | 见解类型 | 捕获位置               |
     |----------------------------|--------------------------------|
-    | 发现新需求 | \`specs/<capability>/spec.md\` |
-    | 需求变更        | \`specs/<capability>/spec.md\` |
+    | 发现新需求 | \`spec.md\` |
+    | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`proposal.md\`                |
     | 识别出新工作        | \`plan.md\`                   |
@@ -416,8 +416,8 @@ opensdd list --json
 
     | 见解类型 | 捕获位置               |
     |----------------------------|--------------------------------|
-    | 发现新需求 | \`specs/<capability>/spec.md\` |
-    | 需求变更        | \`specs/<capability>/spec.md\` |
+    | 发现新需求 | \`spec.md\` |
+    | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`proposal.md\`                |
     | 识别出新工作        | \`plan.md\`                   |
