@@ -5,17 +5,13 @@
  */
 
 import {
-  getExploreSkillTemplate,
   getNewChangeSkillTemplate,
   getContinueChangeSkillTemplate,
-  getApplyChangeSkillTemplate,
   getFfChangeSkillTemplate,
   getSyncSpecsSkillTemplate,
-  getArchiveChangeSkillTemplate,
   getBulkArchiveChangeSkillTemplate,
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
-  getOpsxProposeSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
   getOpsxContinueCommandTemplate,
@@ -29,7 +25,17 @@ import {
   getOpsxProposeCommandTemplate,
   type SkillTemplate,
 } from '../templates/skill-templates.js';
+import { getWritingPlansSkillTemplate } from '../templates/external/writing-plans.js';
+import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import type { CommandContent } from '../command-generation/index.js';
+
+/**
+ * Extra file to write alongside SKILL.md in a skill directory.
+ */
+export interface SkillExtraFile {
+  filename: string;
+  content: string;
+}
 
 /**
  * Skill template with directory name and workflow ID mapping.
@@ -38,6 +44,8 @@ export interface SkillTemplateEntry {
   template: SkillTemplate;
   dirName: string;
   workflowId: string;
+  /** Additional files to write into the skill directory (e.g. reference docs). */
+  extraFiles?: SkillExtraFile[];
 }
 
 /**
@@ -54,18 +62,15 @@ export interface CommandTemplateEntry {
  * @param workflowFilter - If provided, only return templates whose workflowId is in this array
  */
 export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemplateEntry[] {
+  // Core workflows (explore, apply, archive, propose) only generate commands, not skills.
   const all: SkillTemplateEntry[] = [
-    { template: getExploreSkillTemplate(), dirName: 'openspec-explore', workflowId: 'explore' },
     { template: getNewChangeSkillTemplate(), dirName: 'openspec-new-change', workflowId: 'new' },
     { template: getContinueChangeSkillTemplate(), dirName: 'openspec-continue-change', workflowId: 'continue' },
-    { template: getApplyChangeSkillTemplate(), dirName: 'openspec-apply-change', workflowId: 'apply' },
     { template: getFfChangeSkillTemplate(), dirName: 'openspec-ff-change', workflowId: 'ff' },
     { template: getSyncSpecsSkillTemplate(), dirName: 'openspec-sync-specs', workflowId: 'sync' },
-    { template: getArchiveChangeSkillTemplate(), dirName: 'openspec-archive-change', workflowId: 'archive' },
     { template: getBulkArchiveChangeSkillTemplate(), dirName: 'openspec-bulk-archive-change', workflowId: 'bulk-archive' },
     { template: getVerifyChangeSkillTemplate(), dirName: 'openspec-verify-change', workflowId: 'verify' },
     { template: getOnboardSkillTemplate(), dirName: 'openspec-onboard', workflowId: 'onboard' },
-    { template: getOpsxProposeSkillTemplate(), dirName: 'openspec-propose', workflowId: 'propose' },
   ];
 
   if (!workflowFilter) return all;
@@ -146,4 +151,22 @@ metadata:
 
 ${instructions}
 `;
+}
+
+/**
+ * External skills that are always installed during init, regardless of profile.
+ * These are not tied to any workflow and come from external sources (e.g. superpowers-cn).
+ */
+export function getExternalSkillTemplates(): SkillTemplateEntry[] {
+  return [
+    { template: getWritingPlansSkillTemplate(), dirName: 'writing-plans', workflowId: '_external' },
+    {
+      template: getTestDrivenDevelopmentSkillTemplate(),
+      dirName: 'test-driven-development',
+      workflowId: '_external',
+      extraFiles: [
+        { filename: 'testing-anti-patterns.md', content: testingAntiPatternsContent },
+      ],
+    },
+  ];
 }

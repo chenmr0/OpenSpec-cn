@@ -7,3 +7,7 @@
 
 // Re-export all skill templates and related types through the compatibility facade.
 export * from './skill-templates.js';
+
+// External skills (always installed, not workflow-bound)
+export { getWritingPlansSkillTemplate } from './external/writing-plans.js';
+export { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from './external/test-driven-development.js';

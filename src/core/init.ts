@@ -37,6 +37,7 @@ import {
   getToolSkillStatus,
   getToolStates,
   getSkillTemplates,
+  getExternalSkillTemplates,
   getCommandContents,
   generateSkillContent,
   type ToolSkillStatus,
@@ -61,17 +62,15 @@ const PROGRESS_SPINNER = {
 };
 
 const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
-  'explore': 'openspec-explore',
   'new': 'openspec-new-change',
   'continue': 'openspec-continue-change',
-  'apply': 'openspec-apply-change',
   'ff': 'openspec-ff-change',
   'sync': 'openspec-sync-specs',
-  'archive': 'openspec-archive-change',
   'bulk-archive': 'openspec-bulk-archive-change',
   'verify': 'openspec-verify-change',
   'onboard': 'openspec-onboard',
-  'propose': 'openspec-propose',
+  '_external:writing-plans': 'writing-plans',
+  '_external:test-driven-development': 'test-driven-development',
 };
 
 // -----------------------------------------------------------------------------
@@ -517,6 +516,8 @@ export class InitCommand {
     const shouldGenerateSkills = delivery !== 'commands';
     const shouldGenerateCommands = delivery !== 'skills';
     const skillTemplates = shouldGenerateSkills ? getSkillTemplates(workflows) : [];
+    // External skills are always installed regardless of profile/delivery
+    const externalSkillTemplates = getExternalSkillTemplates();
     const commandContents = shouldGenerateCommands ? getCommandContents(workflows) : [];
 
     // Process each tool
@@ -529,7 +530,7 @@ export class InitCommand {
           // Use tool-specific skillsDir
           const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
 
-          // Create skill directories and SKILL.md files
+          // Create workflow skill directories and SKILL.md files
           for (const { template, dirName } of skillTemplates) {
             const skillDir = path.join(skillsDir, dirName);
             const skillFile = path.join(skillDir, 'SKILL.md');
@@ -541,6 +542,25 @@ export class InitCommand {
 
             // Write the skill file
             await FileSystemUtils.writeFile(skillFile, skillContent);
+          }
+
+          // Always create external skills (writing-plans, test-driven-development, etc.)
+          for (const { template, dirName, extraFiles } of externalSkillTemplates) {
+            const skillDir = path.join(skillsDir, dirName);
+            const skillFile = path.join(skillDir, 'SKILL.md');
+
+            const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
+            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+
+            await FileSystemUtils.writeFile(skillFile, skillContent);
+
+            // Write extra files (e.g. testing-anti-patterns.md)
+            if (extraFiles) {
+              for (const extra of extraFiles) {
+                const extraFile = path.join(skillDir, extra.filename);
+                await FileSystemUtils.writeFile(extraFile, extra.content);
+              }
+            }
           }
         }
         if (!shouldGenerateSkills) {
@@ -654,7 +674,7 @@ export class InitCommand {
       const delivery: Delivery = globalConfig.delivery ?? 'both';
       const workflows = getProfileWorkflows(profile, globalConfig.workflows);
       const toolDirs = [...new Set(successfulTools.map((t) => t.skillsDir))].join(', ');
-      const skillCount = delivery !== 'commands' ? getSkillTemplates(workflows).length : 0;
+      const skillCount = delivery !== 'commands' ? getSkillTemplates(workflows).length + getExternalSkillTemplates().length : 0;
       const commandCount = delivery !== 'skills' ? getCommandContents(workflows).length : 0;
       if (skillCount > 0 && commandCount > 0) {
         console.log(`${skillCount} 个技能和 ${commandCount} 个命令在 ${toolDirs}/ 中`);

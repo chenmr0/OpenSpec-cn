@@ -22,8 +22,10 @@ export {
 
 export {
   type SkillTemplateEntry,
+  type SkillExtraFile,
   type CommandTemplateEntry,
   getSkillTemplates,
+  getExternalSkillTemplates,
   getCommandTemplates,
   getCommandContents,
   generateSkillContent,
