@@ -71,6 +71,7 @@ const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
   'onboard': 'openspec-onboard',
   '_external:writing-plans': 'writing-plans',
   '_external:test-driven-development': 'test-driven-development',
+  '_external:subagent-driven-development': 'subagent-driven-development',
 };
 
 // -----------------------------------------------------------------------------

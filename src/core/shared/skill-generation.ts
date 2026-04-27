@@ -27,6 +27,7 @@ import {
 } from '../templates/skill-templates.js';
 import { getWritingPlansSkillTemplate } from '../templates/external/writing-plans.js';
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
+import { getSubagentDrivenDevelopmentSkillTemplate, implementerPromptContent, specReviewerPromptContent, codeQualityReviewerPromptContent } from '../templates/external/subagent-driven-development.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -166,6 +167,16 @@ export function getExternalSkillTemplates(): SkillTemplateEntry[] {
       workflowId: '_external',
       extraFiles: [
         { filename: 'testing-anti-patterns.md', content: testingAntiPatternsContent },
+      ],
+    },
+    {
+      template: getSubagentDrivenDevelopmentSkillTemplate(),
+      dirName: 'subagent-driven-development',
+      workflowId: '_external',
+      extraFiles: [
+        { filename: 'implementer-prompt.md', content: implementerPromptContent },
+        { filename: 'spec-reviewer-prompt.md', content: specReviewerPromptContent },
+        { filename: 'code-quality-reviewer-prompt.md', content: codeQualityReviewerPromptContent },
       ],
     },
   ];
