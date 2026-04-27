@@ -701,10 +701,10 @@ export class InitCommand {
     console.log();
     if (activeWorkflows.includes('propose')) {
       console.log(chalk.bold('开始使用：'));
-      console.log('  开始您的第一个变更：/opsx:propose "您的想法"');
+      console.log('  开始您的第一个变更：/sdd/propose "您的想法"');
     } else if (activeWorkflows.includes('new')) {
       console.log(chalk.bold('开始使用：'));
-      console.log('  开始您的第一个变更：/opsx:new "您的想法"');
+      console.log('  开始您的第一个变更：/sdd/propose "您的想法"');
     } else {
       console.log("完成。运行 'opensdd config profile' 配置您的工作流程。");
     }
