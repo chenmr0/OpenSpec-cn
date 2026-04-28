@@ -8,12 +8,12 @@ export async function getActiveChangeIds(root: string = process.cwd()): Promise<
     const result: string[] = [];
     for (const entry of entries) {
       if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === 'archive') continue;
-      const proposalPath = path.join(changesPath, entry.name, 'proposal.md');
+      const metaPath = path.join(changesPath, entry.name, '.openspec.yaml');
       try {
-        await fs.access(proposalPath);
+        await fs.access(metaPath);
         result.push(entry.name);
       } catch {
-        // skip directories without proposal.md
+        // skip directories without .openspec.yaml
       }
     }
     return result.sort();
@@ -50,12 +50,12 @@ export async function getArchivedChangeIds(root: string = process.cwd()): Promis
     const result: string[] = [];
     for (const entry of entries) {
       if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
-      const proposalPath = path.join(archivePath, entry.name, 'proposal.md');
+      const metaPath = path.join(archivePath, entry.name, '.openspec.yaml');
       try {
-        await fs.access(proposalPath);
+        await fs.access(metaPath);
         result.push(entry.name);
       } catch {
-        // skip directories without proposal.md
+        // skip directories without .openspec.yaml
       }
     }
     return result.sort();

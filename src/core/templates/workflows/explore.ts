@@ -104,14 +104,14 @@ opensdd list --json
 如果用户提到变更或你检测到相关变更：
 
 1. **阅读现有产出物以获取上下文**
-   - \`openspec/changes/<name>/proposal.md\`
+   - \`openspec/changes/<name>/spec.md\`
    - \`openspec/changes/<name>/design.md\`
    - \`openspec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
    - "你的设计提到使用 Redis，但我们刚刚意识到 SQLite 更合适……"
-   - "提案将此范围限定为高级用户，但我们现在考虑面向所有人……"
+   - "规范将此范围限定为高级用户，但我们现在考虑面向所有人……"
 
 3. **当做出决定时提议捕获**
 
@@ -120,14 +120,14 @@ opensdd list --json
     | 发现新需求 | \`spec.md\` |
     | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
-    | 范围变更              | \`proposal.md\`                |
+    | 范围变更              | \`spec.md\`                |
     | 识别出新工作        | \`plan.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：
    - "这是一个设计决策。要把它记录在 design.md 中吗？"
    - "这是一个新需求。要把它添加到 specs 中吗？"
-   - "这改变了范围。要更新 proposal 吗？"
+   - "这改变了范围。要更新 spec 吗？"
 
 4. **由用户决定** - 提议并继续。不要施压。不要自动捕获。
 
@@ -403,14 +403,14 @@ opensdd list --json
 如果用户提到变更或你检测到相关变更：
 
 1. **阅读现有产出物以获取上下文**
-   - \`openspec/changes/<name>/proposal.md\`
+   - \`openspec/changes/<name>/spec.md\`
    - \`openspec/changes/<name>/design.md\`
    - \`openspec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
    - "你的设计提到使用 Redis，但我们刚刚意识到 SQLite 更合适……"
-   - "提案将此范围限定为高级用户，但我们现在考虑面向所有人……"
+   - "规范将此范围限定为高级用户，但我们现在考虑面向所有人……"
 
 3. **当做出决定时提议捕获**
 
@@ -419,14 +419,14 @@ opensdd list --json
     | 发现新需求 | \`spec.md\` |
     | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
-    | 范围变更              | \`proposal.md\`                |
+    | 范围变更              | \`spec.md\`                |
     | 识别出新工作        | \`plan.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：
    - "这是一个设计决策。要把它记录在 design.md 中吗？"
    - "这是一个新需求。要把它添加到 specs 中吗？"
-   - "这改变了范围。要更新 proposal 吗？"
+   - "这改变了范围。要更新 spec 吗？"
 
 4. **由用户决定** - 提议并继续。不要施压。不要自动捕获。
 

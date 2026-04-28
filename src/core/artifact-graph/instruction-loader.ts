@@ -54,7 +54,7 @@ export interface ArtifactInstructions {
   schemaName: string;
   /** Full path to change directory */
   changeDir: string;
-  /** Output path pattern (e.g., "proposal.md") */
+  /** Output path pattern (e.g., "spec.md") */
   outputPath: string;
   /** Artifact description */
   description: string;
@@ -80,7 +80,7 @@ export interface DependencyInfo {
   id: string;
   /** Whether the dependency is completed */
   done: boolean;
-  /** Relative output path of the dependency (e.g., "proposal.md") */
+  /** Relative output path of the dependency (e.g., "spec.md") */
   path: string;
   /** Description of the dependency artifact */
   description: string;
@@ -120,7 +120,7 @@ export interface ChangeStatus {
  * Loads a template from a schema's templates directory.
  *
  * @param schemaName - Schema name (e.g., "spec-driven")
- * @param templatePath - Relative path within the templates directory (e.g., "proposal.md")
+ * @param templatePath - Relative path within the templates directory (e.g., "spec.md")
  * @param projectRoot - Optional project root for project-local schema resolution
  * @returns The template content
  * @throws TemplateLoadError if the template cannot be loaded

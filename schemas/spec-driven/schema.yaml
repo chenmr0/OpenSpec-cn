@@ -1,19 +1,7 @@
 name: spec-driven
 version: 2
-description: 默认 OpenSDD 工作流 - 提案 → 头脑风暴 → 规范 → 设计 → 计划
+description: 默认 OpenSDD 工作流 - 头脑风暴 → 规范 → 设计 → 计划
 artifacts:
-  - id: proposal
-    generates: proposal.md
-    description: 用户原始需求描述
-    template: proposal.md
-    instruction: |
-      将用户的原始需求描述保存为提案文档。这是头脑风暴阶段的起点。
-
-      直接保存用户描述的全部内容，不做任何修改、完善或重新解释。
-
-      这是探索阶段的输入——后续步骤将在此基础上进行扩展和完善。
-    requires: []
-
   - id: specs
     generates: spec.md
     description: 包含 WHEN/THEN 场景的需求规范
@@ -68,8 +56,7 @@ artifacts:
       然后请用户在继续之前审查规范文档。
 
       规范应当是可测试的 —— 每个场景都是一个潜在的测试用例。
-    requires:
-      - proposal
+    requires: []
 
   - id: design
     generates: design.md

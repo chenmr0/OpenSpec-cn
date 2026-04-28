@@ -35,8 +35,7 @@ export const OPENCODE_COMMAND_MAP: Record<string, string> = {
   'bulk-archive': 'bulk-archive',
   'verify': 'verify',
   'onboard': 'onboard',
-  'propose': 'proposal',
-  'proposal': 'proposal',
+  'propose': 'plan',
   'specs': 'specs',
   'design': 'design',
   'plan': 'plan',
@@ -51,7 +50,7 @@ export const OPENCODE_COMMAND_MAP: Record<string, string> = {
  *
  * @example
  * transformToOpenCodeCommands('/opsx:apply') // returns '/sdd/apply'
- * transformToOpenCodeCommands('/opsx-propose') // returns '/sdd/proposal'
+ * transformToOpenCodeCommands('/opsx-propose') // returns '/sdd/specs'
  */
 export function transformToOpenCodeCommands(text: string): string {
   // Replace both /opsx:xxx and /opsx-xxx with /sdd/<mapped>

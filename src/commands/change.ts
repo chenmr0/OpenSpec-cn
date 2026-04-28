@@ -20,7 +20,7 @@ export class ChangeCommand {
   }
 
   /**
-   * Show a change proposal.
+   * Show a change spec.
    * - Text mode: raw markdown passthrough (no filters)
    * - JSON mode: minimal object with deltas; --deltas-only returns same object with filtered deltas
    *   Note: --requirements-only is deprecated alias for --deltas-only
@@ -50,23 +50,23 @@ export class ChangeCommand {
       }
     }
 
-    const proposalPath = path.join(changesPath, changeName, 'proposal.md');
+    const specPath = path.join(changesPath, changeName, 'spec.md');
 
     try {
-      await fs.access(proposalPath);
+      await fs.access(specPath);
     } catch {
-      throw new Error(`在 ${proposalPath} 未找到变更 "${changeName}"`);
+      throw new Error(`在 ${specPath} 未找到变更 "${changeName}"`);
     }
 
     if (options?.json) {
-      const jsonOutput = await this.converter.convertChangeToJson(proposalPath);
+      const jsonOutput = await this.converter.convertChangeToJson(specPath);
 
       if (options.requirementsOnly) {
         console.error('标志 --requirements-only 已弃用；请改用 --deltas-only。');
       }
 
       const parsed: Change = JSON.parse(jsonOutput);
-      const contentForTitle = await fs.readFile(proposalPath, 'utf-8');
+      const contentForTitle = await fs.readFile(specPath, 'utf-8');
       const title = this.extractTitle(contentForTitle, changeName);
       const id = parsed.name;
       const deltas = parsed.deltas || [];
@@ -84,7 +84,7 @@ export class ChangeCommand {
         console.log(JSON.stringify(output, null, 2));
       }
     } else {
-      const content = await fs.readFile(proposalPath, 'utf-8');
+      const content = await fs.readFile(specPath, 'utf-8');
       console.log(content);
     }
   }
@@ -102,11 +102,11 @@ export class ChangeCommand {
     if (options?.json) {
       const changeDetails = await Promise.all(
         changes.map(async (changeName) => {
-          const proposalPath = path.join(changesPath, changeName, 'proposal.md');
+          const specPath = path.join(changesPath, changeName, 'spec.md');
           const tasksPath = path.join(changesPath, changeName, 'plan.md');
-          
+
           try {
-            const content = await fs.readFile(proposalPath, 'utf-8');
+            const content = await fs.readFile(specPath, 'utf-8');
             const changeDir = path.join(changesPath, changeName);
             const parser = new ChangeParser(content, changeDir);
             const change = await parser.parseChangeWithDeltas(changeName);
@@ -155,10 +155,10 @@ export class ChangeCommand {
 
       // Long format: id: title and minimal counts
       for (const changeName of sorted) {
-        const proposalPath = path.join(changesPath, changeName, 'proposal.md');
+        const specPath = path.join(changesPath, changeName, 'spec.md');
         const tasksPath = path.join(changesPath, changeName, 'plan.md');
         try {
-          const content = await fs.readFile(proposalPath, 'utf-8');
+          const content = await fs.readFile(specPath, 'utf-8');
           const title = this.extractTitle(content, changeName);
           let taskStatusText = '';
           try {
@@ -171,7 +171,7 @@ export class ChangeCommand {
             }
           }
           const changeDir = path.join(changesPath, changeName);
-          const parser = new ChangeParser(await fs.readFile(proposalPath, 'utf-8'), changeDir);
+          const parser = new ChangeParser(await fs.readFile(specPath, 'utf-8'), changeDir);
           const change = await parser.parseChangeWithDeltas(changeName);
           const deltaCountText = ` [增量 ${change.deltas.length}]`;
           console.log(`${changeName}: ${title}${deltaCountText}${taskStatusText}`);
@@ -245,12 +245,12 @@ export class ChangeCommand {
       const result: string[] = [];
       for (const entry of entries) {
         if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === ARCHIVE_DIR) continue;
-        const proposalPath = path.join(changesPath, entry.name, 'proposal.md');
+        const metaPath = path.join(changesPath, entry.name, '.openspec.yaml');
         try {
-          await fs.access(proposalPath);
+          await fs.access(metaPath);
           result.push(entry.name);
         } catch {
-          // skip directories without proposal.md
+          // skip directories without .openspec.yaml
         }
       }
       return result.sort();

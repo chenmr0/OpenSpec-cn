@@ -105,7 +105,7 @@ export async function getAvailableChanges(projectRoot: string): Promise<string[]
 
 /**
  * Validates that a change exists and returns available changes if not.
- * Checks directory existence directly to support scaffolded changes (without proposal.md).
+ * Checks directory existence directly to support scaffolded changes (without spec.md).
  */
 export async function validateChangeExists(
   changeName: string | undefined,

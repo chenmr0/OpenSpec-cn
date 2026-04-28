@@ -259,12 +259,6 @@ const DEFAULT_ARTIFACTS: Array<{
   template: string;
 }> = [
   {
-    id: 'proposal',
-    description: '变更的高层描述、动机和范围',
-    generates: 'proposal.md',
-    template: 'proposal.md',
-  },
-  {
     id: 'specs',
     description: '包含需求和场景的详细规格说明',
     generates: 'spec.md',
@@ -667,7 +661,7 @@ export function registerSchemaCommand(program: Command): void {
     .description('创建一个新的项目本地 Schema')
     .option('--json', '以 JSON 格式输出')
     .option('--description <text>', 'Schema 描述')
-    .option('--artifacts <list>', '逗号分隔的 Artifact ID (proposal,specs,design,plan)')
+    .option('--artifacts <list>', '逗号分隔的 Artifact ID (specs,design,plan)')
     .option('--default', '设为项目默认 Schema')
     .option('--no-default', '不提示设为默认')
     .option('--force', '覆盖现有 Schema')
@@ -816,8 +810,8 @@ export function registerSchemaCommand(program: Command): void {
           };
 
           // Set up dependencies based on typical workflow
-          if (id === 'specs' && selectedArtifactIds.includes('proposal')) {
-            artifact.requires = ['proposal'];
+          if (id === 'specs') {
+            artifact.requires = [];
           } else if (id === 'design' && selectedArtifactIds.includes('specs')) {
             artifact.requires = ['specs'];
           } else if (id === 'plan') {
@@ -927,28 +921,6 @@ export function registerSchemaCommand(program: Command): void {
  */
 function createDefaultTemplate(artifactId: string): string {
   switch (artifactId) {
-    case 'proposal':
-      return `## 为什么
-
-<!-- 描述此变更的动机 -->
-
-## 变更内容
-
-<!-- 描述将要变更的内容 -->
-
-## 能力
-
-### 新增能力
-<!-- 列出新增能力 -->
-
-### 修改的能力
-<!-- 列出修改的能力 -->
-
-## 影响
-
-<!-- 描述对现有功能的影响 -->
-`;
-
     case 'specs':
       return `## 新增需求
 

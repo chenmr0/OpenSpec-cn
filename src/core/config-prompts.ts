@@ -29,7 +29,7 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('# 为特定工件添加自定义规则。');
   lines.push('# 示例：');
   lines.push('#   rules:');
-  lines.push('#     proposal:');
+  lines.push('#     specs:');
   lines.push('#       - 保持提案在500字以内');
   lines.push('#       - 始终包含"非目标"部分');
   lines.push('#     tasks:');

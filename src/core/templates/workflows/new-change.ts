@@ -49,7 +49,7 @@ export function getNewChangeSkillTemplate(): SkillTemplate {
    这会显示哪些产出物需要创建，以及哪些已就绪（依赖项已满足）。
 
 5. **获取第一个产出物的指令**
-   第一个产出物取决于所使用的 Schema（例如：spec-driven 通常先生成 \`proposal\`）。
+   第一个产出物取决于所使用的 Schema（例如：spec-driven 通常先生成 \`specs\`）。
    检查 status 输出，找到第一个状态为 "ready" 的产出物。
    \`\`\`bash
    opensdd instructions <first-artifact-id> --change "<name>"
