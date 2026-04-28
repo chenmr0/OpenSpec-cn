@@ -72,6 +72,7 @@ const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
   '_external:writing-plans': 'writing-plans',
   '_external:test-driven-development': 'test-driven-development',
   '_external:subagent-driven-development': 'subagent-driven-development',
+  '_external:verification-before-completion': 'verification-before-completion',
 };
 
 // -----------------------------------------------------------------------------

@@ -28,6 +28,7 @@ import {
 import { getWritingPlansSkillTemplate } from '../templates/external/writing-plans.js';
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate, implementerPromptContent, specReviewerPromptContent, codeQualityReviewerPromptContent } from '../templates/external/subagent-driven-development.js';
+import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -178,6 +179,11 @@ export function getExternalSkillTemplates(): SkillTemplateEntry[] {
         { filename: 'spec-reviewer-prompt.md', content: specReviewerPromptContent },
         { filename: 'code-quality-reviewer-prompt.md', content: codeQualityReviewerPromptContent },
       ],
+    },
+    {
+      template: getVerificationBeforeCompletionSkillTemplate(),
+      dirName: 'verification-before-completion',
+      workflowId: '_external',
     },
   ];
 }
