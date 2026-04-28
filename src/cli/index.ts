@@ -4,7 +4,7 @@ import ora from 'ora';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { AI_TOOLS } from '../core/config.js';
-import { UpdateCommand } from '../core/update.js';
+
 import { ListCommand } from '../core/list.js';
 import { ArchiveCommand } from '../core/archive.js';
 import { ViewCommand } from '../core/view.js';
@@ -13,7 +13,7 @@ import { ChangeCommand } from '../commands/change.js';
 import { ValidateCommand } from '../commands/validate.js';
 import { ShowCommand } from '../commands/show.js';
 import { CompletionCommand } from '../commands/completion.js';
-import { FeedbackCommand } from '../commands/feedback.js';
+
 import { registerConfigCommand } from '../commands/config.js';
 import { registerSchemaCommand } from '../commands/schema.js';
 import {
@@ -113,22 +113,6 @@ program
       await initCommand.execute('.');
     } catch (error) {
       console.log();
-      ora().fail(`错误：${(error as Error).message}`);
-      process.exit(1);
-    }
-  });
-
-program
-  .command('update [path]')
-  .description('更新OpenSDD指令文件')
-  .option('--force', '即使工具已是最新也强制更新')
-  .action(async (targetPath = '.', options?: { force?: boolean }) => {
-    try {
-      const resolvedPath = path.resolve(targetPath);
-      const updateCommand = new UpdateCommand({ force: options?.force });
-      await updateCommand.execute(resolvedPath);
-    } catch (error) {
-      console.log(); // Empty line for spacing
       ora().fail(`错误：${(error as Error).message}`);
       process.exit(1);
     }
@@ -294,22 +278,6 @@ program
     try {
       const showCommand = new ShowCommand();
       await showCommand.execute(itemName, options ?? {});
-    } catch (error) {
-      console.log();
-      ora().fail(`错误：${(error as Error).message}`);
-      process.exit(1);
-    }
-  });
-
-// Feedback command
-program
-  .command('feedback <message>')
-  .description('提交关于 OpenSDD 的反馈')
-  .option('--body <text>', '反馈的详细描述')
-  .action(async (message: string, options?: { body?: string }) => {
-    try {
-      const feedbackCommand = new FeedbackCommand();
-      await feedbackCommand.execute(message, options);
     } catch (error) {
       console.log();
       ora().fail(`错误：${(error as Error).message}`);

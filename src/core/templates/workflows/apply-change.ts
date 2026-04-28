@@ -243,9 +243,16 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 
    **6.2 分派实现子智能体**
 
-   使用 Task tool (general-purpose) 分派实现子智能体，参考 \`subagent-driven-development/implementer-prompt.md\` 模板构造提示词：
+   使用 Task tool (code-generator) 分派实现子智能体：
+   - subagent_type: "code-generator"
    - description: "实现任务 N/M：<任务摘要>"
    - prompt 包含：完整任务文本 + 场景铺设上下文 + 工作目录
+   - code-generator agent 已包含专业的代码生成 system prompt，你只需在 prompt 中补充以下任务协调指令：
+     - 汇报格式：DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
+     - 自审要求：完整性、质量、纪律、测试检查
+     - 步骤执行纪律：严格按计划步骤顺序，不合并、跳过或重排
+     - 提问机制：开始前可提问澄清需求
+     - 上报机制：力不从心时停下来上报
 
    等待实现子智能体完成。
 
