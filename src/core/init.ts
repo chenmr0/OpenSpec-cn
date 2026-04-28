@@ -38,6 +38,7 @@ import {
   getToolStates,
   getSkillTemplates,
   getExternalSkillTemplates,
+  getExternalAgentTemplates,
   getCommandContents,
   generateSkillContent,
   type ToolSkillStatus,
@@ -563,6 +564,14 @@ export class InitCommand {
                 await FileSystemUtils.writeFile(extraFile, extra.content);
               }
             }
+          }
+
+          // Always install agent files to agents directory
+          const agentTemplates = getExternalAgentTemplates();
+          for (const agent of agentTemplates) {
+            const agentsDir = path.join(projectPath, tool.skillsDir, 'agents');
+            const agentFile = path.join(agentsDir, agent.filename);
+            await FileSystemUtils.writeFile(agentFile, agent.content);
           }
         }
         if (!shouldGenerateSkills) {
