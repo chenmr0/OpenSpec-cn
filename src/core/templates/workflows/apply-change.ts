@@ -25,7 +25,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
     tags: ['workflow', 'artifacts', 'experimental'],
     content: `# 实现变更中的任务。
 
-**输入**：可选择指定变更名称（例如，\`/opsx:apply "<name>"\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
+**输入**：可选择指定变更名称（例如，\`/codespec/apply "<name>"\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
 
 ## 流程详述
 ### 实施修改前
@@ -37,7 +37,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - 如果只存在一个活动变更，自动选择
    - 如果不明确，运行 \`codespec list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
 
-   始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/opsx:apply <other>\`）。
+   始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/codespec/apply <other>\`）。
 
 **检查状态以了解 Schema**
    \`\`\`bash
@@ -151,7 +151,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 - [x] 任务 4：<description>
 ...
 
-所有任务已完成并通过验证！可以使用 \`/opsx:archive\` 归档此变更。
+所有任务已完成并通过验证！可以使用 \`/codespec/archive\` 归档此变更。
 \`\`\`
 
 **暂停时的输出（仅在反复自主修复仍无法通过时）**
