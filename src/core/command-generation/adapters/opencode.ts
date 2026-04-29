@@ -20,7 +20,7 @@ export const opencodeAdapter: ToolCommandAdapter = {
 
   getFilePath(commandId: string): string {
     const slug = OPENCODE_COMMAND_MAP[commandId] ?? commandId;
-    return path.join('.opencode', 'commands', 'sdd', `${slug}.md`);
+    return path.join('.opencode', 'commands', 'codespec', `${slug}.md`);
   },
 
   formatFile(content: CommandContent): string {

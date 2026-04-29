@@ -25,7 +25,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
     tags: ['workflow', 'artifacts', 'experimental'],
     content: `# 实现变更中的任务。
 
-**输入**：可选择指定变更名称（例如，\`/opsx:apply add-auth\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
+**输入**：可选择指定变更名称（例如，\`/opsx:apply "<name>"\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
 
 ## 流程详述
 ### 实施修改前
@@ -45,10 +45,12 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
-   - 哪个产出物包含任务（对于 spec-driven 是 "plan"，检查其他产出物的状态）
+   - 检查产出物状态（应为"status": "done"）
 
 **阅读上下文文件**
-
+   \`\`\`bash
+   codespec instructions apply --change "<name>" --json
+   \`\`\`
    阅读 apply instructions 输出中 \`contextFiles\` 列出的每个文件路径。
    文件取决于正在使用的 Schema：
    - **spec-driven**: specs, design, plan
