@@ -87,11 +87,11 @@ export function getStatusIndicator(status: 'done' | 'ready' | 'blocked'): string
 }
 
 /**
- * Returns the list of available change directory names under openspec/changes/.
+ * Returns the list of available change directory names under codespec/changes/.
  * Excludes the archive directory and hidden directories.
  */
 export async function getAvailableChanges(projectRoot: string): Promise<string[]> {
-  const changesPath = path.join(projectRoot, 'openspec', 'changes');
+  const changesPath = path.join(projectRoot, 'codespec', 'changes');
   try {
     const entries = await fs.promises.readdir(changesPath, { withFileTypes: true });
     return entries
@@ -114,7 +114,7 @@ export async function validateChangeExists(
   if (!changeName) {
     const available = await getAvailableChanges(projectRoot);
     if (available.length === 0) {
-      throw new Error('未找到变更。请使用: opensdd new change <name> 创建一个');
+      throw new Error('未找到变更。请使用: codespec new change <name> 创建一个');
     }
     throw new Error(
       `缺少必需选项 --change。可用的变更:\n  ${available.join('\n  ')}`
@@ -128,14 +128,14 @@ export async function validateChangeExists(
   }
 
   // Check directory existence directly
-  const changePath = path.join(projectRoot, 'openspec', 'changes', changeName);
+  const changePath = path.join(projectRoot, 'codespec', 'changes', changeName);
   const exists = fs.existsSync(changePath) && fs.statSync(changePath).isDirectory();
 
   if (!exists) {
     const available = await getAvailableChanges(projectRoot);
     if (available.length === 0) {
       throw new Error(
-        `未找到变更 '${changeName}'。不存在变更。请使用: opensdd new change <name> 创建一个`
+        `未找到变更 '${changeName}'。不存在变更。请使用: codespec new change <name> 创建一个`
       );
     }
     throw new Error(

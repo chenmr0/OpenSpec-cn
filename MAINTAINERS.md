@@ -1,6 +1,6 @@
 # Maintainers
 
-People who maintain and guide OpenSDD.
+People who maintain and guide CodeSpec.
 
 ## Core Maintainers
 

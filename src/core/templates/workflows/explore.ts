@@ -8,11 +8,11 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getExploreSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-explore',
+    name: 'codespec-explore',
     description: '进入探索模式 - 一个用于探索想法、调查问题和澄清需求的思考伙伴。当用户想要在进行更改之前或期间深入思考某事时使用。',
     instructions: `进入探索模式。深入思考。自由想象。跟随对话的任何方向。
 
-**重要提示：探索模式是为了思考，而不是为了实施。** 你可以阅读文件、搜索代码和调查代码库，但你绝不能编写代码或实现功能。如果用户要求你实现某些内容，请提醒他们先退出探索模式（例如，使用 \`/opsx:new\` 或 \`/opsx:ff\` 开始变更）。如果用户要求，你可以创建 OpenSDD 产出物（提案、设计、规格说明）——这是捕捉思考，而不是实施。
+**重要提示：探索模式是为了思考，而不是为了实施。** 你可以阅读文件、搜索代码和调查代码库，但你绝不能编写代码或实现功能。如果用户要求你实现某些内容，请提醒他们先退出探索模式（例如，使用 \`/opsx:new\` 或 \`/opsx:ff\` 开始变更）。如果用户要求，你可以创建 CodeSpec 产出物（提案、设计、规格说明）——这是捕捉思考，而不是实施。
 
 **这是一种姿态，而不是一种工作流。** 没有固定的步骤，没有要求的顺序，没有强制性的输出。你是一个思考伙伴，帮助用户进行探索。
 
@@ -75,15 +75,15 @@ export function getExploreSkillTemplate(): SkillTemplate {
 
 ---
 
-## OpenSDD 意识
+## CodeSpec 意识
 
-你拥有 OpenSDD 系统的完整上下文。自然地使用它，不要强行使用。
+你拥有 CodeSpec 系统的完整上下文。自然地使用它，不要强行使用。
 
 ### 检查上下文
 
 开始时，快速检查存在什么：
 \`\`\`bash
-opensdd list --json
+codespec list --json
 \`\`\`
 
 这会告诉你：
@@ -104,9 +104,9 @@ opensdd list --json
 如果用户提到变更或你检测到相关变更：
 
 1. **阅读现有产出物以获取上下文**
-   - \`openspec/changes/<name>/spec.md\`
-   - \`openspec/changes/<name>/design.md\`
-   - \`openspec/changes/<name>/plan.md\`
+   - \`codespec/changes/<name>/spec.md\`
+   - \`codespec/changes/<name>/design.md\`
+   - \`codespec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -280,7 +280,7 @@ opensdd list --json
 
 ## 护栏
 
-- **不要实施** - 绝不编写代码或实现功能。创建 OpenSDD 产出物是可以的，编写应用程序代码是不行的。
+- **不要实施** - 绝不编写代码或实现功能。创建 CodeSpec 产出物是可以的，编写应用程序代码是不行的。
 - **不要假装理解** - 如果某些事情不清楚，请深入挖掘
 - **不要匆忙** - 发现是思考时间，而不是任务时间
 - **不要强加结构** - 让模式自然浮现
@@ -289,8 +289,8 @@ opensdd list --json
 - **要探索代码库** - 将讨论建立在现实基础上
 - **要质疑假设** - 包括用户的和你自己的`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -302,7 +302,7 @@ export function getOpsxExploreCommandTemplate(): CommandTemplate {
     tags: ['workflow', 'explore', 'experimental', 'thinking'],
     content: `进入探索模式。深入思考。自由可视化。跟随对话的发展。
 
-**重要提示：探索模式是为了思考，而不是为了实施。** 你可以阅读文件、搜索代码和调查代码库，但你绝不能编写代码或实现功能。如果用户要求你实现某些内容，请提醒他们先退出探索模式（例如，使用 \`/opsx:new\` 或 \`/opsx:ff\` 开始变更）。如果用户要求，你可以创建 OpenSDD 产出物（提案、设计、规格说明）——这是捕捉思考，而不是实施。
+**重要提示：探索模式是为了思考，而不是为了实施。** 你可以阅读文件、搜索代码和调查代码库，但你绝不能编写代码或实现功能。如果用户要求你实现某些内容，请提醒他们先退出探索模式（例如，使用 \`/opsx:new\` 或 \`/opsx:ff\` 开始变更）。如果用户要求，你可以创建 CodeSpec 产出物（提案、设计、规格说明）——这是捕捉思考，而不是实施。
 
 **这是一种姿态，而不是一种工作流。** 没有固定的步骤，没有要求的顺序，没有强制性的输出。你是一个思考伙伴，帮助用户进行探索。
 
@@ -372,15 +372,15 @@ export function getOpsxExploreCommandTemplate(): CommandTemplate {
 
 ---
 
-## OpenSDD 意识
+## CodeSpec 意识
 
-你拥有 OpenSDD 系统的完整上下文。自然地使用它，不要强行使用。
+你拥有 CodeSpec 系统的完整上下文。自然地使用它，不要强行使用。
 
 ### 检查上下文
 
 开始时，快速检查存在什么：
 \`\`\`bash
-opensdd list --json
+codespec list --json
 \`\`\`
 
 这会告诉你：
@@ -403,9 +403,9 @@ opensdd list --json
 如果用户提到变更或你检测到相关变更：
 
 1. **阅读现有产出物以获取上下文**
-   - \`openspec/changes/<name>/spec.md\`
-   - \`openspec/changes/<name>/design.md\`
-   - \`openspec/changes/<name>/plan.md\`
+   - \`codespec/changes/<name>/spec.md\`
+   - \`codespec/changes/<name>/design.md\`
+   - \`codespec/changes/<name>/plan.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -458,7 +458,7 @@ opensdd list --json
 
 ## 护栏
 
-- **不要实施** - 绝不编写代码或实现功能。创建 OpenSDD 产出物是可以的，编写应用程序代码是不行的。
+- **不要实施** - 绝不编写代码或实现功能。创建 CodeSpec 产出物是可以的，编写应用程序代码是不行的。
 - **不要假装理解** - 如果某些事情不清楚，请深入挖掘
 - **不要匆忙** - 发现是思考时间，而不是任务时间
 - **不要强加结构** - 让模式自然浮现

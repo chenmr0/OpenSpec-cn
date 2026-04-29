@@ -8,8 +8,8 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getContinueChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-continue-change',
-    description: '通过创建下一个产出物继续处理 OpenSDD 变更。当用户想要推进其变更、创建下一个产出物或继续其工作流程时使用。',
+    name: 'codespec-continue-change',
+    description: '通过创建下一个产出物继续处理 CodeSpec 变更。当用户想要推进其变更、创建下一个产出物或继续其工作流程时使用。',
     instructions: `通过创建下一个产出物继续处理变更。
 
 **输入**：可选指定变更名称。如果省略，检查是否可以从对话上下文中推断。如果模糊或不明确，你**必须**提示获取可用变更。
@@ -18,7 +18,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取按最近修改排序的可用变更。然后使用 **AskUserQuestion tool** 让用户选择要处理哪个变更。
+   运行 \`codespec list --json\` 获取按最近修改排序的可用变更。然后使用 **AskUserQuestion tool** 让用户选择要处理哪个变更。
 
    展示前 3-4 个最近修改的变更作为选项，显示：
    - 变更名称
@@ -32,7 +32,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 
 2. **检查当前状态**
    \`\`\`bash
-   opensdd status --change "<name>" --json
+   codespec status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解当前状态。响应包括：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -55,7 +55,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
    - 从状态输出中选择第一个 \`status: "ready"\` 的产出物
    - 获取其指令：
      \`\`\`bash
-     opensdd instructions <artifact-id> --change "<name>" --json
+     codespec instructions <artifact-id> --change "<name>" --json
      \`\`\`
    - 解析 JSON。关键字段包括：
      - \`context\`：项目背景（对你的约束 - 不要包含在输出中）
@@ -80,7 +80,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 
 4. **创建产出物后，显示进度**
    \`\`\`bash
-   opensdd status --change "<name>"
+   codespec status --change "<name>"
    \`\`\`
 
 **输出**
@@ -116,8 +116,8 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
   - 不要把 \`<context>\`、\`<rules>\`、\`<project_context>\` 块复制进产出物
   - 它们用于指导你写作，但绝不能出现在输出中`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -135,7 +135,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取按最近修改排序的可用变更。然后使用 **AskUserQuestion tool** 让用户选择要处理哪个变更。
+   运行 \`codespec list --json\` 获取按最近修改排序的可用变更。然后使用 **AskUserQuestion tool** 让用户选择要处理哪个变更。
 
    展示前 3-4 个最近修改的变更作为选项，显示：
    - 变更名称
@@ -149,7 +149,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 
 2. **检查当前状态**
    \`\`\`bash
-   opensdd status --change "<name>" --json
+   codespec status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解当前状态。响应包括：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -172,7 +172,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
    - 从状态输出中选择第一个 \`status: "ready"\` 的产出物
    - 获取其指令：
      \`\`\`bash
-     opensdd instructions <artifact-id> --change "<name>" --json
+     codespec instructions <artifact-id> --change "<name>" --json
      \`\`\`
    - 解析 JSON。关键字段包括：
      - \`context\`：项目背景（对你的约束 - 不要包含在输出中）
@@ -197,7 +197,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 
 4. **创建产出物后，显示进度**
    \`\`\`bash
-   opensdd status --change "<name>"
+   codespec status --change "<name>"
    \`\`\`
 
 **输出**

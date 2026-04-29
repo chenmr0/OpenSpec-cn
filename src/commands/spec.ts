@@ -7,7 +7,7 @@ import type { Spec } from '../core/schemas/index.js';
 import { isInteractive } from '../utils/interactive.js';
 import { getSpecIds } from '../utils/item-discovery.js';
 
-const SPECS_DIR = 'openspec/specs';
+const SPECS_DIR = 'codespec/specs';
 
 interface ShowOptions {
   json?: boolean;
@@ -45,7 +45,7 @@ function filterSpec(spec: Spec, options: ShowOptions): Spec {
     scenarios: includeScenarios ? req.scenarios : [],
   }));
 
-  const metadata = spec.metadata ?? { version: '1.0.0', format: 'openspec' as const };
+  const metadata = spec.metadata ?? { version: '1.0.0', format: 'codespec' as const };
 
   return {
     name: spec.name,
@@ -65,7 +65,7 @@ function printSpecTextRaw(specPath: string): void {
 }
 
 export class SpecCommand {
-  private SPECS_DIR = 'openspec/specs';
+  private SPECS_DIR = 'codespec/specs';
 
   async show(specId?: string, options: ShowOptions = {}): Promise<void> {
     if (!specId) {
@@ -99,7 +99,7 @@ export class SpecCommand {
         overview: parsed.overview,
         requirementCount: filtered.requirements.length,
         requirements: filtered.requirements,
-        metadata: parsed.metadata ?? { version: '1.0.0', format: 'openspec' as const },
+        metadata: parsed.metadata ?? { version: '1.0.0', format: 'codespec' as const },
       };
       console.log(JSON.stringify(output, null, 2));
       return;
@@ -111,11 +111,11 @@ export class SpecCommand {
 export function registerSpecCommand(rootProgram: typeof program) {
   const specCommand = rootProgram
     .command('spec')
-    .description('管理和查看OpenSDD规范');
+    .description('管理和查看CodeSpec规范');
 
   // Deprecation notice for noun-based commands
   specCommand.hook('preAction', () => {
-    console.error('警告："opensdd spec ..." 命令已弃用。请使用动词开头的命令（例如："opensdd show"、"opensdd validate --specs"）。');
+    console.error('警告："codespec spec ..." 命令已弃用。请使用动词开头的命令（例如："codespec show"、"codespec validate --specs"）。');
   });
 
   specCommand

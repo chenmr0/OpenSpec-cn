@@ -17,7 +17,7 @@ const ART_COLUMN_WIDTH = 24;
  */
 function getWelcomeText(): string[] {
   return [
-    chalk.white.bold('欢迎使用 OpenSDD'),
+    chalk.white.bold('欢迎使用 CodeSpec'),
     chalk.dim('一个轻量级的规范驱动框架'),
     '',
     chalk.white('此设置将配置:'),

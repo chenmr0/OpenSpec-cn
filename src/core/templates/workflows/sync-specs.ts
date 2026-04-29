@@ -8,7 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getSyncSpecsSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-sync-specs',
+    name: 'codespec-sync-specs',
     description: '将变更中的增量规范同步到主规范。当用户想要使用增量规范中的更改更新主规范，而不归档该变更时使用。',
     instructions: `将变更中的增量规范同步到主规范。
 
@@ -20,7 +20,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有增量规范（在 \`specs/\` 目录下）的变更。
 
@@ -28,7 +28,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 
 2. **查找增量规范**
 
-   在 \`openspec/changes/<name>/specs/*/spec.md\` 中查找增量规范文件。
+   在 \`codespec/changes/<name>/specs/*/spec.md\` 中查找增量规范文件。
 
    每个增量规范文件包含如下部分：
    - \`## 新增需求\` - 要添加的新需求
@@ -40,11 +40,11 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 
 3. **对于每个增量规范，将更改应用到主规范**
 
-   对于在 \`openspec/changes/<name>/specs/<capability>/spec.md\` 处具有增量规范的每个 capability：
+   对于在 \`codespec/changes/<name>/specs/<capability>/spec.md\` 处具有增量规范的每个 capability：
 
    a. **阅读增量规范** 以了解预期的更改
 
-   b. **阅读主规范** 于 \`openspec/specs/<capability>/spec.md\`（可能尚不存在）
+   b. **阅读主规范** 于 \`codespec/specs/<capability>/spec.md\`（可能尚不存在）
 
    c. **智能地应用更改**：
 
@@ -67,7 +67,7 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
       - 找到 FROM 需求，重命名为 TO
 
    d. **创建新主规范** 如果 capability 尚不存在：
-      - 创建 \`openspec/specs/<capability>/spec.md\`
+      - 创建 \`codespec/specs/<capability>/spec.md\`
       - 添加 目的 部分（可以简短，标记为 待定）
       - 添加 需求 部分以及 新增需求
 
@@ -138,8 +138,8 @@ export function getSyncSpecsSkillTemplate(): SkillTemplate {
 - 在进行时显示你正在更改的内容
 - 操作应该是幂等的 - 运行两次应给出相同的结果`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -159,7 +159,7 @@ export function getOpsxSyncCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有增量规范（在 \`specs/\` 目录下）的变更。
 
@@ -167,7 +167,7 @@ export function getOpsxSyncCommandTemplate(): CommandTemplate {
 
 2. **查找增量规范**
 
-   在 \`openspec/changes/<name>/specs/*/spec.md\` 中查找增量规范文件。
+   在 \`codespec/changes/<name>/specs/*/spec.md\` 中查找增量规范文件。
 
    每个增量规范文件包含如下部分：
    - \`## 新增需求\` - 要添加的新需求
@@ -179,11 +179,11 @@ export function getOpsxSyncCommandTemplate(): CommandTemplate {
 
 3. **对于每个增量规范，将更改应用到主规范**
 
-   对于在 \`openspec/changes/<name>/specs/<capability>/spec.md\` 处具有增量规范的每个 capability：
+   对于在 \`codespec/changes/<name>/specs/<capability>/spec.md\` 处具有增量规范的每个 capability：
 
    a. **阅读增量规范** 以了解预期的更改
 
-   b. **阅读主规范** 于 \`openspec/specs/<capability>/spec.md\`（可能尚不存在）
+   b. **阅读主规范** 于 \`codespec/specs/<capability>/spec.md\`（可能尚不存在）
 
    c. **智能地应用更改**：
 
@@ -206,7 +206,7 @@ export function getOpsxSyncCommandTemplate(): CommandTemplate {
       - 找到 FROM 需求，重命名为 TO
 
    d. **创建新主规范** 如果 capability 尚不存在：
-      - 创建 \`openspec/specs/<capability>/spec.md\`
+      - 创建 \`codespec/specs/<capability>/spec.md\`
       - 添加 目的 部分（可以简短，标记为 待定）
       - 添加 需求 部分以及 新增需求
 

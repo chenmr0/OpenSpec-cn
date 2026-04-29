@@ -6,19 +6,19 @@ import { MarkdownParser } from './parsers/markdown-parser.js';
 
 export class ViewCommand {
   async execute(targetPath: string = '.'): Promise<void> {
-    const openspecDir = path.join(targetPath, 'openspec');
+    const codespecDir = path.join(targetPath, 'codespec');
     
-    if (!fs.existsSync(openspecDir)) {
-      console.error(chalk.red('未找到 OpenSDD 目录'));
+    if (!fs.existsSync(codespecDir)) {
+      console.error(chalk.red('未找到 CodeSpec 目录'));
       process.exit(1);
     }
 
-    console.log(chalk.bold('\nOpenSDD 看板\n'));
+    console.log(chalk.bold('\nCodeSpec 看板\n'));
     console.log('═'.repeat(60));
 
     // Get changes and specs data
-    const changesData = await this.getChangesData(openspecDir);
-    const specsData = await this.getSpecsData(openspecDir);
+    const changesData = await this.getChangesData(codespecDir);
+    const specsData = await this.getSpecsData(codespecDir);
 
     // Display summary metrics
     this.displaySummary(changesData, specsData);
@@ -75,15 +75,15 @@ export class ViewCommand {
     }
 
     console.log('\n' + '═'.repeat(60));
-    console.log(chalk.dim(`\n使用 ${chalk.white('opensdd list --changes')} 或 ${chalk.white('opensdd list --specs')} 查看详细信息`));
+    console.log(chalk.dim(`\n使用 ${chalk.white('codespec list --changes')} 或 ${chalk.white('codespec list --specs')} 查看详细信息`));
   }
 
-  private async getChangesData(openspecDir: string): Promise<{
+  private async getChangesData(codespecDir: string): Promise<{
     draft: Array<{ name: string }>;
     active: Array<{ name: string; progress: { total: number; completed: number } }>;
     completed: Array<{ name: string }>;
   }> {
-    const changesDir = path.join(openspecDir, 'changes');
+    const changesDir = path.join(codespecDir, 'changes');
 
     if (!fs.existsSync(changesDir)) {
       return { draft: [], active: [], completed: [] };
@@ -129,8 +129,8 @@ export class ViewCommand {
     return { draft, active, completed };
   }
 
-  private async getSpecsData(openspecDir: string): Promise<Array<{ name: string; requirementCount: number }>> {
-    const specsDir = path.join(openspecDir, 'specs');
+  private async getSpecsData(codespecDir: string): Promise<Array<{ name: string; requirementCount: number }>> {
+    const specsDir = path.join(codespecDir, 'specs');
     
     if (!fs.existsSync(specsDir)) {
       return [];

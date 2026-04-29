@@ -1,10 +1,10 @@
 # 核心概念
 
-本指南解释了 OpenSDD 背后的核心思想以及它们如何协同工作。关于实际使用，请参阅[入门指南](getting-started.md)和[工作流](workflows.md)。
+本指南解释了 CodeSpec 背后的核心思想以及它们如何协同工作。关于实际使用，请参阅[入门指南](getting-started.md)和[工作流](workflows.md)。
 
 ## 设计哲学
 
-OpenSDD 围绕四个原则构建：
+CodeSpec 围绕四个原则构建：
 
 ```
 灵活而非僵化         — 无阶段门限，按需工作
@@ -15,21 +15,21 @@ OpenSDD 围绕四个原则构建：
 
 ### 为什么这些原则重要
 
-**灵活而非僵化。** 传统的规范系统将你锁定在阶段中：先规划，再实施，然后完成。OpenSDD 更加灵活——你可以按工作需求以任何顺序创建制品。
+**灵活而非僵化。** 传统的规范系统将你锁定在阶段中：先规划，再实施，然后完成。CodeSpec 更加灵活——你可以按工作需求以任何顺序创建制品。
 
-**迭代而非瀑布。** 需求会变化。理解会加深。开始时看似不错的方法在查看代码库后可能不再适用。OpenSDD 拥抱这一现实。
+**迭代而非瀑布。** 需求会变化。理解会加深。开始时看似不错的方法在查看代码库后可能不再适用。CodeSpec 拥抱这一现实。
 
-**简单而非复杂。** 一些规范框架需要大量设置、严格格式或重量级流程。OpenSDD 不会妨碍你的工作。几秒钟内初始化，立即开始工作，仅在需要时自定义。
+**简单而非复杂。** 一些规范框架需要大量设置、严格格式或重量级流程。CodeSpec 不会妨碍你的工作。几秒钟内初始化，立即开始工作，仅在需要时自定义。
 
-**棕地优先。** 大多数软件工作不是从零开始构建——而是修改现有系统。OpenSDD 基于增量的方法使得指定对现有行为的更改变得容易，而不仅仅是描述新系统。
+**棕地优先。** 大多数软件工作不是从零开始构建——而是修改现有系统。CodeSpec 基于增量的方法使得指定对现有行为的更改变得容易，而不仅仅是描述新系统。
 
 ## 整体架构
 
-OpenSDD 将你的工作组织为两个主要区域：
+CodeSpec 将你的工作组织为两个主要区域：
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│                        openspec/                                   │
+│                        codespec/                                   │
 │                                                                    │
 │   ┌─────────────────────┐      ┌───────────────────────────────┐   │
 │   │       specs/        │      │         changes/              │   │
@@ -56,7 +56,7 @@ OpenSDD 将你的工作组织为两个主要区域：
 ### 目录结构
 
 ```
-openspec/specs/
+codespec/specs/
 ├── auth/
 │   └── spec.md           # 认证行为
 ├── payments/
@@ -154,7 +154,7 @@ openspec/specs/
 
 ### 保持轻量：渐进式严谨
 
-OpenSDD 旨在避免官僚主义。使用能使变更可验证的最轻量级别即可。
+CodeSpec 旨在避免官僚主义。使用能使变更可验证的最轻量级别即可。
 
 **轻量规范（默认）：**
 - 简短的行为优先需求
@@ -186,11 +186,11 @@ OpenSDD 旨在避免官僚主义。使用能使变更可验证的最轻量级别
 ### 变更结构
 
 ```
-openspec/changes/add-dark-mode/
+codespec/changes/add-dark-mode/
 ├── proposal.md           # 为什么和做什么
 ├── design.md             # 如何做（技术方案）
 ├── tasks.md              # 实施清单
-├── .openspec.yaml        # 变更元数据（可选）
+├── .codespec.yaml        # 变更元数据（可选）
 └── specs/                # 增量规范
     └── ui/
         └── spec.md       # ui/spec.md 中的更改内容
@@ -341,7 +341,7 @@ CSS Variables (应用于 :root)
 
 ## 增量规范（Delta Specs）
 
-增量规范是使 OpenSDD 适用于棕地开发的关键概念。它们描述**正在变化的内容**，而不是重述整个规范。
+增量规范是使 CodeSpec 适用于棕地开发的关键概念。它们描述**正在变化的内容**，而不是重述整个规范。
 
 ### 格式
 
@@ -407,7 +407,7 @@ CSS Variables (应用于 :root)
 ### 模式如何工作
 
 ```yaml
-# openspec/schemas/spec-driven/schema.yaml
+# codespec/schemas/spec-driven/schema.yaml
 name: spec-driven
 artifacts:
   - id: proposal
@@ -468,16 +468,16 @@ proposal → specs → design → tasks → implement
 
 ```bash
 # 从零开始创建
-opensdd schema init research-first
+codespec schema init research-first
 
 # 或从现有模式派生
-opensdd schema fork spec-driven research-first
+codespec schema fork spec-driven research-first
 ```
 
 **示例自定义模式：**
 
 ```yaml
-# openspec/schemas/research-first/schema.yaml
+# codespec/schemas/research-first/schema.yaml
 name: research-first
 artifacts:
   - id: research
@@ -504,7 +504,7 @@ artifacts:
 ```
 归档前：
 
-openspec/
+codespec/
 ├── specs/
 │   └── auth/
 │       └── spec.md ◄────────────────┐
@@ -520,7 +520,7 @@ openspec/
 
 归档后：
 
-openspec/
+codespec/
 ├── specs/
 │   └── auth/
 │       └── spec.md        # 现在包含 2FA 需求
@@ -555,7 +555,7 @@ openspec/
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                              OPENSPEC 流程                                   │
+│                              CODESPEC 流程                                   │
 │                                                                              │
 │   ┌────────────────┐                                                         │
 │   │  1. START      │  /opsx:propose (core) or /opsx:new (expanded)           │
@@ -614,7 +614,7 @@ openspec/
 | **场景（Scenario）** | 需求的具体示例，通常采用 Given/When/Then 格式 |
 | **模式（Schema）** | 制品类型及其依赖关系的定义 |
 | **规范（Spec）** | 描述系统行为的规范，包含需求和场景 |
-| **单一事实来源（Source of truth）** | `openspec/specs/` 目录，包含当前商定的行为 |
+| **单一事实来源（Source of truth）** | `codespec/specs/` 目录，包含当前商定的行为 |
 
 ## 下一步
 

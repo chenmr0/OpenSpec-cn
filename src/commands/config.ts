@@ -20,7 +20,7 @@ import {
   DEFAULT_CONFIG,
 } from '../core/config-schema.js';
 import { CORE_WORKFLOWS, ALL_WORKFLOWS, getProfileWorkflows } from '../core/profiles.js';
-import { OPENSPEC_DIR_NAME } from '../core/config.js';
+import { CODESPEC_DIR_NAME } from '../core/config.js';
 import { hasProjectConfigDrift } from '../core/profile-sync-drift.js';
 
 type ProfileAction = 'both' | 'delivery' | 'workflows' | 'keep';
@@ -84,7 +84,7 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
   },
   onboard: {
     name: '入门指南',
-    description: 'OpenSDD 入门引导流程',
+    description: 'CodeSpec 入门引导流程',
   },
 };
 
@@ -191,14 +191,14 @@ function maybeWarnConfigDrift(
   state: ProfileState,
   colorize: (message: string) => string
 ): void {
-  const openspecDir = path.join(projectDir, OPENSPEC_DIR_NAME);
-  if (!fs.existsSync(openspecDir)) {
+  const codespecDir = path.join(projectDir, CODESPEC_DIR_NAME);
+  if (!fs.existsSync(codespecDir)) {
     return;
   }
   if (!hasProjectConfigDrift(projectDir, state.workflows, state.delivery)) {
     return;
   }
-  console.log(colorize('警告：全局配置未应用于此项目。请运行 `opensdd update` 来同步。'));
+  console.log(colorize('警告：全局配置未应用于此项目。请运行 `codespec update` 来同步。'));
 }
 
 /**
@@ -209,7 +209,7 @@ function maybeWarnConfigDrift(
 export function registerConfigCommand(program: Command): void {
   const configCmd = program
     .command('config')
-    .description('查看并修改全局 OpenSDD 配置')
+    .description('查看并修改全局 CodeSpec 配置')
     .option('--scope <scope>', '配置作用域（目前仅支持 "global"）')
     .hook('preAction', (thisCommand) => {
       const opts = thisCommand.opts();
@@ -299,7 +299,7 @@ export function registerConfigCommand(program: Command): void {
       if (!keyValidation.valid && !allowUnknown) {
         const reason = keyValidation.reason ? ` ${keyValidation.reason}。` : '';
         console.error(`错误：无效的配置键 "${key}"。${reason}`);
-        console.error('使用 "opensdd config list" 查看可用键。');
+        console.error('使用 "codespec config list" 查看可用键。');
         console.error('传递 --allow-unknown 以跳过此检查。');
         process.exitCode = 1;
         return;
@@ -354,7 +354,7 @@ export function registerConfigCommand(program: Command): void {
     .action(async (options: { all?: boolean; yes?: boolean }) => {
       if (!options.all) {
         console.error('错误：重置时必须指定 --all 参数');
-        console.error('用法：opensdd config reset --all [-y]');
+        console.error('用法：codespec config reset --all [-y]');
         process.exitCode = 1;
         return;
       }
@@ -454,14 +454,14 @@ export function registerConfigCommand(program: Command): void {
     .command('profile [preset]')
     .description('配置工作流档案（交互式选择器或预设快捷方式）')
     .action(async (preset?: string) => {
-      // Preset shortcut: `opensdd config profile core`
+      // Preset shortcut: `codespec config profile core`
       if (preset === 'core') {
         const config = getGlobalConfig();
         config.profile = 'core';
         config.workflows = [...CORE_WORKFLOWS];
         // Preserve delivery setting
         saveGlobalConfig(config);
-        console.log('配置已更新。请在您的项目中运行 `opensdd update` 来应用。');
+        console.log('配置已更新。请在您的项目中运行 `codespec update` 来应用。');
         return;
       }
 
@@ -473,7 +473,7 @@ export function registerConfigCommand(program: Command): void {
 
       // Non-interactive check
       if (!process.stdout.isTTY) {
-        console.error('需要交互模式。使用 `opensdd config profile core` 或通过环境/标志设置配置。');
+        console.error('需要交互模式。使用 `codespec config profile core` 或通过环境/标志设置配置。');
         process.exitCode = 1;
         return;
       }
@@ -611,10 +611,10 @@ export function registerConfigCommand(program: Command): void {
         config.workflows = nextState.workflows;
         saveGlobalConfig(config);
 
-        // Check if inside an OpenSDD project
+        // Check if inside an CodeSpec project
         const projectDir = process.cwd();
-        const openspecDir = path.join(projectDir, OPENSPEC_DIR_NAME);
-        if (fs.existsSync(openspecDir)) {
+        const codespecDir = path.join(projectDir, CODESPEC_DIR_NAME);
+        if (fs.existsSync(codespecDir)) {
           const applyNow = await confirm({
             message: '立即将更改应用到此项目？',
             default: true,
@@ -622,17 +622,17 @@ export function registerConfigCommand(program: Command): void {
 
           if (applyNow) {
             try {
-              execSync('npx opensdd update', { stdio: 'inherit', cwd: projectDir });
-              console.log('请在其他项目中运行 `opensdd update` 来应用。');
+              execSync('npx codespec update', { stdio: 'inherit', cwd: projectDir });
+              console.log('请在其他项目中运行 `codespec update` 来应用。');
             } catch {
-              console.error('`opensdd update` 失败。请手动运行以应用档案变更。');
+              console.error('`codespec update` 失败。请手动运行以应用档案变更。');
               process.exitCode = 1;
             }
             return;
           }
         }
 
-        console.log('配置已更新。请在您的项目中运行 `opensdd update` 来应用。');
+        console.log('配置已更新。请在您的项目中运行 `codespec update` 来应用。');
       } catch (error) {
         if (isPromptCancellationError(error)) {
           console.log('档案配置已取消。');

@@ -79,13 +79,13 @@ export class ListCommand {
     const { sort = 'recent', json = false } = options;
 
     if (mode === 'changes') {
-      const changesDir = path.join(targetPath, 'openspec', 'changes');
+      const changesDir = path.join(targetPath, 'codespec', 'changes');
 
       // Check if changes directory exists
       try {
         await fs.access(changesDir);
       } catch {
-        throw new Error("未找到OpenSDD更改目录。请先运行 'opensdd init'。");
+        throw new Error("未找到CodeSpec更改目录。请先运行 'codespec init'。");
       }
 
       // Get all directories in changes (excluding archive)
@@ -152,7 +152,7 @@ export class ListCommand {
     }
 
     // specs mode
-    const specsDir = path.join(targetPath, 'openspec', 'specs');
+    const specsDir = path.join(targetPath, 'codespec', 'specs');
     try {
       await fs.access(specsDir);
     } catch {

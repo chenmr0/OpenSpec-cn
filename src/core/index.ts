@@ -1,4 +1,4 @@
-// Core OpenSDD logic will be implemented here
+// Core CodeSpec logic will be implemented here
 export {
   GLOBAL_CONFIG_DIR_NAME,
   GLOBAL_CONFIG_FILE_NAME,

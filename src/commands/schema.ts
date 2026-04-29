@@ -704,11 +704,11 @@ export function registerSchemaCommand(program: Command): void {
               console.log(JSON.stringify({
                 created: false,
                 error: `Schema '${name}' 已存在`,
-                suggestion: '使用 --force 覆盖或使用 "opensdd schema fork" 进行复制',
+                suggestion: '使用 --force 覆盖或使用 "codespec schema fork" 进行复制',
               }, null, 2));
             } else {
               console.error(`错误：Schema '${name}' 已存在于 ${schemaDir}`);
-              console.error('使用 --force 覆盖或使用 "opensdd schema fork" 进行复制');
+              console.error('使用 --force 覆盖或使用 "codespec schema fork" 进行复制');
             }
             process.exitCode = 1;
             return;
@@ -862,7 +862,7 @@ export function registerSchemaCommand(program: Command): void {
 
         // Update config if --default
         if (options?.default) {
-          const configPath = path.join(projectRoot, 'openspec', 'config.yaml');
+          const configPath = path.join(projectRoot, 'codespec', 'config.yaml');
 
           if (fs.existsSync(configPath)) {
             const { parse: parseYaml, stringify: stringifyYaml2 } = await import('yaml');
@@ -899,7 +899,7 @@ export function registerSchemaCommand(program: Command): void {
           console.log(`\n后续步骤:`);
           console.log(`  1. 编辑 ${schemaDir}/schema.yaml 以自定义 Artifact`);
           console.log(`  2. 修改 Schema 目录中的模板`);
-          console.log(`  3. 使用命令: opensdd new --schema ${name}`);
+          console.log(`  3. 使用命令: codespec new --schema ${name}`);
         }
       } catch (error) {
         if (spinner) spinner.fail(`创建失败`);

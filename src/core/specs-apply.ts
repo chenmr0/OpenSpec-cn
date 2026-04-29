@@ -361,7 +361,7 @@ export async function writeUpdatedSpec(
   await fs.writeFile(update.target, rebuilt);
 
   const specName = path.basename(path.dirname(update.target));
-  console.log(`应用变更到 openspec/specs/${specName}/spec.md:`);
+  console.log(`应用变更到 codespec/specs/${specName}/spec.md:`);
   if (counts.added) console.log(`  + 新增 ${counts.added} 条`);
   if (counts.modified) console.log(`  ~ 修改 ${counts.modified} 条`);
   if (counts.removed) console.log(`  - 删除 ${counts.removed} 条`);
@@ -393,8 +393,8 @@ export async function applySpecs(
     silent?: boolean;
   } = {}
 ): Promise<SpecsApplyOutput> {
-  const changeDir = path.join(projectRoot, 'openspec', 'changes', changeName);
-  const mainSpecsDir = path.join(projectRoot, 'openspec', 'specs');
+  const changeDir = path.join(projectRoot, 'codespec', 'changes', changeName);
+  const mainSpecsDir = path.join(projectRoot, 'codespec', 'specs');
 
   // Verify change exists
   try {
@@ -460,14 +460,14 @@ export async function applySpecs(
       await fs.writeFile(p.update.target, p.rebuilt);
 
       if (!options.silent) {
-        console.log(`应用变更到 openspec/specs/${capability}/spec.md:`);
+        console.log(`应用变更到 codespec/specs/${capability}/spec.md:`);
         if (p.counts.added) console.log(`  + 新增 ${p.counts.added} 条`);
         if (p.counts.modified) console.log(`  ~ 修改 ${p.counts.modified} 条`);
         if (p.counts.removed) console.log(`  - 删除 ${p.counts.removed} 条`);
         if (p.counts.renamed) console.log(`  → 重命名 ${p.counts.renamed} 条`);
       }
     } else if (!options.silent) {
-      console.log(`将应用变更到 openspec/specs/${capability}/spec.md:`);
+      console.log(`将应用变更到 codespec/specs/${capability}/spec.md:`);
       if (p.counts.added) console.log(`  + 新增 ${p.counts.added} 条`);
       if (p.counts.modified) console.log(`  ~ 修改 ${p.counts.modified} 条`);
       if (p.counts.removed) console.log(`  - 删除 ${p.counts.removed} 条`);

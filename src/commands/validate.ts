@@ -95,10 +95,10 @@ export class ValidateCommand {
 
   private printNonInteractiveHint(): void {
     console.error('没有要验证的内容。请尝试以下之一：');
-    console.error('  opensdd validate --all');
-    console.error('  opensdd validate --changes');
-    console.error('  opensdd validate --specs');
-    console.error('  opensdd validate <项目名称>');
+    console.error('  codespec validate --all');
+    console.error('  codespec validate --changes');
+    console.error('  codespec validate --specs');
+    console.error('  codespec validate <项目名称>');
     console.error('或在交互式终端中运行。');
   }
 
@@ -119,7 +119,7 @@ export class ValidateCommand {
 
     if (!opts.typeOverride && isChange && isSpec) {
       console.error(`模糊的项目 '${itemName}' 同时匹配变更和规范。`);
-      console.error('传递 --type change|spec，或使用：opensdd change validate / opensdd spec validate');
+      console.error('传递 --type change|spec，或使用：codespec change validate / codespec spec validate');
       process.exitCode = 1;
       return;
     }
@@ -130,7 +130,7 @@ export class ValidateCommand {
   private async validateByType(type: ItemType, id: string, opts: { strict: boolean; json: boolean }): Promise<void> {
     const validator = new Validator(opts.strict);
     if (type === 'change') {
-      const changeDir = path.join(process.cwd(), 'openspec', 'changes', id);
+      const changeDir = path.join(process.cwd(), 'codespec', 'changes', id);
       const start = Date.now();
       const report = await validator.validateChangeDeltaSpecs(changeDir);
       const durationMs = Date.now() - start;
@@ -139,7 +139,7 @@ export class ValidateCommand {
       process.exitCode = report.valid ? 0 : 1;
       return;
     }
-    const file = path.join(process.cwd(), 'openspec', 'specs', id, 'spec.md');
+    const file = path.join(process.cwd(), 'codespec', 'specs', id, 'spec.md');
     const start = Date.now();
     const report = await validator.validateSpec(file);
     const durationMs = Date.now() - start;
@@ -171,7 +171,7 @@ export class ValidateCommand {
     if (type === 'change') {
       bullets.push('- 确保变更在specs/中有增量：使用标题## 新增|修改|移除|重命名需求');
       bullets.push('- 每个需求必须至少包含一个#### 场景:块');
-      bullets.push('- 调试解析的增量：opensdd change show <id> --json --deltas-only');
+      bullets.push('- 调试解析的增量：codespec change show <id> --json --deltas-only');
     } else {
       bullets.push('- 确保规范包含## 目的和## 需求部分');
       bullets.push('- 每个需求必须至少包含一个#### 场景:块');
@@ -190,14 +190,14 @@ export class ValidateCommand {
 
     const DEFAULT_CONCURRENCY = 6;
     const maxSuggestions = 5; // used by nearestMatches
-    const concurrency = normalizeConcurrency(opts.concurrency) ?? normalizeConcurrency(process.env.OPENSPEC_CONCURRENCY) ?? DEFAULT_CONCURRENCY;
+    const concurrency = normalizeConcurrency(opts.concurrency) ?? normalizeConcurrency(process.env.CODESPEC_CONCURRENCY) ?? DEFAULT_CONCURRENCY;
     const validator = new Validator(opts.strict);
     const queue: Array<() => Promise<BulkItemResult>> = [];
 
     for (const id of changeIds) {
       queue.push(async () => {
         const start = Date.now();
-        const changeDir = path.join(process.cwd(), 'openspec', 'changes', id);
+        const changeDir = path.join(process.cwd(), 'codespec', 'changes', id);
         const report = await validator.validateChangeDeltaSpecs(changeDir);
         const durationMs = Date.now() - start;
         return { id, type: 'change' as const, valid: report.valid, issues: report.issues, durationMs };
@@ -206,7 +206,7 @@ export class ValidateCommand {
     for (const id of specIds) {
       queue.push(async () => {
         const start = Date.now();
-        const file = path.join(process.cwd(), 'openspec', 'specs', id, 'spec.md');
+        const file = path.join(process.cwd(), 'codespec', 'specs', id, 'spec.md');
         const report = await validator.validateSpec(file);
         const durationMs = Date.now() - start;
         return { id, type: 'spec' as const, valid: report.valid, issues: report.issues, durationMs };

@@ -31,7 +31,7 @@ function isGhAuthenticated(): boolean {
 }
 
 /**
- * Get OpenSDD version from package.json
+ * Get CodeSpec version from package.json
  */
 function getVersion(): string {
   try {
@@ -65,7 +65,7 @@ function generateMetadata(): string {
   const timestamp = getTimestamp();
 
   return `---
-通过 OpenSDD CLI 提交
+通过 CodeSpec CLI 提交
 - 版本: ${version}
 - 平台: ${platform}
 - 时间戳: ${timestamp}`;
@@ -98,7 +98,7 @@ function formatBody(bodyText?: string): string {
  * Generate a pre-filled GitHub issue URL for manual submission
  */
 function generateManualSubmissionUrl(title: string, body: string): string {
-  const repo = 'studyzy/OpenSDD';
+  const repo = 'studyzy/CodeSpec';
   const encodedTitle = encodeURIComponent(title);
   const encodedBody = encodeURIComponent(body);
   const encodedLabels = encodeURIComponent('feedback');
@@ -130,7 +130,7 @@ function submitViaGhCli(title: string, body: string): void {
         'issue',
         'create',
         '--repo',
-        'studyzy/OpenSDD',
+        'studyzy/CodeSpec',
         '--title',
         title,
         '--body',

@@ -1,11 +1,11 @@
-export const OPENSPEC_DIR_NAME = 'openspec';
+export const CODESPEC_DIR_NAME = 'codespec';
 
-export const OPENSPEC_MARKERS = {
-  start: '<!-- OPENSPEC:START -->',
-  end: '<!-- OPENSPEC:END -->'
+export const CODESPEC_MARKERS = {
+  start: '<!-- CODESPEC:START -->',
+  end: '<!-- CODESPEC:END -->'
 };
 
-export interface OpenSpecConfig {
+export interface CodeSpecConfig {
   aiTools: string[];
 }
 

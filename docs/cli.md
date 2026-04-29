@@ -1,12 +1,12 @@
 # CLI 参考手册
 
-OpenSDD CLI（`opensdd`）提供一组终端命令，用于项目初始化、校验、状态查看与管理。这些命令与 AI 的斜杠命令（如 `/opsx:propose`）相互补充；斜杠命令详见 [命令](commands.md)。
+CodeSpec CLI（`codespec`）提供一组终端命令，用于项目初始化、校验、状态查看与管理。这些命令与 AI 的斜杠命令（如 `/opsx:propose`）相互补充；斜杠命令详见 [命令](commands.md)。
 
 ## 总览
 
 | 分类 | 命令 | 用途 |
 |----------|----------|---------|
-| **初始化** | `init`, `update` | 在项目中初始化并更新 OpenSDD |
+| **初始化** | `init`, `update` | 在项目中初始化并更新 CodeSpec |
 | **浏览** | `list`, `view`, `show` | 浏览变更（changes）与规范（specs） |
 | **校验** | `validate` | 检查变更与规范是否存在问题 |
 | **生命周期** | `archive` | 归档已完成的变更 |
@@ -27,11 +27,11 @@ OpenSDD CLI（`opensdd`）提供一组终端命令，用于项目初始化、校
 
 | 命令 | 用途 |
 |---------|---------|
-| `opensdd init` | 初始化项目（交互式提示） |
-| `opensdd view` | 交互式仪表盘 |
-| `opensdd config edit` | 在编辑器中打开配置 |
-| `opensdd feedback` | 通过 GitHub 提交反馈 |
-| `opensdd completion install` | 安装 Shell 补全 |
+| `codespec init` | 初始化项目（交互式提示） |
+| `codespec view` | 交互式仪表盘 |
+| `codespec config edit` | 在编辑器中打开配置 |
+| `codespec feedback` | 通过 GitHub 提交反馈 |
+| `codespec completion install` | 安装 Shell 补全 |
 
 ### 兼容 Agent 的命令
 
@@ -39,13 +39,13 @@ OpenSDD CLI（`opensdd`）提供一组终端命令，用于项目初始化、校
 
 | 命令 | 人类使用 | Agent 使用 |
 |---------|-----------|-----------|
-| `opensdd list` | 浏览变更/规范 | `--json` 输出结构化数据 |
-| `opensdd show <item>` | 查看内容 | `--json` 便于解析 |
-| `opensdd validate` | 检查问题 | `--all --json` 批量校验 |
-| `opensdd status` | 查看制品进度 | `--json` 输出结构化状态 |
-| `opensdd instructions` | 获取下一步指引 | `--json` 获取 Agent 指令 |
-| `opensdd templates` | 查询模板路径 | `--json` 解析模板解析结果 |
-| `opensdd schemas` | 列出可用 schema | `--json` 发现 schema |
+| `codespec list` | 浏览变更/规范 | `--json` 输出结构化数据 |
+| `codespec show <item>` | 查看内容 | `--json` 便于解析 |
+| `codespec validate` | 检查问题 | `--all --json` 批量校验 |
+| `codespec status` | 查看制品进度 | `--json` 输出结构化状态 |
+| `codespec instructions` | 获取下一步指引 | `--json` 获取 Agent 指令 |
+| `codespec templates` | 查询模板路径 | `--json` 解析模板解析结果 |
+| `codespec schemas` | 列出可用 schema | `--json` 发现 schema |
 
 ---
 
@@ -63,14 +63,14 @@ OpenSDD CLI（`opensdd`）提供一组终端命令，用于项目初始化、校
 
 ## 初始化命令
 
-### `opensdd init`
+### `codespec init`
 
-在你的项目中初始化 OpenSDD。会创建目录结构并配置 AI 工具集成。
+在你的项目中初始化 CodeSpec。会创建目录结构并配置 AI 工具集成。
 
 默认行为使用全局配置的默认值：配置文件 `core`，交付方式 `both`，工作流 `propose, explore, apply, archive`。
 
 ```
-opensdd init [path] [options]
+codespec init [path] [options]
 ```
 
 **参数：**
@@ -87,7 +87,7 @@ opensdd init [path] [options]
 | `--force` | 无需提示，自动清理遗留文件 |
 | `--profile <profile>` | 覆盖全局配置文件（`core` 或 `custom`） |
 
-`--profile custom` 使用当前在全局配置中选定的工作流（`opensdd config profile`）。
+`--profile custom` 使用当前在全局配置中选定的工作流（`codespec config profile`）。
 
 **支持的工具 ID（`--tools`）：** `amazon-q`, `antigravity`, `auggie`, `bob`, `claude`, `cline`, `codex`, `codebuddy`, `continue`, `costrict`, `crush`, `cursor`, `factory`, `gemini`, `github-copilot`, `iflow`, `junie`, `kilocode`, `kiro`, `opencode`, `pi`, `qoder`, `lingma`, `qwen`, `roocode`, `trae`, `windsurf`
 
@@ -95,28 +95,28 @@ opensdd init [path] [options]
 
 ```bash
 # 交互式初始化
-opensdd init
+codespec init
 
 # 在指定目录初始化
-opensdd init ./my-project
+codespec init ./my-project
 
 # 非交互式：配置 Claude 与 Cursor
-opensdd init --tools claude,cursor
+codespec init --tools claude,cursor
 
 # 配置所有支持的工具
-opensdd init --tools all
+codespec init --tools all
 
 # 覆盖此次运行的配置文件
-opensdd init --profile core
+codespec init --profile core
 
 # 跳过提示并自动清理旧文件
-opensdd init --force
+codespec init --force
 ```
 
 **会创建的内容：**
 
 ```
-openspec/
+codespec/
 ├── specs/              # 规范（source of truth）
 ├── changes/            # 变更（proposed changes）
 └── config.yaml         # 项目配置
@@ -129,12 +129,12 @@ openspec/
 
 ---
 
-### `opensdd update`
+### `codespec update`
 
-升级 CLI 后更新 OpenSDD 指令文件。使用当前全局配置文件、选定的工作流和交付方式重新生成 AI 工具配置文件。
+升级 CLI 后更新 CodeSpec 指令文件。使用当前全局配置文件、选定的工作流和交付方式重新生成 AI 工具配置文件。
 
 ```
-opensdd update [path] [options]
+codespec update [path] [options]
 ```
 
 **参数：**
@@ -153,20 +153,20 @@ opensdd update [path] [options]
 
 ```bash
 # npm 升级后刷新指令文件
-npm update @fission-ai/openspec
-opensdd update
+npm update @fission-ai/codespec
+codespec update
 ```
 
 ---
 
 ## 浏览命令
 
-### `opensdd list`
+### `codespec list`
 
 列出项目中的变更（changes）或规范（specs）。
 
 ```
-opensdd list [options]
+codespec list [options]
 ```
 
 **选项：**
@@ -182,13 +182,13 @@ opensdd list [options]
 
 ```bash
 # 列出所有进行中的变更
-opensdd list
+codespec list
 
 # 列出所有规范
-opensdd list --specs
+codespec list --specs
 
 # 脚本使用的 JSON 输出
-opensdd list --json
+codespec list --json
 ```
 
 **输出（文本）：**
@@ -201,24 +201,24 @@ opensdd list --json
 
 ---
 
-### `opensdd view`
+### `codespec view`
 
 打开交互式仪表盘，用于浏览项目中的规范（specs）与变更（changes）。
 
 ```
-opensdd view
+codespec view
 ```
 
 会启动一个基于终端的交互界面，方便你在项目规范与变更之间快速导航。
 
 ---
 
-### `opensdd show`
+### `codespec show`
 
 查看某个变更（change）或规范（spec）的详细内容。
 
 ```
-opensdd show [item-name] [options]
+codespec show [item-name] [options]
 ```
 
 **参数：**
@@ -253,28 +253,28 @@ opensdd show [item-name] [options]
 
 ```bash
 # 交互式选择
-opensdd show
+codespec show
 
 # 查看指定变更
-opensdd show add-dark-mode
+codespec show add-dark-mode
 
 # 查看指定规范
-opensdd show auth --type spec
+codespec show auth --type spec
 
 # 以 JSON 输出便于解析
-opensdd show add-dark-mode --json
+codespec show add-dark-mode --json
 ```
 
 ---
 
 ## 校验命令
 
-### `opensdd validate`
+### `codespec validate`
 
 检查变更与规范是否存在结构性问题。
 
 ```
-opensdd validate [item-name] [options]
+codespec validate [item-name] [options]
 ```
 
 **参数：**
@@ -293,26 +293,26 @@ opensdd validate [item-name] [options]
 | `--type <type>` | 当名称不唯一时指定类型：`change` 或 `spec` |
 | `--strict` | 启用严格校验模式 |
 | `--json` | 以 JSON 输出 |
-| `--concurrency <n>` | 最大并发校验数（默认：6，或使用环境变量 `OPENSPEC_CONCURRENCY`） |
+| `--concurrency <n>` | 最大并发校验数（默认：6，或使用环境变量 `CODESPEC_CONCURRENCY`） |
 | `--no-interactive` | 禁用交互式提示 |
 
 **示例：**
 
 ```bash
 # 交互式校验
-opensdd validate
+codespec validate
 
 # 校验指定变更
-opensdd validate add-dark-mode
+codespec validate add-dark-mode
 
 # 校验所有变更
-opensdd validate --changes
+codespec validate --changes
 
 # 校验全部内容并以 JSON 输出（用于 CI/脚本）
-opensdd validate --all --json
+codespec validate --all --json
 
 # 严格校验并提高并发度
-opensdd validate --all --strict --concurrency 12
+codespec validate --all --strict --concurrency 12
 ```
 
 **输出（文本）：**
@@ -352,12 +352,12 @@ opensdd validate --all --strict --concurrency 12
 
 ## 生命周期命令
 
-### `opensdd archive`
+### `codespec archive`
 
 归档已完成的变更，并将增量规范（delta specs）合并到主规范中。
 
 ```
-opensdd archive [change-name] [options]
+codespec archive [change-name] [options]
 ```
 
 **参数：**
@@ -378,24 +378,24 @@ opensdd archive [change-name] [options]
 
 ```bash
 # 交互式归档
-opensdd archive
+codespec archive
 
 # 归档指定变更
-opensdd archive add-dark-mode
+codespec archive add-dark-mode
 
 # 无提示归档（CI/脚本）
-opensdd archive add-dark-mode --yes
+codespec archive add-dark-mode --yes
 
 # 归档不影响规范的工具类变更
-opensdd archive update-ci-config --skip-specs
+codespec archive update-ci-config --skip-specs
 ```
 
 **它会做什么：**
 
 1. 校验变更（除非使用 `--no-validate`）
 2. 询问确认（除非使用 `--yes`）
-3. 将增量规范合并到 `openspec/specs/`
-4. 将变更目录移动到 `openspec/changes/archive/YYYY-MM-DD-<name>/`
+3. 将增量规范合并到 `codespec/specs/`
+4. 将变更目录移动到 `codespec/changes/archive/YYYY-MM-DD-<name>/`
 
 ---
 
@@ -403,12 +403,12 @@ opensdd archive update-ci-config --skip-specs
 
 这些命令支持面向制品的 OPSX 工作流。对于人类检查进度和 Agent 确定下一步都很有用。
 
-### `opensdd status`
+### `codespec status`
 
 查看某个变更的制品（artifact）完成状态。
 
 ```
-opensdd status [options]
+codespec status [options]
 ```
 
 **选项：**
@@ -423,13 +423,13 @@ opensdd status [options]
 
 ```bash
 # 交互式查看状态
-opensdd status
+codespec status
 
 # 查看指定变更的状态
-opensdd status --change add-dark-mode
+codespec status --change add-dark-mode
 
 # 以 JSON 输出供 Agent/脚本使用
-opensdd status --change add-dark-mode --json
+codespec status --change add-dark-mode --json
 ```
 
 **输出（文本）：**
@@ -464,12 +464,12 @@ opensdd status --change add-dark-mode --json
 
 ---
 
-### `opensdd instructions`
+### `codespec instructions`
 
 获取创建制品（artifact）或执行任务（tasks）的详细指引。供 AI Agent 了解下一步该创建什么内容时使用。
 
 ```
-opensdd instructions [artifact] [options]
+codespec instructions [artifact] [options]
 ```
 
 **参数：**
@@ -492,16 +492,16 @@ opensdd instructions [artifact] [options]
 
 ```bash
 # 获取下一个制品的指引
-opensdd instructions --change add-dark-mode
+codespec instructions --change add-dark-mode
 
 # 获取特定制品的指引
-opensdd instructions design --change add-dark-mode
+codespec instructions design --change add-dark-mode
 
 # 获取任务执行指引
-opensdd instructions apply --change add-dark-mode
+codespec instructions apply --change add-dark-mode
 
 # 以 JSON 输出供 Agent 使用
-opensdd instructions design --change add-dark-mode --json
+codespec instructions design --change add-dark-mode --json
 ```
 
 **输出包含：**
@@ -513,12 +513,12 @@ opensdd instructions design --change add-dark-mode --json
 
 ---
 
-### `opensdd templates`
+### `codespec templates`
 
 显示某个 schema 中所有制品（artifact）的模板文件路径。
 
 ```
-opensdd templates [options]
+codespec templates [options]
 ```
 
 **选项：**
@@ -532,13 +532,13 @@ opensdd templates [options]
 
 ```bash
 # 显示默认 schema 的模板路径
-opensdd templates
+codespec templates
 
 # 显示自定义 schema 的模板
-opensdd templates --schema my-workflow
+codespec templates --schema my-workflow
 
 # 以 JSON 输出供程序化使用
-opensdd templates --json
+codespec templates --json
 ```
 
 **输出（文本）：**
@@ -547,20 +547,20 @@ opensdd templates --json
 Schema: spec-driven
 
 Templates:
-  proposal  → ~/.openspec/schemas/spec-driven/templates/proposal.md
-  specs     → ~/.openspec/schemas/spec-driven/templates/specs.md
-  design    → ~/.openspec/schemas/spec-driven/templates/design.md
-  tasks     → ~/.openspec/schemas/spec-driven/templates/tasks.md
+  proposal  → ~/.codespec/schemas/spec-driven/templates/proposal.md
+  specs     → ~/.codespec/schemas/spec-driven/templates/specs.md
+  design    → ~/.codespec/schemas/spec-driven/templates/design.md
+  tasks     → ~/.codespec/schemas/spec-driven/templates/tasks.md
 ```
 
 ---
 
-### `opensdd schemas`
+### `codespec schemas`
 
 列出可用的工作流 schema，包含描述与制品流程。
 
 ```
-opensdd schemas [options]
+codespec schemas [options]
 ```
 
 **选项：**
@@ -572,7 +572,7 @@ opensdd schemas [options]
 **示例：**
 
 ```bash
-opensdd schemas
+codespec schemas
 ```
 
 **输出：**
@@ -595,12 +595,12 @@ opensdd schemas
 
 用于创建和管理自定义工作流 schema 的命令。
 
-### `opensdd schema init`
+### `codespec schema init`
 
 创建一个新的项目本地 schema。
 
 ```
-opensdd schema init <name> [options]
+codespec schema init <name> [options]
 ```
 
 **参数：**
@@ -624,10 +624,10 @@ opensdd schema init <name> [options]
 
 ```bash
 # 交互式创建 schema
-opensdd schema init research-first
+codespec schema init research-first
 
 # 非交互式创建，指定特定制品
-opensdd schema init rapid \
+codespec schema init rapid \
   --description "快速迭代工作流" \
   --artifacts "proposal,tasks" \
   --default
@@ -636,7 +636,7 @@ opensdd schema init rapid \
 **会创建的内容：**
 
 ```
-openspec/schemas/<name>/
+codespec/schemas/<name>/
 ├── schema.yaml           # Schema 定义
 └── templates/
     ├── proposal.md       # 每个制品的模板
@@ -647,12 +647,12 @@ openspec/schemas/<name>/
 
 ---
 
-### `opensdd schema fork`
+### `codespec schema fork`
 
 复制一个现有的 schema 到你的项目中进行自定义。
 
 ```
-opensdd schema fork <source> [name] [options]
+codespec schema fork <source> [name] [options]
 ```
 
 **参数：**
@@ -673,17 +673,17 @@ opensdd schema fork <source> [name] [options]
 
 ```bash
 # 复制内置的 spec-driven schema
-opensdd schema fork spec-driven my-workflow
+codespec schema fork spec-driven my-workflow
 ```
 
 ---
 
-### `opensdd schema validate`
+### `codespec schema validate`
 
 校验 schema 的结构与模板。
 
 ```
-opensdd schema validate [name] [options]
+codespec schema validate [name] [options]
 ```
 
 **参数：**
@@ -703,20 +703,20 @@ opensdd schema validate [name] [options]
 
 ```bash
 # 校验指定 schema
-opensdd schema validate my-workflow
+codespec schema validate my-workflow
 
 # 校验所有 schema
-opensdd schema validate
+codespec schema validate
 ```
 
 ---
 
-### `opensdd schema which`
+### `codespec schema which`
 
 显示 schema 的解析来源（用于调试优先级）。
 
 ```
-opensdd schema which [name] [options]
+codespec schema which [name] [options]
 ```
 
 **参数：**
@@ -736,32 +736,32 @@ opensdd schema which [name] [options]
 
 ```bash
 # 检查 schema 的来源
-opensdd schema which spec-driven
+codespec schema which spec-driven
 ```
 
 **输出：**
 
 ```
 spec-driven 解析来源: package
-  来源: /usr/local/lib/node_modules/@fission-ai/openspec/schemas/spec-driven
+  来源: /usr/local/lib/node_modules/@fission-ai/codespec/schemas/spec-driven
 ```
 
 **Schema 优先级：**
 
-1. 项目：`openspec/schemas/<name>/`
-2. 用户：`~/.local/share/openspec/schemas/<name>/`
+1. 项目：`codespec/schemas/<name>/`
+2. 用户：`~/.local/share/codespec/schemas/<name>/`
 3. 包：内置 schema
 
 ---
 
 ## 配置命令
 
-### `opensdd config`
+### `codespec config`
 
-查看并修改全局 OpenSDD 配置。
+查看并修改全局 CodeSpec 配置。
 
 ```
-opensdd config <subcommand> [options]
+codespec config <subcommand> [options]
 ```
 
 **子命令：**
@@ -781,57 +781,57 @@ opensdd config <subcommand> [options]
 
 ```bash
 # 显示配置文件路径
-opensdd config path
+codespec config path
 
 # 列出所有设置
-opensdd config list
+codespec config list
 
 # 获取特定值
-opensdd config get user.name
+codespec config get user.name
 
 # 设置值
-opensdd config set user.name "我的名字"
+codespec config set user.name "我的名字"
 
 # 显式设置字符串值
-opensdd config set user.name "我的名字" --string
+codespec config set user.name "我的名字" --string
 
 # 移除自定义设置
-opensdd config unset user.name
+codespec config unset user.name
 
 # 重置所有配置
-opensdd config reset --all --yes
+codespec config reset --all --yes
 
 # 在编辑器中编辑配置
-opensdd config edit
+codespec config edit
 
 # 通过基于操作的向导配置配置文件
-opensdd config profile
+codespec config profile
 
 # 快速预设：切换工作流为 core（保持交付方式不变）
-opensdd config profile core
+codespec config profile core
 ```
 
-`opensdd config profile` 首先显示当前状态摘要，然后让你选择：
+`codespec config profile` 首先显示当前状态摘要，然后让你选择：
 - 更改交付方式 + 工作流
 - 仅更改交付方式
 - 仅更改工作流
 - 保持当前设置（退出）
 
 如果保持当前设置，不会写入任何更改，也不会显示更新提示。
-如果没有配置更改，但当前项目文件与全局配置文件/交付方式不同步，OpenSDD 会显示警告并建议运行 `opensdd update`。
+如果没有配置更改，但当前项目文件与全局配置文件/交付方式不同步，CodeSpec 会显示警告并建议运行 `codespec update`。
 按 `Ctrl+C` 也会干净地取消流程（无堆栈跟踪），并以退出码 `130` 退出。
-在工作流检查列表中，`[x]` 表示该工作流已在全局配置中选定。要将这些选择应用到项目文件，请运行 `opensdd update`（或在项目内时选择“立即将更改应用到此项目？”）。
+在工作流检查列表中，`[x]` 表示该工作流已在全局配置中选定。要将这些选择应用到项目文件，请运行 `codespec update`（或在项目内时选择“立即将更改应用到此项目？”）。
 
 **交互式示例：**
 
 ```bash
 # 仅更新交付方式
-opensdd config profile
+codespec config profile
 # 选择：仅更改交付方式
 # 选择交付方式：仅技能
 
 # 仅更新工作流
-opensdd config profile
+codespec config profile
 # 选择：仅更改工作流
 # 在检查列表中切换工作流，然后确认
 ```
@@ -840,12 +840,12 @@ opensdd config profile
 
 ## 实用工具命令
 
-### `opensdd feedback`
+### `codespec feedback`
 
-提交关于 OpenSDD 的反馈。会创建一个 GitHub issue。
+提交关于 CodeSpec 的反馈。会创建一个 GitHub issue。
 
 ```
-opensdd feedback <message> [options]
+codespec feedback <message> [options]
 ```
 
 **参数：**
@@ -865,18 +865,18 @@ opensdd feedback <message> [options]
 **示例：**
 
 ```bash
-opensdd feedback "添加自定义制品类型支持" \
+codespec feedback "添加自定义制品类型支持" \
   --body "我希望能够定义自己的制品类型，而不仅限于内置的类型。"
 ```
 
 ---
 
-### `opensdd completion`
+### `codespec completion`
 
-管理 OpenSDD CLI 的 Shell 自动补全。
+管理 CodeSpec CLI 的 Shell 自动补全。
 
 ```
-opensdd completion <subcommand> [shell]
+codespec completion <subcommand> [shell]
 ```
 
 **子命令：**
@@ -893,16 +893,16 @@ opensdd completion <subcommand> [shell]
 
 ```bash
 # 安装补全（自动检测 Shell）
-opensdd completion install
+codespec completion install
 
 # 为特定 Shell 安装
-opensdd completion install zsh
+codespec completion install zsh
 
 # 生成脚本用于手动安装
-opensdd completion generate bash > ~/.bash_completion.d/opensdd
+codespec completion generate bash > ~/.bash_completion.d/codespec
 
 # 卸载补全
-opensdd completion uninstall
+codespec completion uninstall
 ```
 
 ---
@@ -920,8 +920,8 @@ opensdd completion uninstall
 
 | 变量 | 描述 |
 |----------|-------------|
-| `OPENSPEC_CONCURRENCY` | 批量校验的默认并发数（默认：6） |
-| `EDITOR` 或 `VISUAL` | 用于 `opensdd config edit` 的编辑器 |
+| `CODESPEC_CONCURRENCY` | 批量校验的默认并发数（默认：6） |
+| `EDITOR` 或 `VISUAL` | 用于 `codespec config edit` 的编辑器 |
 | `NO_COLOR` | 设置时禁用彩色输出 |
 
 ---

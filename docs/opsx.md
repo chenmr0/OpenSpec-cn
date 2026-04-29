@@ -4,13 +4,13 @@
 
 ## 它是什么？
 
-OPSX 现在是 OpenSDD 的标准工作流。
+OPSX 现在是 CodeSpec 的标准工作流。
 
-它是 OpenSDD 变更的**灵活、迭代式工作流**。不再有僵化的阶段——你可以随时采取任何行动。
+它是 CodeSpec 变更的**灵活、迭代式工作流**。不再有僵化的阶段——你可以随时采取任何行动。
 
 ## 为什么存在
 
-传统的 OpenSDD 工作流程虽然可用，但它是**封闭的**：
+传统的 CodeSpec 工作流程虽然可用，但它是**封闭的**：
 
 - **指令是硬编码的**——埋在 TypeScript 中，你无法修改
 - **全有或全无**——一个大命令创建所有内容，无法单独测试各个部分
@@ -39,7 +39,7 @@ OPSX 现在是 OpenSDD 的标准工作流。
 **这适用于所有人：**
 - **团队**——创建符合实际工作方式的工作流
 - **高级用户**——调整提示词以获得更好的代码库 AI 输出
-- **OpenSDD 贡献者**——无需发布即可尝试新方法
+- **CodeSpec 贡献者**——无需发布即可尝试新方法
 
 我们都在学习什么方法最有效。OPSX 让我们一起学习。
 
@@ -59,15 +59,15 @@ OPSX 现在是 OpenSDD 的标准工作流。
 ## 设置
 
 ```bash
-# 确保已安装 opensdd — 技能会自动生成
-opensdd init
+# 确保已安装 codespec — 技能会自动生成
+codespec init
 ```
 
 这会在 `.claude/skills/`（或等效目录）中创建技能，AI 编码助手会自动检测这些技能。
 
-默认情况下，OpenSDD 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `opensdd config profile` 进行配置，然后运行 `opensdd update` 应用。
+默认情况下，CodeSpec 使用 `core` 工作流配置文件（`propose`、`explore`、`apply`、`archive`）。如果你需要扩展工作流命令（`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`），请通过 `codespec config profile` 进行配置，然后运行 `codespec update` 应用。
 
-在设置过程中，系统会提示你创建**项目配置**（`openspec/config.yaml`）。这是可选的，但建议创建。
+在设置过程中，系统会提示你创建**项目配置**（`codespec/config.yaml`）。这是可选的，但建议创建。
 
 ## 项目配置
 
@@ -75,10 +75,10 @@ opensdd init
 
 ### 创建配置
 
-配置在 `opensdd init` 期间创建，或手动创建：
+配置在 `codespec init` 期间创建，或手动创建：
 
 ```yaml
-# openspec/config.yaml
+# codespec/config.yaml
 schema: spec-driven
 
 context: |
@@ -109,8 +109,8 @@ rules:
 
 **模式优先级**（从高到低）：
 1. CLI 标志（`--schema <name>`）
-2. 变更元数据（变更目录中的 `.openspec.yaml`）
-3. 项目配置（`openspec/config.yaml`）
+2. 变更元数据（变更目录中的 `.codespec.yaml`）
+3. 项目配置（`codespec/config.yaml`）
 4. 默认值（`spec-driven`）
 
 **上下文注入：**
@@ -142,10 +142,10 @@ rules:
 
 **"规则中有未知的制品 ID：X"**
 - 检查制品 ID 是否与你的模式匹配（参见上面的列表）
-- 运行 `opensdd schemas --json` 查看每个模式的制品 ID
+- 运行 `codespec schemas --json` 查看每个模式的制品 ID
 
 **配置未生效：**
-- 确保文件位于 `openspec/config.yaml`（不是 `.yml`）
+- 确保文件位于 `codespec/config.yaml`（不是 `.yml`）
 - 使用验证器检查 YAML 语法
 - 配置更改会立即生效（无需重启）
 
@@ -301,7 +301,7 @@ rules:
 
 ## 有什么不同？
 
-| | Legacy (`/openspec:proposal`) | OPSX (`/opsx:*`) |
+| | Legacy (`/codespec:proposal`) | OPSX (`/opsx:*`) |
 |---|---|---|
 | **结构** | 一个大的提案文档 | 具有依赖关系的离散制品 |
 | **工作流** | 线性阶段：规划 → 实施 → 归档 | 灵活行动——随时做任何事情 |
@@ -374,7 +374,7 @@ rules:
 │   工具特定的配置器/适配器                                                     │
 │                    │                                                        │
 │                    ▼                                                        │
-│   生成的命令文件（.claude/commands/openspec/*.md）                             │
+│   生成的命令文件（.claude/commands/codespec/*.md）                             │
 │                                                                             │
 │   • 固定结构，无制品感知                                                       │
 │   • 更改需要代码修改 + 重新构建                                                 │
@@ -410,7 +410,7 @@ rules:
 │   └─────────────────────────────────────────────────────────────────────┘   │
 │                    │                                                        │
 │                    ▼                                                        │
-│   技能文件（.claude/skills/openspec-*/SKILL.md）                              │
+│   技能文件（.claude/skills/codespec-*/SKILL.md）                              │
 │                                                                             │
 │   • 跨编辑器兼容（Claude Code、Cursor、Windsurf）                              │
 │   │ • 技能查询 CLI 以获取结构化数据                                         │   │
@@ -490,7 +490,7 @@ rules:
   ┌──────────────────────────────────────────────────────────────────────────┐
   │  步骤 1：查询当前状态                                                       │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ opensdd status --change "add-auth" --json                   │  │
+  │  │  $ codespec status --change "add-auth" --json                   │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "artifacts": [                                                  │  │
@@ -504,7 +504,7 @@ rules:
   │                                                                          │
   │  步骤 2：获取就绪制品的丰富指令                                               │
   │  ┌────────────────────────────────────────────────────────────────────┐  │
-  │  │  $ opensdd instructions specs --change "add-auth" --json       │  │
+  │  │  $ codespec instructions specs --change "add-auth" --json       │  │
   │  │                                                                    │  │
   │  │  {                                                                 │  │
   │  │    "template": "# Specification\n\n## ADDED Requirements...",      │  │
@@ -564,23 +564,23 @@ rules:
 
 ```bash
 # 从零开始创建新模式（交互式）
-opensdd schema init my-workflow
+codespec schema init my-workflow
 
 # 或分叉现有模式作为起点
-opensdd schema fork spec-driven my-workflow
+codespec schema fork spec-driven my-workflow
 
 # 验证模式结构
-opensdd schema validate my-workflow
+codespec schema validate my-workflow
 
 # 查看模式的解析位置（对调试有用）
-opensdd schema which my-workflow
+codespec schema which my-workflow
 ```
 
-模式存储在 `openspec/schemas/`（项目本地，版本控制）或 `~/.local/share/openspec/schemas/`（用户全局）。
+模式存储在 `codespec/schemas/`（项目本地，版本控制）或 `~/.local/share/codespec/schemas/`（用户全局）。
 
 **模式结构：**
 ```
-openspec/schemas/research-first/
+codespec/schemas/research-first/
 ├── schema.yaml
 └── templates/
     ├── research.md
@@ -629,19 +629,19 @@ artifacts:
 
 ```bash
 # 列出可用模式
-opensdd schemas
+codespec schemas
 
 # 查看所有模式及其解析来源
-opensdd schema which --all
+codespec schema which --all
 
 # 交互式创建新模式
-opensdd schema init my-workflow
+codespec schema init my-workflow
 
 # 分叉现有模式以进行定制
-opensdd schema fork spec-driven my-workflow
+codespec schema fork spec-driven my-workflow
 
 # 使用前验证模式结构
-opensdd schema validate my-workflow
+codespec schema validate my-workflow
 ```
 
 ## 技巧
@@ -650,10 +650,10 @@ opensdd schema validate my-workflow
 - 当你知道想要什么时使用 `/opsx:ff`，探索时使用 `/opsx:continue`
 - 在 `/opsx:apply` 期间，如果有问题——修复制品，然后继续
 - 任务通过 `tasks.md` 中的复选框跟踪进度
-- 随时检查状态：`opensdd status --change "name"`
+- 随时检查状态：`codespec status --change "name"`
 
 ## 反馈
 
 这还比较粗糙。这是有意为之——我们正在学习什么有效。
 
-发现了错误？有想法？在 [Discord](https://discord.gg/YctCnvvshC) 上加入我们或在 [GitHub](https://github.com/Fission-AI/openspec/issues) 上提交问题。
+发现了错误？有想法？在 [Discord](https://discord.gg/YctCnvvshC) 上加入我们或在 [GitHub](https://github.com/Fission-AI/codespec/issues) 上提交问题。

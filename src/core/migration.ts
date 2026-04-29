@@ -127,5 +127,5 @@ export function migrateIfNeeded(projectPath: string, tools: AIToolOption[]): voi
   saveGlobalConfig(config);
 
   // console.log(`已迁移：自定义配置，共 ${installedWorkflows.length} 个工作流程`);
-  // console.log("本版本新增：/opsx:propose。尝试 'opensdd config profile core' 获得精简体验。");
+  // console.log("本版本新增：/opsx:propose。尝试 'codespec config profile core' 获得精简体验。");
 }

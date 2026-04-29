@@ -56,17 +56,17 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
 };
 
 const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
-  'openspec-explore': '26400d51c96d845fbd539851608389a9f103d33367c90c39181db89ba3d92ec7',
-  'openspec-new-change': 'f1664a39db007a5588d9b5a65cc2521e0db7cc5062c86afd7e45fff3bc3fbef7',
-  'openspec-continue-change': 'd84fe1d671069f69efb7c29f95317bdb9bda06dc24473ab7f37b5d8860ebf6b0',
-  'openspec-apply-change': 'c09a7017e49b0eba0723ad888a75cdda99b2fd4fdd6ec3739327393f81184d2b',
-  'openspec-ff-change': '25b7914389e73f9759ff6b30064f447e5548a3a5c4314b419fdf2ff8a987c78d',
-  'openspec-sync-specs': '5006fa4c8da364b5d7717e1daa97c2d51355e8734e55e6f258009598e0f88163',
-  'openspec-archive-change': 'b3cdfa63b21e253e3398a137c787b4ac3a1bb6fb81b1cef2398544f709add35b',
-  'openspec-bulk-archive-change': '736c22b72861a2ee228cb58fd737a08f1f3e1049a536d3eed5655be7a852b005',
-  'openspec-verify-change': '7814417f205a9178eecf4c37f32587924c814175ff8cedcfe427084242cf6f27',
-  'openspec-onboard': '0f8da5681b93fe7848159dd560a117a4d0d5821cdbeede0128263a86a06db1bd',
-  'openspec-propose': 'da1af45c6db59ba0144571fa3cde33ba488929eef4b4e281a4dc6a47956302a5',
+  'codespec-explore': '26400d51c96d845fbd539851608389a9f103d33367c90c39181db89ba3d92ec7',
+  'codespec-new-change': 'f1664a39db007a5588d9b5a65cc2521e0db7cc5062c86afd7e45fff3bc3fbef7',
+  'codespec-continue-change': 'd84fe1d671069f69efb7c29f95317bdb9bda06dc24473ab7f37b5d8860ebf6b0',
+  'codespec-apply-change': 'c09a7017e49b0eba0723ad888a75cdda99b2fd4fdd6ec3739327393f81184d2b',
+  'codespec-ff-change': '25b7914389e73f9759ff6b30064f447e5548a3a5c4314b419fdf2ff8a987c78d',
+  'codespec-sync-specs': '5006fa4c8da364b5d7717e1daa97c2d51355e8734e55e6f258009598e0f88163',
+  'codespec-archive-change': 'b3cdfa63b21e253e3398a137c787b4ac3a1bb6fb81b1cef2398544f709add35b',
+  'codespec-bulk-archive-change': '736c22b72861a2ee228cb58fd737a08f1f3e1049a536d3eed5655be7a852b005',
+  'codespec-verify-change': '7814417f205a9178eecf4c37f32587924c814175ff8cedcfe427084242cf6f27',
+  'codespec-onboard': '0f8da5681b93fe7848159dd560a117a4d0d5821cdbeede0128263a86a06db1bd',
+  'codespec-propose': 'da1af45c6db59ba0144571fa3cde33ba488929eef4b4e281a4dc6a47956302a5',
 };
 
 function stableStringify(value: unknown): string {
@@ -128,17 +128,17 @@ describe('skill templates split parity', () => {
     // Intentionally excludes getFeedbackSkillTemplate: skillFactories only models templates
     // deployed via generateSkillContent, while feedback is covered in function payload parity.
     const skillFactories: Array<[string, () => SkillTemplate]> = [
-      ['openspec-explore', getExploreSkillTemplate],
-      ['openspec-new-change', getNewChangeSkillTemplate],
-      ['openspec-continue-change', getContinueChangeSkillTemplate],
-      ['openspec-apply-change', getApplyChangeSkillTemplate],
-      ['openspec-ff-change', getFfChangeSkillTemplate],
-      ['openspec-sync-specs', getSyncSpecsSkillTemplate],
-      ['openspec-archive-change', getArchiveChangeSkillTemplate],
-      ['openspec-bulk-archive-change', getBulkArchiveChangeSkillTemplate],
-      ['openspec-verify-change', getVerifyChangeSkillTemplate],
-      ['openspec-onboard', getOnboardSkillTemplate],
-      ['openspec-propose', getOpsxProposeSkillTemplate],
+      ['codespec-explore', getExploreSkillTemplate],
+      ['codespec-new-change', getNewChangeSkillTemplate],
+      ['codespec-continue-change', getContinueChangeSkillTemplate],
+      ['codespec-apply-change', getApplyChangeSkillTemplate],
+      ['codespec-ff-change', getFfChangeSkillTemplate],
+      ['codespec-sync-specs', getSyncSpecsSkillTemplate],
+      ['codespec-archive-change', getArchiveChangeSkillTemplate],
+      ['codespec-bulk-archive-change', getBulkArchiveChangeSkillTemplate],
+      ['codespec-verify-change', getVerifyChangeSkillTemplate],
+      ['codespec-onboard', getOnboardSkillTemplate],
+      ['codespec-propose', getOpsxProposeSkillTemplate],
     ];
 
     const actualHashes = Object.fromEntries(

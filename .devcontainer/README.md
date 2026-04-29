@@ -1,6 +1,6 @@
 # Dev Container Setup
 
-This directory contains the VS Code dev container configuration for OpenSDD development.
+This directory contains the VS Code dev container configuration for CodeSpec development.
 
 ## What's Included
 

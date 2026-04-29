@@ -1,22 +1,22 @@
 {
-  "name": "opensdd",
+  "name": "codespec",
   "version": "1.3.1",
-  "description": "面向AI编程助手的规范驱动开发框架OpenSDD的简体中文汉化版本",
+  "description": "面向AI编程助手的规范驱动开发框架CodeSpec的简体中文汉化版本",
   "keywords": [
-    "opensdd",
+    "codespec",
     "specs",
     "sdd",
     "cli",
     "ai",
     "development"
   ],
-  "homepage": "https://github.com/studyzy/OpenSDD",
+  "homepage": "https://github.com/studyzy/CodeSpec",
   "repository": {
     "type": "git",
-    "url": "https://github.com/studyzy/OpenSDD"
+    "url": "https://github.com/studyzy/CodeSpec"
   },
   "license": "MIT",
-  "author": "OpenSDD Contributors",
+  "author": "CodeSpec Contributors",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -28,7 +28,7 @@
     }
   },
   "bin": {
-    "opensdd": "./bin/openspec.js"
+    "codespec": "./bin/codespec.js"
   },
   "files": [
     "dist",
@@ -43,7 +43,7 @@
     "lint": "eslint src/",
     "build": "node build.js",
     "dev": "tsc --watch",
-    "dev:cli": "pnpm build && node bin/openspec.js",
+    "dev:cli": "pnpm build && node bin/codespec.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

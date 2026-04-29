@@ -8,12 +8,12 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getApplyChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-apply-change',
-    description: '实现 OpenSDD 变更中的任务。当用户想要开始实现、继续实现或处理任务时使用。',
+    name: 'codespec-apply-change',
+    description: '实现 CodeSpec 变更中的任务。当用户想要开始实现、继续实现或处理任务时使用。',
     instructions: ``,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -35,13 +35,13 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 \`opensdd list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
+   - 如果不明确，运行 \`codespec list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
 
    始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/opsx:apply <other>\`）。
 
 **检查状态以了解 Schema**
    \`\`\`bash
-   opensdd status --change "<name>" --json
+   codespec status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -73,7 +73,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    **获取应用指令**
 
    \`\`\`bash
-   opensdd instructions apply --change "<name>" --json
+   codespec instructions apply --change "<name>" --json
    \`\`\`
 
    这返回：

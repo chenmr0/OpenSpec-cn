@@ -3,7 +3,7 @@
  *
  * Interactive brainstorming + spec/design/plan workflow.
  * Integrates Superpowers brainstorming and writing-plans approaches
- * into the OpenSDD artifact-driven framework.
+ * into the CodeSpec artifact-driven framework.
  */
 import type { SkillTemplate, CommandTemplate } from '../types.js';
 
@@ -47,9 +47,9 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 **创建变更目录**
    \`\`\`bash
-   opensdd new change "<name>"
+   codespec new change "<name>"
    \`\`\`
-   这将在 \`openspec/changes/<name>/\` 创建一个带有 \`.openspec.yaml\` 的脚手架变更。
+   这将在 \`codespec/changes/<name>/\` 创建一个带有 \`.codespec.yaml\` 的脚手架变更。
 
 **快速探索**
 
@@ -113,7 +113,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
    a. 获取指令：
    \`\`\`bash
-   opensdd instructions specs --change "<name>" --json
+   codespec instructions specs --change "<name>" --json
    \`\`\`
 
    b. 编写规范文件
@@ -142,7 +142,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
    a. 获取指令：
    \`\`\`bash
-   opensdd instructions design --change "<name>" --json
+   codespec instructions design --change "<name>" --json
    \`\`\`
 
    b. 编写技术设计文档
@@ -168,7 +168,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
     a. 获取指令：
     \`\`\`bash
-    opensdd instructions plan --change "<name>" --json
+    codespec instructions plan --change "<name>" --json
     \`\`\`
 
     b. **强制使用外部技能创建计划。你必须按顺序执行：**
@@ -177,7 +177,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
        **第二步：使用 **AskUserQuestion tool** 询问用户，是否启用测试驱动开发（TDD）。** 如果用户选择启用，必须立即加载 \`test-driven-development\` 技能。 必须将其应用于 writing-plans，**每个任务必须先写失败测试，再写最少实现**。
 
-       **计划保存位置：** \`openspec/changes/<name>/plan.md\`
+       **计划保存位置：** \`codespec/changes/<name>/plan.md\`
 
     c. **用户审查关卡**：
    计划自检完成后，请用户在继续之前审查书面规格：
@@ -187,7 +187,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 **显示最终状态**
     \`\`\`bash
-    opensdd status --change "<name>"
+    codespec status --change "<name>"
     \`\`\`
 
 **输出**
@@ -198,7 +198,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 **产出物创建指南**
 
-- 遵循每个产出物类型的 \`opensdd instructions\` 中的 \`instruction\` 字段
+- 遵循每个产出物类型的 \`codespec instructions\` 中的 \`instruction\` 字段
 - Schema 定义了每个产出物应包含的内容，遵循它
 - **不要重新读取已经在本次对话中创建或讨论过的产出物文件**——你已经知道其内容，直接基于对话上下文编写
 - 使用 \`template\` 作为输出文件的结构 - 填充其各个部分
@@ -216,12 +216,12 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 export function getOpsxProposeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-propose',
+    name: 'codespec-propose',
     description: '通过头脑风暴交互式提案新变更。探索用户意图、提出方案、编写规范和设计文档，最终生成实现计划。在单个命令中完成从需求到计划的完整设计流程。',
     instructions: proposeInstructions,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '2.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '2.0' },
   };
 }
 

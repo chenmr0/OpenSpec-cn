@@ -6,7 +6,7 @@ describe('command-generation/types', () => {
     it('should allow creating valid command content', () => {
       const content: CommandContent = {
         id: 'explore',
-        name: 'OpenSpec Explore',
+        name: 'CodeSpec Explore',
         description: '进入探索模式进行思考',
         category: 'Workflow',
         tags: ['workflow', 'explore'],
@@ -14,7 +14,7 @@ describe('command-generation/types', () => {
       };
 
       expect(content.id).toBe('explore');
-      expect(content.name).toBe('OpenSpec Explore');
+      expect(content.name).toBe('CodeSpec Explore');
       expect(content.description).toBe('进入探索模式进行思考');
       expect(content.category).toBe('Workflow');
       expect(content.tags).toEqual(['workflow', 'explore']);

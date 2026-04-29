@@ -1,7 +1,7 @@
 /**
  * Update Command
  *
- * Refreshes OpenSDD skills and commands for configured tools.
+ * Refreshes CodeSpec skills and commands for configured tools.
  * Supports profile-aware updates, delivery changes, migration, and smart update detection.
  */
 
@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import { createRequire } from 'module';
 import { FileSystemUtils } from '../utils/file-system.js';
 import { transformToHyphenCommands } from '../utils/command-references.js';
-import { AI_TOOLS, OPENSPEC_DIR_NAME } from './config.js';
+import { AI_TOOLS, CODESPEC_DIR_NAME } from './config.js';
 import {
   generateCommands,
   CommandAdapterRegistry,
@@ -49,7 +49,7 @@ import {
 } from './migration.js';
 
 const require = createRequire(import.meta.url);
-const { version: OPENSPEC_VERSION } = require('../../package.json');
+const { version: CODESPEC_VERSION } = require('../../package.json');
 
 /**
  * Options for the update command.
@@ -81,11 +81,11 @@ export class UpdateCommand {
 
   async execute(projectPath: string): Promise<void> {
     const resolvedProjectPath = path.resolve(projectPath);
-    const openspecPath = path.join(resolvedProjectPath, OPENSPEC_DIR_NAME);
+    const codespecPath = path.join(resolvedProjectPath, CODESPEC_DIR_NAME);
 
-    // 1. Check openspec directory exists
-    if (!await FileSystemUtils.directoryExists(openspecPath)) {
-      throw new Error(`未找到OpenSDD目录。请先运行 'opensdd init'。`);
+    // 1. Check codespec directory exists
+    if (!await FileSystemUtils.directoryExists(codespecPath)) {
+      throw new Error(`未找到CodeSpec目录。请先运行 'codespec init'。`);
     }
 
     // 2. Perform one-time migration if needed before any legacy upgrade generation.
@@ -116,7 +116,7 @@ export class UpdateCommand {
 
     if (configuredTools.length === 0 && newlyConfiguredTools.length === 0) {
       console.log(chalk.yellow('未找到配置的工具。'));
-      console.log(chalk.dim('运行 "opensdd init" 来设置工具。'));
+      console.log(chalk.dim('运行 "codespec init" 来设置工具。'));
       return;
     }
 
@@ -124,7 +124,7 @@ export class UpdateCommand {
     const commandConfiguredTools = getCommandConfiguredTools(resolvedProjectPath);
     const commandConfiguredSet = new Set(commandConfiguredTools);
     const toolStatuses = configuredTools.map((toolId) => {
-      const status = getToolVersionStatus(resolvedProjectPath, toolId, OPENSPEC_VERSION);
+      const status = getToolVersionStatus(resolvedProjectPath, toolId, CODESPEC_VERSION);
       if (!status.configured && commandConfiguredSet.has(toolId)) {
         return { ...status, configured: true };
       }
@@ -196,7 +196,7 @@ export class UpdateCommand {
 
             // Use hyphen-based command references for OpenCode
             const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
-            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+            const skillContent = generateSkillContent(template, CODESPEC_VERSION, transformer);
             await FileSystemUtils.writeFile(skillFile, skillContent);
           }
 
@@ -246,7 +246,7 @@ export class UpdateCommand {
     // 11. Summary
     console.log();
     if (updatedTools.length > 0) {
-      console.log(chalk.green(`✓ 已更新: ${updatedTools.join(', ')} (v${OPENSPEC_VERSION})`));
+      console.log(chalk.green(`✓ 已更新: ${updatedTools.join(', ')} (v${CODESPEC_VERSION})`));
     }
     if (failedTools.length > 0) {
       console.log(chalk.red(`✗ 失败: ${failedTools.map(f => `${f.name} (${f.error})`).join(', ')}`));
@@ -272,7 +272,7 @@ export class UpdateCommand {
       console.log('  /opsx:continue  创建下一个产出物');
       console.log('  /opsx:apply     实施任务');
       console.log();
-      console.log(`了解更多: ${chalk.cyan('https://github.com/studyzy/OpenSDD')}`);
+      console.log(`了解更多: ${chalk.cyan('https://github.com/studyzy/CodeSpec')}`);
     }
 
     const configuredAndNewTools = [...new Set([...configuredTools, ...newlyConfiguredTools])];
@@ -298,7 +298,7 @@ export class UpdateCommand {
    */
   private displayUpToDateMessage(toolStatuses: ToolVersionStatus[]): void {
     const toolNames = toolStatuses.map((s) => s.toolId);
-    console.log(chalk.green(`✓ 所有 ${toolStatuses.length} 个工具已是最新版本 (v${OPENSPEC_VERSION})`));
+    console.log(chalk.green(`✓ 所有 ${toolStatuses.length} 个工具已是最新版本 (v${CODESPEC_VERSION})`));
     console.log(chalk.dim(`  工具: ${toolNames.join(', ')}`));
     console.log();
     console.log(chalk.dim('使用 --force 强制刷新文件.'));
@@ -316,7 +316,7 @@ export class UpdateCommand {
       const status = statusByTool.get(toolId);
       if (status?.needsUpdate) {
         const fromVersion = status.generatedByVersion ?? 'unknown';
-        return `${status.toolId} (${fromVersion} → ${OPENSPEC_VERSION})`;
+        return `${status.toolId} (${fromVersion} → ${CODESPEC_VERSION})`;
       }
       return `${toolId} (配置同步)`;
     });
@@ -345,7 +345,7 @@ export class UpdateCommand {
       console.log();
       console.log(
         chalk.yellow(
-          `检测到新的${toolNoun}：${newToolNames.join(', ')}。运行 'opensdd init' 以添加${isSingleTool ? '它' : '它们'}。`
+          `检测到新的${toolNoun}：${newToolNames.join(', ')}。运行 'codespec init' 以添加${isSingleTool ? '它' : '它们'}。`
         )
       );
     }
@@ -364,7 +364,7 @@ export class UpdateCommand {
     const extraWorkflows = installedWorkflows.filter((w) => !profileSet.has(w));
 
     if (extraWorkflows.length > 0) {
-      console.log(chalk.dim(`注意：有 ${extraWorkflows.length} 个额外工作流不在当前配置文件中（使用 \`opensdd config profile\` 管理）`));
+      console.log(chalk.dim(`注意：有 ${extraWorkflows.length} 个额外工作流不在当前配置文件中（使用 \`codespec config profile\` 管理）`));
     }
   }
 
@@ -488,7 +488,7 @@ export class UpdateCommand {
   }
 
   /**
-   * Detect and handle legacy OpenSDD artifacts.
+   * Detect and handle legacy CodeSpec artifacts.
    * Unlike init, update warns but continues if legacy files found in non-interactive mode.
    * Returns array of tool IDs that were newly configured during legacy upgrade.
    */
@@ -666,7 +666,7 @@ export class UpdateCommand {
 
             // Use hyphen-based command references for OpenCode
             const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
-            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+            const skillContent = generateSkillContent(template, CODESPEC_VERSION, transformer);
             await FileSystemUtils.writeFile(skillFile, skillContent);
           }
         }

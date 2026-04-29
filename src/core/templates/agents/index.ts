@@ -1,5 +1,5 @@
 /**
- * Agent templates for OpenSDD.
+ * Agent templates for CodeSpec.
  *
  * Agents are installed to the agents directory of each configured tool
  * (e.g., .claude/agents/ or .opencode/agents/).

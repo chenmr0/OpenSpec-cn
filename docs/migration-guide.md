@@ -1,6 +1,6 @@
 # 迁移到 OPSX
 
-本指南帮助您从旧的 OpenSDD 工作流过渡到 OPSX。迁移过程设计得很流畅——您现有的工作得以保留，新系统提供更大的灵活性。
+本指南帮助您从旧的 CodeSpec 工作流过渡到 OPSX。迁移过程设计得很流畅——您现有的工作得以保留，新系统提供更大的灵活性。
 
 ## 有什么变化？
 
@@ -8,11 +8,11 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 | 方面 | 旧版 | OPSX |
 |--------|--------|------|
-| **命令** | `/openspec:proposal`、`/openspec:apply`、`/openspec:archive` | 默认：`/opsx:propose`、`/opsx:apply`、`/opsx:archive`（扩展工作流命令可选） |
+| **命令** | `/codespec:proposal`、`/codespec:apply`、`/codespec:archive` | 默认：`/opsx:propose`、`/opsx:apply`、`/opsx:archive`（扩展工作流命令可选） |
 | **工作流** | 一次性创建所有制品 | 逐步创建或一次性创建——由你选择 |
 | **回退** | 笨拙的阶段门限 | 自然——随时更新任何制品 |
 | **自定义** | 固定结构 | Schema 驱动，完全可定制 |
-| **配置** | 带标记的 `CLAUDE.md` + `project.md` | 简洁的 `openspec/config.yaml` 配置 |
+| **配置** | 带标记的 `CLAUDE.md` + `project.md` | 简洁的 `codespec/config.yaml` 配置 |
 
 **理念变化：** 工作不是线性的。OPSX 不再假装它是。
 
@@ -24,50 +24,50 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 迁移过程设计时就考虑了保留：
 
-- **`openspec/changes/` 中的活跃变更** — 完全保留。您可以使用 OPSX 命令继续它们。
+- **`codespec/changes/` 中的活跃变更** — 完全保留。您可以使用 OPSX 命令继续它们。
 - **已归档的变更** — 不受影响。您的历史记录保持完整。
-- **`openspec/specs/` 中的主要规范** — 不受影响。这些是您的真实来源。
-- **您在 CLAUDE.md、AGENTS.md 等中的内容** — 保留。只有 OpenSDD 标记块被删除；您编写的内容保持不变。
+- **`codespec/specs/` 中的主要规范** — 不受影响。这些是您的真实来源。
+- **您在 CLAUDE.md、AGENTS.md 等中的内容** — 保留。只有 CodeSpec 标记块被删除；您编写的内容保持不变。
 
 ### 删除的内容
 
-仅删除被替换的 OpenSDD 管理文件：
+仅删除被替换的 CodeSpec 管理文件：
 
 | 内容 | 原因 |
 |------|-----|
 | 旧的斜杠命令目录/文件 | 被新的技能系统取代 |
-| `openspec/AGENTS.md` | 过时的工作流触发器 |
-| `CLAUDE.md`、`AGENTS.md` 等中的 OpenSDD 标记` | 不再需要 |
+| `codespec/AGENTS.md` | 过时的工作流触发器 |
+| `CLAUDE.md`、`AGENTS.md` 等中的 CodeSpec 标记` | 不再需要 |
 
 **各工具的旧命令位置**（示例——您的工具可能不同）：
 
-- Claude Code：`.claude/commands/openspec/`
-- Cursor：`.cursor/commands/openspec-*.md`
-- Windsurf：`.windsurf/workflows/openspec-*.md`
-- Cline：`.clinerules/workflows/openspec-*.md`
-- Roo：`.roo/commands/openspec-*.md`
-- GitHub Copilot：`.github/prompts/openspec-*.prompt.md`（仅限 IDE 扩展；Copilot CLI 不支持）
+- Claude Code：`.claude/commands/codespec/`
+- Cursor：`.cursor/commands/codespec-*.md`
+- Windsurf：`.windsurf/workflows/codespec-*.md`
+- Cline：`.clinerules/workflows/codespec-*.md`
+- Roo：`.roo/commands/codespec-*.md`
+- GitHub Copilot：`.github/prompts/codespec-*.prompt.md`（仅限 IDE 扩展；Copilot CLI 不支持）
 - 其他（Augment、Continue、Amazon Q 等）
 
 迁移会检测您配置的任何工具并清理其旧文件。
 
-删除列表可能看起来很长，但这些都是 OpenSDD 最初创建的文件。您自己的内容从未被删除。
+删除列表可能看起来很长，但这些都是 CodeSpec 最初创建的文件。您自己的内容从未被删除。
 
 ### 需要您注意的事项
 
 一个文件需要手动迁移：
 
-**`openspec/project.md`** — 这个文件不会自动删除，因为它可能包含您编写的项目上下文。您需要：
+**`codespec/project.md`** — 这个文件不会自动删除，因为它可能包含您编写的项目上下文。您需要：
 
 1. 检查其内容
-2. 将有用的上下文移至 `openspec/config.yaml`（见下方指导）
+2. 将有用的上下文移至 `codespec/config.yaml`（见下方指导）
 3. 准备好后删除该文件
 
 **我们做出此更改的原因：**
 
 旧的 `project.md` 是被动的——代理可能会读取它，可能不会，可能会忘记读取的内容。我们发现可靠性不一致。
 
-新的 `config.yaml` 上下文被**主动注入到每个 OpenSDD 规划请求中**。这意味着您的项目约定、技术栈和规则在 AI 创建制品时总是存在。更高的可靠性。
+新的 `config.yaml` 上下文被**主动注入到每个 CodeSpec 规划请求中**。这意味着您的项目约定、技术栈和规则在 AI 创建制品时总是存在。更高的可靠性。
 
 **权衡：**
 
@@ -82,43 +82,43 @@ OPSX 用流畅的、基于行动的方法取代了旧的阶段锁定工作流。
 
 ## 运行迁移
 
-`opensdd init` 和 `opensdd update` 都会检测旧文件并引导您完成相同的清理过程。使用适合您情况的任何一种：
+`codespec init` 和 `codespec update` 都会检测旧文件并引导您完成相同的清理过程。使用适合您情况的任何一种：
 
 - 新安装默认使用 `core` 配置文件（`propose`、`explore`、`apply`、`archive`）。
 - 迁移安装会通过在需要时写入 `custom` 配置文件来保留您之前安装的工作流。
 
-### 使用 `opensdd init`
+### 使用 `codespec init`
 
 如果您想添加新工具或重新配置哪些工具被设置，请运行此命令：
 
 ```bash
-opensdd init
+codespec init
 ```
 
 init 命令检测旧文件并引导您完成清理：
 
 ```
-升级到新的 OpenSDD
+升级到新的 CodeSpec
 
-OpenSDD 现在使用代理技能，这是编码代理中涌现的标准。
+CodeSpec 现在使用代理技能，这是编码代理中涌现的标准。
 这简化了您的设置，同时保持一切像以前一样工作。
 
 要删除的文件
 没有需要保留的用户内容：
-  • .claude/commands/openspec/
-  • openspec/AGENTS.md
+  • .claude/commands/codespec/
+  • codespec/AGENTS.md
 
 要更新的文件
-OpenSDD 标记将被删除，您的内容保留：
+CodeSpec 标记将被删除，您的内容保留：
   • CLAUDE.md
   • AGENTS.md
 
 需要您注意
-  • openspec/project.md
+  • codespec/project.md
     我们不会删除此文件。它可能包含有用的项目上下文。
 
-    新的 openspec/config.yaml 有一个用于规划上下文的 "context:" 部分。
-    这包含在每次 OpenSDD 请求中，并且比旧的 project.md 方法更可靠。
+    新的 codespec/config.yaml 有一个用于规划上下文的 "context:" 部分。
+    这包含在每次 CodeSpec 请求中，并且比旧的 project.md 方法更可靠。
 
     检查 project.md，将任何有用的内容移至 config.yaml 的 context 部分，
     然后在准备好时删除该文件。
@@ -129,17 +129,17 @@ OpenSDD 标记将被删除，您的内容保留：
 **当您说是时会发生什么：**
 
 1. 旧的斜杠命令目录被删除
-2. OpenSDD 标记从 `CLAUDE.md`、`AGENTS.md` 等中剥离（您的内容保留）
-3. `openspec/AGENTS.md` 被删除
+2. CodeSpec 标记从 `CLAUDE.md`、`AGENTS.md` 等中剥离（您的内容保留）
+3. `codespec/AGENTS.md` 被删除
 4. 新的技能安装在 `.claude/skills/`
-5. `openspec/config.yaml` 使用默认模式创建
+5. `codespec/config.yaml` 使用默认模式创建
 
-### 使用 `opensdd update`
+### 使用 `codespec update`
 
 如果您只想迁移并将现有工具刷新到最新版本，请运行此命令：
 
 ```bash
-opensdd update
+codespec update
 ```
 
 update 命令同样会检测和清理旧文件，然后刷新生成的技能/命令以匹配您当前的配置文件和交付方式设置。
@@ -149,7 +149,7 @@ update 命令同样会检测和清理旧文件，然后刷新生成的技能/命
 对于脚本化迁移：
 
 ```bash
-opensdd init --force --tools claude
+codespec init --force --tools claude
 ```
 
 `--force` 标志跳过提示并自动接受清理。
@@ -158,7 +158,7 @@ opensdd init --force --tools claude
 
 ## 将 project.md 迁移到 config.yaml
 
-旧的 `openspec/project.md` 是用于项目上下文的自由格式 markdown 文件。新的 `openspec/config.yaml` 是结构化的，并且——关键的是——**注入到每个规划请求中**，因此您的约定在 AI 工作时总是存在。
+旧的 `codespec/project.md` 是用于项目上下文的自由格式 markdown 文件。新的 `codespec/config.yaml` 是结构化的，并且——关键的是——**注入到每个规划请求中**，因此您的约定在 AI 工作时总是存在。
 
 ### 之前（project.md）
 
@@ -258,7 +258,7 @@ rules:
 如果您不确定如何精简 project.md，请询问您的 AI 助手：
 
 ```
-我正在从 OpenSDD 的旧 project.md 迁移到新的 config.yaml 格式。
+我正在从 CodeSpec 的旧 project.md 迁移到新的 config.yaml 格式。
 
 这是我当前的 project.md：
 [粘贴您的 project.md 内容]
@@ -299,7 +299,7 @@ AI 将帮助您识别什么是必不可少的，什么可以被修剪。
 | `/opsx:bulk-archive` | 批量归档多个变更 |
 | `/opsx:onboard` | 引导式端到端入门工作流 |
 
-通过 `opensdd config profile` 启用扩展命令，然后运行 `opensdd update`。
+通过 `codespec config profile` 启用扩展命令，然后运行 `codespec update`。
 
 ### 从旧版映射的命令
 
@@ -386,7 +386,7 @@ OPSX 使用行动，而不是阶段：
 旧系统使用特定于工具的命令文件：
 
 ```
-.claude/commands/openspec/
+.claude/commands/codespec/
 ├── proposal.md
 ├── apply.md
 └── archive.md
@@ -396,10 +396,10 @@ OPSX 使用涌现的**技能**标准：
 
 ```
 .claude/skills/
-├── openspec-explore/SKILL.md
-├── openspec-new-change/SKILL.md
-├── openspec-continue-change/SKILL.md
-├── openspec-apply-change/SKILL.md
+├── codespec-explore/SKILL.md
+├── codespec-new-change/SKILL.md
+├── codespec-continue-change/SKILL.md
+├── codespec-apply-change/SKILL.md
 └── ...
 ```
 
@@ -430,7 +430,7 @@ OPSX 读取现有制品并从您离开的地方继续。
 **需要查看状态吗？**
 
 ```bash
-opensdd status --change add-my-feature
+codespec status --change add-my-feature
 ```
 
 ---
@@ -467,8 +467,8 @@ rules:
 当确定使用哪个模式时，OPSX 按顺序检查：
 
 1. **CLI 标志**：`--schema <name>`（最高优先级）
-2. **变更元数据**：变更目录中的 `.openspec.yaml`
-3. **项目配置**：`openspec/config.yaml`
+2. **变更元数据**：变更目录中的 `.codespec.yaml`
+3. **项目配置**：`codespec/config.yaml`
 4. **默认**：`spec-driven`
 
 ### 可用的模式
@@ -480,7 +480,7 @@ rules:
 列出所有可用的模式：
 
 ```bash
-opensdd schemas
+codespec schemas
 ```
 
 ### 自定义模式
@@ -488,13 +488,13 @@ opensdd schemas
 创建您自己的工作流：
 
 ```bash
-opensdd schema init my-workflow
+codespec schema init my-workflow
 ```
 
 或派生现有模式：
 
 ```bash
-opensdd schema fork spec-driven my-workflow
+codespec schema fork spec-driven my-workflow
 ```
 
 详情请参阅[自定义](customization.md)。
@@ -508,7 +508,7 @@ opensdd schema fork spec-driven my-workflow
 您正在 CI 或非交互式环境中运行。使用：
 
 ```bash
-opensdd init --force
+codespec init --force
 ```
 
 ### 迁移后命令未出现
@@ -524,12 +524,12 @@ opensdd init --force
 运行此命令以查看有效的制品 ID：
 
 ```bash
-opensdd schemas --json
+codespec schemas --json
 ```
 
 ### 配置未应用
 
-1. 确保文件位于 `openspec/config.yaml`（不是 `.yml`）
+1. 确保文件位于 `codespec/config.yaml`（不是 `.yml`）
 2. 验证 YAML 语法
 3. 配置更改立即生效——无需重启
 
@@ -549,27 +549,27 @@ opensdd schemas --json
 
 ```
 project/
-├── openspec/
+├── codespec/
 │   ├── specs/                    # 未更改
 │   ├── changes/                  # 未更改
 │   │   └── archive/              # 未更改
 │   └── config.yaml               # 新：项目配置
 ├── .claude/
 │   └── skills/                   # 新：OPSX 技能
-│       ├── openspec-propose/     # 默认 core 配置文件
-│       ├── openspec-explore/
-│       ├── openspec-apply-change/
+│       ├── codespec-propose/     # 默认 core 配置文件
+│       ├── codespec-explore/
+│       ├── codespec-apply-change/
 │       └── ...                   # 扩展配置文件添加 new/continue/ff 等
-├── CLAUDE.md                     # OpenSDD 标记已删除，您的内容保留
-└── AGENTS.md                     # OpenSDD 标记已删除，您的内容保留
+├── CLAUDE.md                     # CodeSpec 标记已删除，您的内容保留
+└── AGENTS.md                     # CodeSpec 标记已删除，您的内容保留
 ```
 
 ### 什么消失了
 
-- `.claude/commands/openspec/` — 被 `.claude/skills/` 取代
-- `openspec/AGENTS.md` — 过时
-- `openspec/project.md` — 迁移到 `config.yaml`，然后删除
-- `CLAUDE.md`、`AGENTS.md 等中的 OpenSDD 标记块`
+- `.claude/commands/codespec/` — 被 `.claude/skills/` 取代
+- `codespec/AGENTS.md` — 过时
+- `codespec/project.md` — 迁移到 `config.yaml`，然后删除
+- `CLAUDE.md`、`AGENTS.md 等中的 CodeSpec 标记块`
 
 ### 命令速查表
 
@@ -589,5 +589,5 @@ project/
 ## 获取帮助
 
 - **Discord**：[discord.gg/YctCnvvshC](https://discord.gg/YctCnvvshC)
-- **GitHub Issues**：[github.com/Fission-AI/OpenSpec/issues](https://github.com/Fission-AI/OpenSpec/issues)
+- **GitHub Issues**：[github.com/Fission-AI/CodeSpec/issues](https://github.com/Fission-AI/CodeSpec/issues)
 - **文档**：[docs/opsx.md](opsx.md) 用于完整的 OPSX 参考

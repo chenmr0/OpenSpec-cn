@@ -26,7 +26,7 @@ export class ChangeCommand {
    *   Note: --requirements-only is deprecated alias for --deltas-only
    */
   async show(changeName?: string, options?: { json?: boolean; requirementsOnly?: boolean; deltasOnly?: boolean; noInteractive?: boolean }): Promise<void> {
-    const changesPath = path.join(process.cwd(), 'openspec', 'changes');
+    const changesPath = path.join(process.cwd(), 'codespec', 'changes');
 
     if (!changeName) {
       const canPrompt = isInteractive(options);
@@ -44,7 +44,7 @@ export class ChangeCommand {
         } else {
           console.error(`未指定变更。可用ID：${changes.join(', ')}`);
         }
-        console.error('提示：使用 "opensdd change list" 查看可用变更。');
+        console.error('提示：使用 "codespec change list" 查看可用变更。');
         process.exitCode = 1;
         return;
       }
@@ -95,7 +95,7 @@ export class ChangeCommand {
    * - JSON: array of { id, title, deltaCount, taskStatus }, sorted by id
    */
   async list(options?: { json?: boolean; long?: boolean }): Promise<void> {
-    const changesPath = path.join(process.cwd(), 'openspec', 'changes');
+    const changesPath = path.join(process.cwd(), 'codespec', 'changes');
     
     const changes = await this.getActiveChanges(changesPath);
     
@@ -183,7 +183,7 @@ export class ChangeCommand {
   }
 
   async validate(changeName?: string, options?: { strict?: boolean; json?: boolean; noInteractive?: boolean }): Promise<void> {
-    const changesPath = path.join(process.cwd(), 'openspec', 'changes');
+    const changesPath = path.join(process.cwd(), 'codespec', 'changes');
     
     if (!changeName) {
       const canPrompt = isInteractive(options);
@@ -201,7 +201,7 @@ export class ChangeCommand {
         } else {
           console.error(`未指定变更。可用ID：${changes.join(', ')}`);
         }
-        console.error('提示：使用 "opensdd change list" 查看可用变更。');
+        console.error('提示：使用 "codespec change list" 查看可用变更。');
         process.exitCode = 1;
         return;
       }
@@ -245,12 +245,12 @@ export class ChangeCommand {
       const result: string[] = [];
       for (const entry of entries) {
         if (!entry.isDirectory() || entry.name.startsWith('.') || entry.name === ARCHIVE_DIR) continue;
-        const metaPath = path.join(changesPath, entry.name, '.openspec.yaml');
+        const metaPath = path.join(changesPath, entry.name, '.codespec.yaml');
         try {
           await fs.access(metaPath);
           result.push(entry.name);
         } catch {
-          // skip directories without .openspec.yaml
+          // skip directories without .codespec.yaml
         }
       }
       return result.sort();
@@ -285,7 +285,7 @@ export class ChangeCommand {
     const bullets: string[] = [];
     bullets.push('- 确保变更在specs/中有增量：使用标题## 新增|修改|移除|重命名需求');
     bullets.push('- 每个需求必须至少包含一个#### 场景:块');
-    bullets.push('- 调试解析的增量：opensdd change show <id> --json --deltas-only');
+    bullets.push('- 调试解析的增量：codespec change show <id> --json --deltas-only');
     console.error('后续步骤：');
     bullets.forEach(b => console.error(`  ${b}`));
   }

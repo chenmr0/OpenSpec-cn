@@ -1,5 +1,5 @@
 /**
- * Legacy cleanup module for detecting and removing OpenSpec artifacts
+ * Legacy cleanup module for detecting and removing CodeSpec artifacts
  * from previous init versions during the migration to the skill-based workflow.
  */
 
@@ -7,11 +7,11 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import chalk from 'chalk';
 import { FileSystemUtils, removeMarkerBlock as removeMarkerBlockUtil } from '../utils/file-system.js';
-import { OPENSPEC_MARKERS } from './config.js';
+import { CODESPEC_MARKERS } from './config.js';
 
 /**
  * Legacy config file names from the old ToolRegistry.
- * These were config files created at project root with OpenSpec markers.
+ * These were config files created at project root with CodeSpec markers.
  */
 export const LEGACY_CONFIG_FILES = [
   'CLAUDE.md',
@@ -20,7 +20,7 @@ export const LEGACY_CONFIG_FILES = [
   'COSTRICT.md',
   'QODER.md',
   'IFLOW.md',
-  'AGENTS.md', // root AGENTS.md (not openspec/AGENTS.md)
+  'AGENTS.md', // root AGENTS.md (not codespec/AGENTS.md)
   'QWEN.md',
 ] as const;
 
@@ -30,33 +30,33 @@ export const LEGACY_CONFIG_FILES = [
  * Some tools used a directory structure, others used individual files.
  */
 export const LEGACY_SLASH_COMMAND_PATHS: Record<string, LegacySlashCommandPattern> = {
-  // Directory-based: .tooldir/commands/openspec/ or .tooldir/commands/openspec/*.md
-  'claude': { type: 'directory', path: '.claude/commands/openspec' },
-  'codebuddy': { type: 'directory', path: '.codebuddy/commands/openspec' },
-  'qoder': { type: 'directory', path: '.qoder/commands/openspec' },
-  'lingma': { type: 'directory', path: '.lingma/commands/openspec' },
-  'crush': { type: 'directory', path: '.crush/commands/openspec' },
-  'gemini': { type: 'directory', path: '.gemini/commands/openspec' },
-  'costrict': { type: 'directory', path: '.cospec/openspec/commands' },
+  // Directory-based: .tooldir/commands/codespec/ or .tooldir/commands/codespec/*.md
+  'claude': { type: 'directory', path: '.claude/commands/codespec' },
+  'codebuddy': { type: 'directory', path: '.codebuddy/commands/codespec' },
+  'qoder': { type: 'directory', path: '.qoder/commands/codespec' },
+  'lingma': { type: 'directory', path: '.lingma/commands/codespec' },
+  'crush': { type: 'directory', path: '.crush/commands/codespec' },
+  'gemini': { type: 'directory', path: '.gemini/commands/codespec' },
+  'costrict': { type: 'directory', path: '.cospec/codespec/commands' },
 
-  // File-based: individual openspec-*.md files in a commands/workflows/prompts folder
-  'cursor': { type: 'files', pattern: '.cursor/commands/openspec-*.md' },
-  'windsurf': { type: 'files', pattern: '.windsurf/workflows/openspec-*.md' },
-  'kilocode': { type: 'files', pattern: '.kilocode/workflows/openspec-*.md' },
-  'kiro': { type: 'files', pattern: '.kiro/prompts/openspec-*.prompt.md' },
-  'github-copilot': { type: 'files', pattern: '.github/prompts/openspec-*.prompt.md' },
-  'amazon-q': { type: 'files', pattern: '.amazonq/prompts/openspec-*.md' },
-  'cline': { type: 'files', pattern: '.clinerules/workflows/openspec-*.md' },
-  'roocode': { type: 'files', pattern: '.roo/commands/openspec-*.md' },
-  'auggie': { type: 'files', pattern: '.augment/commands/openspec-*.md' },
-  'factory': { type: 'files', pattern: '.factory/commands/openspec-*.md' },
-  'opencode': { type: 'files', pattern: ['.opencode/command/opsx-*.md', '.opencode/command/openspec-*.md', '.opencode/commands/opsx-*.md'] },
-  'continue': { type: 'files', pattern: '.continue/prompts/openspec-*.prompt' },
-  'antigravity': { type: 'files', pattern: '.agent/workflows/openspec-*.md' },
-  'iflow': { type: 'files', pattern: '.iflow/commands/openspec-*.md' },
-  'junie': { type: 'files', pattern: ['.junie/commands/opsx-*.md', '.junie/commands/openspec-*.md'] },
-  'qwen': { type: 'files', pattern: '.qwen/commands/openspec-*.toml' },
-  'codex': { type: 'files', pattern: '.codex/prompts/openspec-*.md' },
+  // File-based: individual codespec-*.md files in a commands/workflows/prompts folder
+  'cursor': { type: 'files', pattern: '.cursor/commands/codespec-*.md' },
+  'windsurf': { type: 'files', pattern: '.windsurf/workflows/codespec-*.md' },
+  'kilocode': { type: 'files', pattern: '.kilocode/workflows/codespec-*.md' },
+  'kiro': { type: 'files', pattern: '.kiro/prompts/codespec-*.prompt.md' },
+  'github-copilot': { type: 'files', pattern: '.github/prompts/codespec-*.prompt.md' },
+  'amazon-q': { type: 'files', pattern: '.amazonq/prompts/codespec-*.md' },
+  'cline': { type: 'files', pattern: '.clinerules/workflows/codespec-*.md' },
+  'roocode': { type: 'files', pattern: '.roo/commands/codespec-*.md' },
+  'auggie': { type: 'files', pattern: '.augment/commands/codespec-*.md' },
+  'factory': { type: 'files', pattern: '.factory/commands/codespec-*.md' },
+  'opencode': { type: 'files', pattern: ['.opencode/command/opsx-*.md', '.opencode/command/codespec-*.md', '.opencode/commands/opsx-*.md'] },
+  'continue': { type: 'files', pattern: '.continue/prompts/codespec-*.prompt' },
+  'antigravity': { type: 'files', pattern: '.agent/workflows/codespec-*.md' },
+  'iflow': { type: 'files', pattern: '.iflow/commands/codespec-*.md' },
+  'junie': { type: 'files', pattern: ['.junie/commands/opsx-*.md', '.junie/commands/codespec-*.md'] },
+  'qwen': { type: 'files', pattern: '.qwen/commands/codespec-*.toml' },
+  'codex': { type: 'files', pattern: '.codex/prompts/codespec-*.md' },
 };
 
 /**
@@ -72,7 +72,7 @@ export interface LegacySlashCommandPattern {
  * Result of legacy artifact detection
  */
 export interface LegacyDetectionResult {
-  /** Config files with OpenSpec markers detected */
+  /** Config files with CodeSpec markers detected */
   configFiles: string[];
   /** Config files to update (remove markers only, never delete) */
   configFilesToUpdate: string[];
@@ -80,18 +80,18 @@ export interface LegacyDetectionResult {
   slashCommandDirs: string[];
   /** Legacy slash command files found (for file-based tools) */
   slashCommandFiles: string[];
-  /** Whether openspec/AGENTS.md exists */
+  /** Whether codespec/AGENTS.md exists */
   hasOpenspecAgents: boolean;
-  /** Whether openspec/project.md exists (preserved, migration hint only) */
+  /** Whether codespec/project.md exists (preserved, migration hint only) */
   hasProjectMd: boolean;
-  /** Whether root AGENTS.md has OpenSpec markers */
+  /** Whether root AGENTS.md has CodeSpec markers */
   hasRootAgentsWithMarkers: boolean;
   /** Whether any legacy artifacts were found */
   hasLegacyArtifacts: boolean;
 }
 
 /**
- * Detects all legacy OpenSpec artifacts in a project.
+ * Detects all legacy CodeSpec artifacts in a project.
  *
  * @param projectPath - The root path of the project
  * @returns Detection result with all found legacy artifacts
@@ -139,7 +139,7 @@ export async function detectLegacyArtifacts(
 }
 
 /**
- * Detects legacy config files with OpenSpec markers.
+ * Detects legacy config files with CodeSpec markers.
  * All config files with markers are candidates for update (marker removal only).
  * Config files are NEVER deleted - they belong to the user's project root.
  *
@@ -161,7 +161,7 @@ export async function detectLegacyConfigFiles(
     if (await FileSystemUtils.fileExists(filePath)) {
       const content = await FileSystemUtils.readFile(filePath);
 
-      if (hasOpenSpecMarkers(content)) {
+      if (hasCodeSpecMarkers(content)) {
         allFiles.push(fileName);
         filesToUpdate.push(fileName); // Always update, never delete config files
       }
@@ -209,7 +209,7 @@ export async function detectLegacySlashCommands(
  * Finds legacy slash command files matching a glob pattern.
  *
  * @param projectPath - The root path of the project
- * @param pattern - Glob pattern like '.cursor/commands/openspec-*.md'
+ * @param pattern - Glob pattern like '.cursor/commands/codespec-*.md'
  * @returns Array of matching file paths relative to projectPath
  */
 async function findLegacySlashCommandFiles(
@@ -236,9 +236,9 @@ async function findLegacySlashCommandFiles(
     const entries = await fs.readdir(dirPath);
 
     // Convert glob pattern to regex
-    // openspec-*.md -> /^openspec-.*\.md$/
-    // openspec-*.prompt.md -> /^openspec-.*\.prompt\.md$/
-    // openspec-*.toml -> /^openspec-.*\.toml$/
+    // codespec-*.md -> /^codespec-.*\.md$/
+    // codespec-*.prompt.md -> /^codespec-.*\.prompt\.md$/
+    // codespec-*.toml -> /^codespec-.*\.toml$/
     const regexPattern = filePart
       .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars except *
       .replace(/\*/g, '.*'); // Replace * with .*
@@ -259,7 +259,7 @@ async function findLegacySlashCommandFiles(
 }
 
 /**
- * Detects legacy OpenSpec structure files (AGENTS.md and project.md).
+ * Detects legacy CodeSpec structure files (AGENTS.md and project.md).
  *
  * @param projectPath - The root path of the project
  * @returns Object with detection results for structure files
@@ -275,66 +275,66 @@ export async function detectLegacyStructureFiles(
   let hasProjectMd = false;
   let hasRootAgentsWithMarkers = false;
 
-  // Check for openspec/AGENTS.md
-  const openspecAgentsPath = FileSystemUtils.joinPath(projectPath, 'openspec', 'AGENTS.md');
-  hasOpenspecAgents = await FileSystemUtils.fileExists(openspecAgentsPath);
+  // Check for codespec/AGENTS.md
+  const codespecAgentsPath = FileSystemUtils.joinPath(projectPath, 'codespec', 'AGENTS.md');
+  hasOpenspecAgents = await FileSystemUtils.fileExists(codespecAgentsPath);
 
-  // Check for openspec/project.md (for migration messaging, not deleted)
-  const projectMdPath = FileSystemUtils.joinPath(projectPath, 'openspec', 'project.md');
+  // Check for codespec/project.md (for migration messaging, not deleted)
+  const projectMdPath = FileSystemUtils.joinPath(projectPath, 'codespec', 'project.md');
   hasProjectMd = await FileSystemUtils.fileExists(projectMdPath);
 
-  // Check for root AGENTS.md with OpenSpec markers
+  // Check for root AGENTS.md with CodeSpec markers
   const rootAgentsPath = FileSystemUtils.joinPath(projectPath, 'AGENTS.md');
   if (await FileSystemUtils.fileExists(rootAgentsPath)) {
     const content = await FileSystemUtils.readFile(rootAgentsPath);
-    hasRootAgentsWithMarkers = hasOpenSpecMarkers(content);
+    hasRootAgentsWithMarkers = hasCodeSpecMarkers(content);
   }
 
   return { hasOpenspecAgents, hasProjectMd, hasRootAgentsWithMarkers };
 }
 
 /**
- * Checks if content contains OpenSpec markers.
+ * Checks if content contains CodeSpec markers.
  *
  * @param content - File content to check
  * @returns True if both start and end markers are present
  */
-export function hasOpenSpecMarkers(content: string): boolean {
+export function hasCodeSpecMarkers(content: string): boolean {
   return (
-    content.includes(OPENSPEC_MARKERS.start) && content.includes(OPENSPEC_MARKERS.end)
+    content.includes(CODESPEC_MARKERS.start) && content.includes(CODESPEC_MARKERS.end)
   );
 }
 
 /**
- * Checks if file content is 100% OpenSpec content (only markers and whitespace outside).
+ * Checks if file content is 100% CodeSpec content (only markers and whitespace outside).
  *
  * @param content - File content to check
  * @returns True if content outside markers is only whitespace
  */
-export function isOnlyOpenSpecContent(content: string): boolean {
-  const startIndex = content.indexOf(OPENSPEC_MARKERS.start);
-  const endIndex = content.indexOf(OPENSPEC_MARKERS.end);
+export function isOnlyCodeSpecContent(content: string): boolean {
+  const startIndex = content.indexOf(CODESPEC_MARKERS.start);
+  const endIndex = content.indexOf(CODESPEC_MARKERS.end);
 
   if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) {
     return false;
   }
 
   const before = content.substring(0, startIndex);
-  const after = content.substring(endIndex + OPENSPEC_MARKERS.end.length);
+  const after = content.substring(endIndex + CODESPEC_MARKERS.end.length);
 
   return before.trim() === '' && after.trim() === '';
 }
 
 /**
- * Removes the OpenSpec marker block from file content.
+ * Removes the CodeSpec marker block from file content.
  * Only removes markers that are on their own lines (ignores inline mentions).
  * Cleans up double blank lines that may result from removal.
  *
- * @param content - File content with OpenSpec markers
+ * @param content - File content with CodeSpec markers
  * @returns Content with marker block removed
  */
 export function removeMarkerBlock(content: string): string {
-  return removeMarkerBlockUtil(content, OPENSPEC_MARKERS.start, OPENSPEC_MARKERS.end);
+  return removeMarkerBlockUtil(content, CODESPEC_MARKERS.start, CODESPEC_MARKERS.end);
 }
 
 /**
@@ -354,8 +354,8 @@ export interface CleanupResult {
 }
 
 /**
- * Cleans up legacy OpenSpec artifacts from a project.
- * Preserves openspec/project.md (shows migration hint instead of deleting).
+ * Cleans up legacy CodeSpec artifacts from a project.
+ * Preserves codespec/project.md (shows migration hint instead of deleting).
  *
  * @param projectPath - The root path of the project
  * @param detection - Detection result from detectLegacyArtifacts
@@ -388,7 +388,7 @@ export async function cleanupLegacyArtifacts(
     }
   }
 
-  // Delete legacy slash command directories (these are 100% OpenSpec-managed)
+  // Delete legacy slash command directories (these are 100% CodeSpec-managed)
   for (const dirPath of detection.slashCommandDirs) {
     const fullPath = FileSystemUtils.joinPath(projectPath, dirPath);
     try {
@@ -399,7 +399,7 @@ export async function cleanupLegacyArtifacts(
     }
   }
 
-  // Delete legacy slash command files (these are 100% OpenSpec-managed)
+  // Delete legacy slash command files (these are 100% CodeSpec-managed)
   for (const filePath of detection.slashCommandFiles) {
     const fullPath = FileSystemUtils.joinPath(projectPath, filePath);
     try {
@@ -410,20 +410,20 @@ export async function cleanupLegacyArtifacts(
     }
   }
 
-  // Delete openspec/AGENTS.md (this is inside openspec/, it's OpenSpec-managed)
+  // Delete codespec/AGENTS.md (this is inside codespec/, it's CodeSpec-managed)
   if (detection.hasOpenspecAgents) {
-    const agentsPath = FileSystemUtils.joinPath(projectPath, 'openspec', 'AGENTS.md');
+    const agentsPath = FileSystemUtils.joinPath(projectPath, 'codespec', 'AGENTS.md');
     if (await FileSystemUtils.fileExists(agentsPath)) {
       try {
         await fs.unlink(agentsPath);
-        result.deletedFiles.push('openspec/AGENTS.md');
+        result.deletedFiles.push('codespec/AGENTS.md');
       } catch (error: any) {
-        result.errors.push(`删除 openspec/AGENTS.md 失败：${error.message}`);
+        result.errors.push(`删除 codespec/AGENTS.md 失败：${error.message}`);
       }
     }
   }
 
-  // Handle root AGENTS.md with OpenSpec markers - remove markers only, NEVER delete
+  // Handle root AGENTS.md with CodeSpec markers - remove markers only, NEVER delete
   // Note: Root AGENTS.md is handled via configFilesToUpdate above (it's in LEGACY_CONFIG_FILES)
   // This hasRootAgentsWithMarkers flag is just for detection, cleanup happens via configFilesToUpdate
 
@@ -451,7 +451,7 @@ export function formatCleanupSummary(result: CleanupResult): string {
     }
 
     for (const file of result.modifiedFiles) {
-      lines.push(`  ✓ 已从 ${file} 移除 OpenSDD 标记`);
+      lines.push(`  ✓ 已从 ${file} 移除 CodeSpec 标记`);
     }
   }
 
@@ -477,7 +477,7 @@ export function formatCleanupSummary(result: CleanupResult): string {
 
 /**
  * Build list of files to be removed with explanations.
- * Only includes OpenSpec-managed files (slash commands, openspec/AGENTS.md).
+ * Only includes CodeSpec-managed files (slash commands, codespec/AGENTS.md).
  * Config files like CLAUDE.md, AGENTS.md are NEVER deleted.
  *
  * @param detection - Detection result from detectLegacyArtifacts
@@ -486,21 +486,21 @@ export function formatCleanupSummary(result: CleanupResult): string {
 function buildRemovalsList(detection: LegacyDetectionResult): Array<{ path: string; explanation: string }> {
   const removals: Array<{ path: string; explanation: string }> = [];
 
-  // Slash command directories (these are 100% OpenSpec-managed)
+  // Slash command directories (these are 100% CodeSpec-managed)
   for (const dir of detection.slashCommandDirs) {
     // Split on both forward and backward slashes for Windows compatibility
     const toolDir = dir.split(/[\/\\]/)[0];
     removals.push({ path: dir + '/', explanation: `已被 ${toolDir}/skills/ 替代` });
   }
 
-  // Slash command files (these are 100% OpenSpec-managed)
+  // Slash command files (these are 100% CodeSpec-managed)
   for (const file of detection.slashCommandFiles) {
     removals.push({ path: file, explanation: '已被 skills/ 替代' });
   }
 
-  // openspec/AGENTS.md (inside openspec/, it's OpenSpec-managed)
+  // codespec/AGENTS.md (inside codespec/, it's CodeSpec-managed)
   if (detection.hasOpenspecAgents) {
-    removals.push({ path: 'openspec/AGENTS.md', explanation: '已废弃的工作流文件' });
+    removals.push({ path: 'codespec/AGENTS.md', explanation: '已废弃的工作流文件' });
   }
 
   // Note: Config files (CLAUDE.md, AGENTS.md, etc.) are NEVER in the removals list
@@ -521,7 +521,7 @@ function buildUpdatesList(detection: LegacyDetectionResult): Array<{ path: strin
 
   // All config files with markers get updated (markers removed, file preserved)
   for (const file of detection.configFilesToUpdate) {
-    updates.push({ path: file, explanation: '正在移除 OpenSDD 标记' });
+    updates.push({ path: file, explanation: '正在移除 CodeSpec 标记' });
   }
 
   return updates;
@@ -546,9 +546,9 @@ export function formatDetectionSummary(detection: LegacyDetectionResult): string
   }
 
   // Header - welcoming upgrade message
-  lines.push(chalk.bold('升级到新版本 OpenSDD'));
+  lines.push(chalk.bold('升级到新版本 CodeSpec'));
   lines.push('');
-  lines.push('OpenSDD 现在使用 agent skills，这是编码助手的');
+  lines.push('CodeSpec 现在使用 agent skills，这是编码助手的');
   lines.push('新兴标准。这将简化您的设置，同时保持一切');
   lines.push('正常工作。');
   lines.push('');
@@ -566,7 +566,7 @@ export function formatDetectionSummary(detection: LegacyDetectionResult): string
   if (updates.length > 0) {
     if (removals.length > 0) lines.push('');
     lines.push(chalk.bold('要更新的文件'));
-    lines.push(chalk.dim('将移除 OpenSDD 标记，保留您的内容:'));
+    lines.push(chalk.dim('将移除 CodeSpec 标记，保留您的内容:'));
     for (const { path } of updates) {
       lines.push(`  • ${path}`);
     }
@@ -608,7 +608,7 @@ export function getToolsFromLegacyArtifacts(detection: LegacyDetectionResult): s
     for (const [toolId, pattern] of Object.entries(LEGACY_SLASH_COMMAND_PATHS)) {
       if (pattern.type === 'files' && pattern.pattern) {
         // Convert glob pattern to regex for matching
-        // e.g., '.cursor/commands/openspec-*.md' -> /^\.cursor\/commands\/openspec-.*\.md$/
+        // e.g., '.cursor/commands/codespec-*.md' -> /^\.cursor\/commands\/codespec-.*\.md$/
         const patterns = Array.isArray(pattern.pattern) ? pattern.pattern : [pattern.pattern];
         let matched = false;
         for (const p of patterns) {
@@ -639,11 +639,11 @@ export function getToolsFromLegacyArtifacts(detection: LegacyDetectionResult): s
 export function formatProjectMdMigrationHint(): string {
   const lines: string[] = [];
   lines.push(chalk.yellow.bold('需要您注意'));
-  lines.push('  • openspec/project.md');
+  lines.push('  • codespec/project.md');
   lines.push(chalk.dim('    我们不会删除这个文件。它可能包含有用的项目上下文。'));
   lines.push('');
-  lines.push(chalk.dim('    新的 openspec/config.yaml 有一个 "context:" 部分用于规划'));
-  lines.push(chalk.dim('    上下文。这包含在每个 OpenSDD 请求中，比旧'));
+  lines.push(chalk.dim('    新的 codespec/config.yaml 有一个 "context:" 部分用于规划'));
+  lines.push(chalk.dim('    上下文。这包含在每个 CodeSpec 请求中，比旧'));
   lines.push(chalk.dim('    的 project.md 方法更可靠。'));
   lines.push('');
   lines.push(chalk.dim('    查看 project.md，将任何有用的内容移动到 config.yaml 的 context'));

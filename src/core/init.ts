@@ -1,7 +1,7 @@
 /**
  * Init Command
  *
- * Sets up OpenSDD with Agent Skills and /opsx:* slash commands.
+ * Sets up CodeSpec with Agent Skills and /opsx:* slash commands.
  * This is the unified setup command that replaces both the old init and experimental commands.
  */
 
@@ -14,7 +14,7 @@ import { FileSystemUtils } from '../utils/file-system.js';
 import { transformToHyphenCommands } from '../utils/command-references.js';
 import {
   AI_TOOLS,
-  OPENSPEC_DIR_NAME,
+  CODESPEC_DIR_NAME,
   AIToolOption,
 } from './config.js';
 import { PALETTE } from './styles/palette.js';
@@ -49,7 +49,7 @@ import { getAvailableTools } from './available-tools.js';
 import { migrateIfNeeded } from './migration.js';
 
 const require = createRequire(import.meta.url);
-const { version: OPENSPEC_VERSION } = require('../../package.json');
+const { version: CODESPEC_VERSION } = require('../../package.json');
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -63,13 +63,13 @@ const PROGRESS_SPINNER = {
 };
 
 const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
-  'new': 'openspec-new-change',
-  'continue': 'openspec-continue-change',
-  'ff': 'openspec-ff-change',
-  'sync': 'openspec-sync-specs',
-  'bulk-archive': 'openspec-bulk-archive-change',
-  'verify': 'openspec-verify-change',
-  'onboard': 'openspec-onboard',
+  'new': 'codespec-new-change',
+  'continue': 'codespec-continue-change',
+  'ff': 'codespec-ff-change',
+  'sync': 'codespec-sync-specs',
+  'bulk-archive': 'codespec-bulk-archive-change',
+  'verify': 'codespec-verify-change',
+  'onboard': 'codespec-onboard',
   '_external:writing-plans': 'writing-plans',
   '_external:test-driven-development': 'test-driven-development',
   '_external:subagent-driven-development': 'subagent-driven-development',
@@ -106,11 +106,11 @@ export class InitCommand {
 
   async execute(targetPath: string): Promise<void> {
     const projectPath = path.resolve(targetPath);
-    const openspecDir = OPENSPEC_DIR_NAME;
-    const openspecPath = path.join(projectPath, openspecDir);
+    const codespecDir = CODESPEC_DIR_NAME;
+    const codespecPath = path.join(projectPath, codespecDir);
 
     // Validation happens silently in the background
-    const extendMode = await this.validate(projectPath, openspecPath);
+    const extendMode = await this.validate(projectPath, codespecPath);
 
     // Check for legacy artifacts and handle cleanup
     await this.handleLegacyCleanup(projectPath, extendMode);
@@ -144,13 +144,13 @@ export class InitCommand {
     const validatedTools = this.validateTools(selectedToolIds, toolStates);
 
     // Create directory structure and config
-    await this.createDirectoryStructure(openspecPath, extendMode);
+    await this.createDirectoryStructure(codespecPath, extendMode);
 
     // Generate skills and commands for each tool
     const results = await this.generateSkillsAndCommands(projectPath, validatedTools);
 
     // Create config.yaml if needed
-    const configStatus = await this.createConfig(openspecPath, extendMode);
+    const configStatus = await this.createConfig(codespecPath, extendMode);
 
     // Display success message
     this.displaySuccessMessage(projectPath, validatedTools, results, configStatus);
@@ -162,9 +162,9 @@ export class InitCommand {
 
   private async validate(
     projectPath: string,
-    openspecPath: string
+    codespecPath: string
   ): Promise<boolean> {
-    const extendMode = await FileSystemUtils.directoryExists(openspecPath);
+    const extendMode = await FileSystemUtils.directoryExists(codespecPath);
 
     // Check write permissions
     if (!(await FileSystemUtils.ensureWritePermissions(projectPath))) {
@@ -212,7 +212,7 @@ export class InitCommand {
 
     if (this.force || !canPrompt) {
       // --force flag or non-interactive mode: proceed with cleanup automatically.
-      // Legacy slash commands are 100% OpenSDD-managed, and config file cleanup
+      // Legacy slash commands are 100% CodeSpec-managed, and config file cleanup
       // only removes markers (never deletes files), so auto-cleanup is safe.
       await this.performLegacyCleanup(projectPath, detection);
       return;
@@ -323,7 +323,7 @@ export class InitCommand {
       .map((toolId) => AI_TOOLS.find((t) => t.value === toolId)?.name || toolId);
 
     if (configuredNames.length > 0) {
-      console.log(`OpenSDD 已配置：${configuredNames.join(', ')}（已预选）`);
+      console.log(`CodeSpec 已配置：${configuredNames.join(', ')}（已预选）`);
     }
 
     const detectedOnlyNames = detectedTools
@@ -452,14 +452,14 @@ export class InitCommand {
   // DIRECTORY STRUCTURE
   // ═══════════════════════════════════════════════════════════
 
-  private async createDirectoryStructure(openspecPath: string, extendMode: boolean): Promise<void> {
+  private async createDirectoryStructure(codespecPath: string, extendMode: boolean): Promise<void> {
     if (extendMode) {
       // In extend mode, just ensure directories exist without spinner
       const directories = [
-        openspecPath,
-        path.join(openspecPath, 'specs'),
-        path.join(openspecPath, 'changes'),
-        path.join(openspecPath, 'changes', 'archive'),
+        codespecPath,
+        path.join(codespecPath, 'specs'),
+        path.join(codespecPath, 'changes'),
+        path.join(codespecPath, 'changes', 'archive'),
       ];
 
       for (const dir of directories) {
@@ -468,13 +468,13 @@ export class InitCommand {
       return;
     }
 
-    const spinner = this.startSpinner('正在创建 OpenSDD 结构...');
+    const spinner = this.startSpinner('正在创建 CodeSpec 结构...');
 
     const directories = [
-      openspecPath,
-      path.join(openspecPath, 'specs'),
-      path.join(openspecPath, 'changes'),
-      path.join(openspecPath, 'changes', 'archive'),
+      codespecPath,
+      path.join(codespecPath, 'specs'),
+      path.join(codespecPath, 'changes'),
+      path.join(codespecPath, 'changes', 'archive'),
     ];
 
     for (const dir of directories) {
@@ -483,7 +483,7 @@ export class InitCommand {
 
     spinner.stopAndPersist({
       symbol: PALETTE.white('▌'),
-      text: PALETTE.white('OpenSDD 结构已创建'),
+      text: PALETTE.white('CodeSpec 结构已创建'),
     });
   }
 
@@ -541,7 +541,7 @@ export class InitCommand {
             // Generate SKILL.md content with YAML frontmatter including generatedBy
             // Use hyphen-based command references for tools where filename = command name
             const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
-            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+            const skillContent = generateSkillContent(template, CODESPEC_VERSION, transformer);
 
             // Write the skill file
             await FileSystemUtils.writeFile(skillFile, skillContent);
@@ -553,7 +553,7 @@ export class InitCommand {
             const skillFile = path.join(skillDir, 'SKILL.md');
 
             const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
-            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+            const skillContent = generateSkillContent(template, CODESPEC_VERSION, transformer);
 
             await FileSystemUtils.writeFile(skillFile, skillContent);
 
@@ -624,9 +624,9 @@ export class InitCommand {
   // CONFIG FILE
   // ═══════════════════════════════════════════════════════════
 
-  private async createConfig(openspecPath: string, extendMode: boolean): Promise<'created' | 'exists' | 'skipped'> {
-    const configPath = path.join(openspecPath, 'config.yaml');
-    const configYmlPath = path.join(openspecPath, 'config.yml');
+  private async createConfig(codespecPath: string, extendMode: boolean): Promise<'created' | 'exists' | 'skipped'> {
+    const configPath = path.join(codespecPath, 'config.yaml');
+    const configYmlPath = path.join(codespecPath, 'config.yml');
     const configYamlExists = fs.existsSync(configPath);
     const configYmlExists = fs.existsSync(configYmlPath);
 
@@ -666,7 +666,7 @@ export class InitCommand {
     configStatus: 'created' | 'exists' | 'skipped'
   ): void {
     console.log();
-    console.log(chalk.bold('OpenSDD 设置完成'));
+    console.log(chalk.bold('CodeSpec 设置完成'));
     console.log();
 
     // Show created vs refreshed tools
@@ -714,13 +714,13 @@ export class InitCommand {
 
     // Config status
     if (configStatus === 'created') {
-      console.log(`配置：openspec/config.yaml (schema: ${DEFAULT_SCHEMA})`);
+      console.log(`配置：codespec/config.yaml (schema: ${DEFAULT_SCHEMA})`);
     } else if (configStatus === 'exists') {
       // Show actual filename (config.yaml or config.yml)
-      const configYaml = path.join(projectPath, OPENSPEC_DIR_NAME, 'config.yaml');
-      const configYml = path.join(projectPath, OPENSPEC_DIR_NAME, 'config.yml');
+      const configYaml = path.join(projectPath, CODESPEC_DIR_NAME, 'config.yaml');
+      const configYml = path.join(projectPath, CODESPEC_DIR_NAME, 'config.yml');
       const configName = fs.existsSync(configYaml) ? 'config.yaml' : fs.existsSync(configYml) ? 'config.yml' : 'config.yaml';
-      console.log(`配置：openspec/${configName} (已存在)`);
+      console.log(`配置：codespec/${configName} (已存在)`);
     } else {
       console.log(chalk.dim(`配置：已跳过 (非交互模式)`));
     }
@@ -737,7 +737,7 @@ export class InitCommand {
       console.log(chalk.bold('开始使用：'));
       console.log('  开始您的第一个变更：/sdd/propose "您的想法"');
     } else {
-      console.log("完成。运行 'opensdd config profile' 配置您的工作流程。");
+      console.log("完成。运行 'codespec config profile' 配置您的工作流程。");
     }
 
     // Links

@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Fetch and compare versions
         run: |
-          UPSTREAM=$(npm view @fission-ai/openspec version 2>/dev/null || echo "")
-          LOCAL=$(npm view @studyzy/opensdd version 2>/dev/null || echo "")
+          UPSTREAM=$(npm view @fission-ai/codespec version 2>/dev/null || echo "")
+          LOCAL=$(npm view @studyzy/codespec version 2>/dev/null || echo "")
 
           if [ -z "$UPSTREAM" ] || [ -z "$LOCAL" ]; then
             echo "::error::Failed to fetch versions: upstream=$UPSTREAM local=$LOCAL"

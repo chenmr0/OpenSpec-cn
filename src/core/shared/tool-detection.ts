@@ -9,26 +9,26 @@ import * as fs from 'fs';
 import { AI_TOOLS } from '../config.js';
 
 /**
- * Names of skill directories created by openspec init.
+ * Names of skill directories created by codespec init.
  */
 export const SKILL_NAMES = [
-  'openspec-explore',
-  'openspec-new-change',
-  'openspec-continue-change',
-  'openspec-apply-change',
-  'openspec-ff-change',
-  'openspec-sync-specs',
-  'openspec-archive-change',
-  'openspec-bulk-archive-change',
-  'openspec-verify-change',
-  'openspec-onboard',
-  'openspec-propose',
+  'codespec-explore',
+  'codespec-new-change',
+  'codespec-continue-change',
+  'codespec-apply-change',
+  'codespec-ff-change',
+  'codespec-sync-specs',
+  'codespec-archive-change',
+  'codespec-bulk-archive-change',
+  'codespec-verify-change',
+  'codespec-onboard',
+  'codespec-propose',
 ] as const;
 
 export type SkillName = (typeof SKILL_NAMES)[number];
 
 /**
- * IDs of command templates created by openspec init.
+ * IDs of command templates created by codespec init.
  */
 export const COMMAND_IDS = [
   'explore',
@@ -138,7 +138,7 @@ export function extractGeneratedByVersion(skillFilePath: string): string | null 
     // ---
     // ...
     // metadata:
-    //   author: openspec
+    //   author: codespec
     //   version: "1.0"
     //   generatedBy: "0.23.0"
     // ---

@@ -9,39 +9,39 @@
 ### npm
 
 ```bash
-npm install -g @fission-ai/openspec@latest
+npm install -g @fission-ai/codespec@latest
 ```
 
 ### pnpm
 
 ```bash
-pnpm add -g @fission-ai/openspec@latest
+pnpm add -g @fission-ai/codespec@latest
 ```
 
 ### yarn
 
 ```bash
-yarn global add @fission-ai/openspec@latest
+yarn global add @fission-ai/codespec@latest
 ```
 
 ### bun
 
 ```bash
-bun add -g @fission-ai/openspec@latest
+bun add -g @fission-ai/codespec@latest
 ```
 
 ## Nix
 
-无需安装，直接运行 OpenSDD：
+无需安装，直接运行 CodeSpec：
 
 ```bash
-nix run github:Fission-AI/OpenSpec -- init
+nix run github:Fission-AI/CodeSpec -- init
 ```
 
 或者安装到 profile：
 
 ```bash
-nix profile install github:Fission-AI/OpenSpec
+nix profile install github:Fission-AI/CodeSpec
 ```
 
 或者在 `flake.nix` 中加入到开发环境：
@@ -50,12 +50,12 @@ nix profile install github:Fission-AI/OpenSpec
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    openspec.url = "github:Fission-AI/OpenSpec";
+    codespec.url = "github:Fission-AI/CodeSpec";
   };
 
-  outputs = { nixpkgs, openspec, ... }: {
+  outputs = { nixpkgs, codespec, ... }: {
     devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
-      buildInputs = [ openspec.packages.x86_64-linux.default ];
+      buildInputs = [ codespec.packages.x86_64-linux.default ];
     };
   };
 }
@@ -64,16 +64,16 @@ nix profile install github:Fission-AI/OpenSpec
 ## 验证安装
 
 ```bash
-opensdd --version
+codespec --version
 ```
 
 ## 下一步
 
-安装完成后，在你的项目中初始化 OpenSDD：
+安装完成后，在你的项目中初始化 CodeSpec：
 
 ```bash
 cd your-project
-opensdd init
+codespec init
 ```
 
 完整流程请参见 [快速上手](getting-started.md)。

@@ -1,22 +1,22 @@
-# @studyzy/opensdd
+# @studyzy/codespec
 
 ## 1.3.1
 
 ### Patch Changes
 
-- [#995](https://github.com/Fission-AI/OpenSpec/pull/995) [`d1f3861`](https://github.com/Fission-AI/OpenSpec/commit/d1f3861d9ec694cc924b042b5da01963dcf93137) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
+- [#995](https://github.com/Fission-AI/CodeSpec/pull/995) [`d1f3861`](https://github.com/Fission-AI/CodeSpec/commit/d1f3861d9ec694cc924b042b5da01963dcf93137) Thanks [@TabishB](https://github.com/TabishB)! - ### Bug Fixes
 
   - **Canonical artifact paths** — Workflow artifact paths are now resolved via the native `realpath`, so symlinks and case-insensitive filesystems no longer cause path mismatches during apply and archive.
   - **Glob apply instructions** — Apply instructions with glob artifact outputs now resolve correctly, and literal artifact outputs are enforced to be file paths.
   - **Hidden main spec requirements** — Requirements nested inside fenced code blocks or otherwise hidden in main specs are now detected during validation.
   - **Clean `--json` output** — Spinner progress text no longer leaks into stderr when `--json` is passed, so AI agents that combine stdout and stderr can parse the JSON reliably.
-  - **Silent telemetry in firewalled environments** — PostHog network errors are now swallowed with a 1s timeout and retries/remote config disabled, so OpenSpec no longer surfaces `PostHogFetchNetworkError` in locked-down networks. Telemetry opt-out is documented earlier in the README, installation guide, and CLI reference.
+  - **Silent telemetry in firewalled environments** — PostHog network errors are now swallowed with a 1s timeout and retries/remote config disabled, so CodeSpec no longer surfaces `PostHogFetchNetworkError` in locked-down networks. Telemetry opt-out is documented earlier in the README, installation guide, and CLI reference.
 
 ## 1.3.0
 
 ### 次要变更
 
-- [#952](https://github.com/Fission-AI/OpenSpec/pull/952) [`cce787e`](https://github.com/Fission-AI/OpenSpec/commit/cce787ec4083da2b27781f6786f5ce0002909a7b) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
+- [#952](https://github.com/Fission-AI/CodeSpec/pull/952) [`cce787e`](https://github.com/Fission-AI/CodeSpec/commit/cce787ec4083da2b27781f6786f5ce0002909a7b) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
 
   - **支持 Junie** — 为 JetBrains Junie 新增工具与命令生成功能
   - **支持 Lingma IDE** — 新增对 Lingma IDE 的配置支持
@@ -31,23 +31,23 @@
 
 ### 补丁变更
 
-- [#760](https://github.com/Fission-AI/OpenSpec/pull/760) [`61eb999`](https://github.com/Fission-AI/OpenSpec/commit/61eb999f7c6c0fc98d2e7f3678756fce6a3f4378) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！- 修复：OpenCode 适配器现在使用 `.opencode/commands/`（复数形式），以符合 OpenCode 官方目录约定。修复了 #748。
+- [#760](https://github.com/Fission-AI/CodeSpec/pull/760) [`61eb999`](https://github.com/Fission-AI/CodeSpec/commit/61eb999f7c6c0fc98d2e7f3678756fce6a3f4378) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！- 修复：OpenCode 适配器现在使用 `.opencode/commands/`（复数形式），以符合 OpenCode 官方目录约定。修复了 #748。
 
-- [#759](https://github.com/Fission-AI/OpenSpec/pull/759) [`afdca0d`](https://github.com/Fission-AI/OpenSpec/commit/afdca0d5dab1aa109cfd8848b2512333ccad60c3) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！- 修复：`openspec status` 在没有变更时现在会优雅退出，而不是抛出致命错误。修复了 #714。
+- [#759](https://github.com/Fission-AI/CodeSpec/pull/759) [`afdca0d`](https://github.com/Fission-AI/CodeSpec/commit/afdca0d5dab1aa109cfd8848b2512333ccad60c3) 感谢 [@fsilvaortiz](https://github.com/fsilvaortiz)！- 修复：`codespec status` 在没有变更时现在会优雅退出，而不是抛出致命错误。修复了 #714。
 
 ## 1.2.0
 
 ### 次要变更
 
-- [#747](https://github.com/Fission-AI/OpenSpec/pull/747) [`1e94443`](https://github.com/Fission-AI/OpenSpec/commit/1e94443a3551b228eecbc89e95d96d3b9600a192) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
+- [#747](https://github.com/Fission-AI/CodeSpec/pull/747) [`1e94443`](https://github.com/Fission-AI/CodeSpec/commit/1e94443a3551b228eecbc89e95d96d3b9600a192) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
 
-  - **配置档系统** — 可在 `core`（4 个核心工作流）与 `custom`（任意选择子集）配置档之间切换，以控制安装哪些技能。可通过新的 `openspec config profile` 命令管理配置档
+  - **配置档系统** — 可在 `core`（4 个核心工作流）与 `custom`（任意选择子集）配置档之间切换，以控制安装哪些技能。可通过新的 `codespec config profile` 命令管理配置档
   - **提案工作流** — 新增一步式工作流，只需一个请求即可生成包含设计、规格与任务的完整变更提案，无需再分别执行 `new` 和 `ff`
-  - **AI 工具自动检测** — `openspec init` 现在会扫描项目中已有的工具目录（如 `.claude/`、`.cursor/` 等），并自动预选已检测到的工具
+  - **AI 工具自动检测** — `codespec init` 现在会扫描项目中已有的工具目录（如 `.claude/`、`.cursor/` 等），并自动预选已检测到的工具
   - **支持 Pi（pi.dev）** — Pi 编码代理现已成为受支持工具，可生成提示词与技能
   - **支持 Kiro** — AWS Kiro IDE 现已成为受支持工具，可生成提示词与技能
-  - **同步时清理未选工作流** — `openspec update` 现在会删除你已取消选择的工作流对应的命令文件和技能目录，保持项目整洁
-  - **配置漂移警告** — 当全局配置与当前项目不同步时，`openspec config list` 会给出警告
+  - **同步时清理未选工作流** — `codespec update` 现在会删除你已取消选择的工作流对应的命令文件和技能目录，保持项目整洁
+  - **配置漂移警告** — 当全局配置与当前项目不同步时，`codespec config list` 会给出警告
 
   ### 问题修复
 
@@ -59,7 +59,7 @@
 
 ### 补丁变更
 
-- [#627](https://github.com/Fission-AI/OpenSpec/pull/627) [`afb73cf`](https://github.com/Fission-AI/OpenSpec/commit/afb73cf9ec59c6f8b26d0c538c0218c203ba3c56) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
+- [#627](https://github.com/Fission-AI/CodeSpec/pull/627) [`afb73cf`](https://github.com/Fission-AI/CodeSpec/commit/afb73cf9ec59c6f8b26d0c538c0218c203ba3c56) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
 
   - **OpenCode 命令引用** — 生成文件中的命令引用现在使用正确的 `/opsx-` 连字符格式，而不是 `/opsx:` 冒号格式，确保命令能在 OpenCode 中正常工作
 
@@ -67,7 +67,7 @@
 
 ### 次要变更
 
-- [#625](https://github.com/Fission-AI/OpenSpec/pull/625) [`53081fb`](https://github.com/Fission-AI/OpenSpec/commit/53081fb2a26ec66d2950ae0474b9a56cbc5b5a76) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
+- [#625](https://github.com/Fission-AI/CodeSpec/pull/625) [`53081fb`](https://github.com/Fission-AI/CodeSpec/commit/53081fb2a26ec66d2950ae0474b9a56cbc5b5a76) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
 
   - **Codex 全局路径支持** — Codex 适配器现在能正确解析全局路径，修复了在项目目录外运行时工作流文件生成异常的问题（#622）
   - **跨设备或受限路径上的归档操作** — 当 `rename` 因 EPERM 或 EXDEV 错误失败时，archive 现在会回退为 copy+remove，修复了网络盘或外置磁盘上的失败问题（#605）
@@ -76,7 +76,7 @@
 
 ### 补丁变更
 
-- [#550](https://github.com/Fission-AI/OpenSpec/pull/550) [`86d2e04`](https://github.com/Fission-AI/OpenSpec/commit/86d2e04cae76a999dbd1b4571f52fa720036be0c) 感谢 [@jerome-benoit](https://github.com/jerome-benoit)！- ### 改进
+- [#550](https://github.com/Fission-AI/CodeSpec/pull/550) [`86d2e04`](https://github.com/Fission-AI/CodeSpec/commit/86d2e04cae76a999dbd1b4571f52fa720036be0c) 感谢 [@jerome-benoit](https://github.com/jerome-benoit)！- ### 改进
 
   - **Nix flake 维护** — 版本号现在从 `package.json` 动态读取，减少手动同步问题
   - **Nix 构建优化** — 源码过滤排除了 `node_modules` 和构建产物，提升构建速度
@@ -90,7 +90,7 @@
 
 ### 补丁变更
 
-- [#596](https://github.com/Fission-AI/OpenSpec/pull/596) [`e91568d`](https://github.com/Fission-AI/OpenSpec/commit/e91568deb948073f3e9d9bb2d2ab5bf8080d6cf4) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
+- [#596](https://github.com/Fission-AI/CodeSpec/pull/596) [`e91568d`](https://github.com/Fission-AI/CodeSpec/commit/e91568deb948073f3e9d9bb2d2ab5bf8080d6cf4) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
 
   - 明确规格命名约定 —— 规格应按能力命名（`specs/<capability>/spec.md`），而不是按变更命名
   - 修复任务复选框格式说明 —— 现在明确要求使用 `- [ ]` 复选框格式，以便在 apply 阶段跟踪任务
@@ -99,23 +99,23 @@
 
 ### 补丁变更
 
-- [#587](https://github.com/Fission-AI/OpenSpec/pull/587) [`943e0d4`](https://github.com/Fission-AI/OpenSpec/commit/943e0d41026d034de66b9442d1276c01b293eb2b) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
+- [#587](https://github.com/Fission-AI/CodeSpec/pull/587) [`943e0d4`](https://github.com/Fission-AI/CodeSpec/commit/943e0d41026d034de66b9442d1276c01b293eb2b) 感谢 [@TabishB](https://github.com/TabishB)！- ### 问题修复
 
-  - 修复了 onboarding 文档中的错误 archive 路径 —— 模板现在显示正确路径 `openspec/changes/archive/YYYY-MM-DD-<name>/`，而不是错误的 `openspec/archive/YYYY-MM-DD--<name>/`
+  - 修复了 onboarding 文档中的错误 archive 路径 —— 模板现在显示正确路径 `codespec/changes/archive/YYYY-MM-DD-<name>/`，而不是错误的 `codespec/archive/YYYY-MM-DD--<name>/`
 
 ## 1.0.0
 
 ### 重大变更
 
-- [#578](https://github.com/Fission-AI/OpenSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/OpenSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) 感谢 [@TabishB](https://github.com/TabishB)！- ## OpenSDD 1.0 —— OPSX 版本
+- [#578](https://github.com/Fission-AI/CodeSpec/pull/578) [`0cc9d90`](https://github.com/Fission-AI/CodeSpec/commit/0cc9d9025af367faa1688a7b2606a2549053cd3f) 感谢 [@TabishB](https://github.com/TabishB)！- ## CodeSpec 1.0 —— OPSX 版本
 
-  工作流已从底层彻底重构。OPSX 用基于动作的系统取代了旧的阶段锁定式 `/openspec:*` 命令，AI 现在能够理解已有的工件、可创建的内容，以及每个动作会解锁什么。
+  工作流已从底层彻底重构。OPSX 用基于动作的系统取代了旧的阶段锁定式 `/codespec:*` 命令，AI 现在能够理解已有的工件、可创建的内容，以及每个动作会解锁什么。
 
   ### 破坏性变更
 
-  - **移除旧命令** — `/openspec:proposal`、`/openspec:apply` 和 `/openspec:archive` 已不再存在
+  - **移除旧命令** — `/codespec:proposal`、`/codespec:apply` 和 `/codespec:archive` 已不再存在
   - **移除配置文件** — 不再生成工具专属的指令文件（`CLAUDE.md`、`.cursorrules`、`AGENTS.md`、`project.md`）
-  - **迁移方式** — 运行 `openspec init` 进行升级。旧版工件会被检测出来，并在确认后清理。
+  - **迁移方式** — 运行 `codespec init` 进行升级。旧版工件会被检测出来，并在确认后清理。
 
   ### 从静态提示到动态指令
 
@@ -173,9 +173,9 @@
 
   - **支持 21 种 AI 工具** — Claude Code、Cursor、Windsurf、Continue、Gemini CLI、GitHub Copilot、Amazon Q、Cline、RooCode、Kilo Code、Auggie、CodeBuddy、Qoder、Qwen、CoStrict、Crush、Factory、OpenCode、Antigravity、iFlow 和 Codex
 
-  - **交互式初始化** — `openspec init` 现提供动态欢迎界面和可搜索的多选工具列表，并会预选已配置工具，方便刷新更新
+  - **交互式初始化** — `codespec init` 现提供动态欢迎界面和可搜索的多选工具列表，并会预选已配置工具，方便刷新更新
 
-  - **可自定义 schema** — 可在 `openspec/schemas/` 中定义自定义工件工作流，而无需修改包代码；团队也可通过版本控制共享这些工作流
+  - **可自定义 schema** — 可在 `codespec/schemas/` 中定义自定义工件工作流，而无需修改包代码；团队也可通过版本控制共享这些工作流
 
   ### 问题修复
 
@@ -193,7 +193,7 @@
 
 ### 次要变更
 
-- [#540](https://github.com/Fission-AI/OpenSpec/pull/540) [`c4cfdc7`](https://github.com/Fission-AI/OpenSpec/commit/c4cfdc7c499daef30d8a218f5f59b8d9e5adb754) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
+- [#540](https://github.com/Fission-AI/CodeSpec/pull/540) [`c4cfdc7`](https://github.com/Fission-AI/CodeSpec/commit/c4cfdc7c499daef30d8a218f5f59b8d9e5adb754) 感谢 [@TabishB](https://github.com/TabishB)！- ### 新功能
 
   - **批量归档技能** — 使用 `/opsx:bulk-archive` 一次性归档多个已完成变更，包含批量校验、规格冲突检测与统一确认流程
 
@@ -205,13 +205,13 @@
 
 ### 次要变更
 
-- [#530](https://github.com/Fission-AI/OpenSpec/pull/530) [`33466b1`](https://github.com/Fission-AI/OpenSpec/commit/33466b1e2a6798bdd6d0e19149173585b0612e6f) 感谢 [@TabishB](https://github.com/TabishB)！- 新增项目级配置、项目本地 schema，以及 schema 管理命令
+- [#530](https://github.com/Fission-AI/CodeSpec/pull/530) [`33466b1`](https://github.com/Fission-AI/CodeSpec/commit/33466b1e2a6798bdd6d0e19149173585b0612e6f) 感谢 [@TabishB](https://github.com/TabishB)！- 新增项目级配置、项目本地 schema，以及 schema 管理命令
 
   **新功能**
 
-  - **项目级配置** — 可通过 `openspec/config.yaml` 为每个项目配置 OpenSDD 行为，包括自定义规则注入、上下文文件和 schema 解析设置
-  - **项目本地 schema** — 可在项目的 `openspec/schemas/` 目录中定义项目专属的工件 schema
-  - **schema 管理命令** — 新增 `openspec schema` 命令（`list`、`show`、`export`、`validate`），用于查看和管理工件 schema（实验性）
+  - **项目级配置** — 可通过 `codespec/config.yaml` 为每个项目配置 CodeSpec 行为，包括自定义规则注入、上下文文件和 schema 解析设置
+  - **项目本地 schema** — 可在项目的 `codespec/schemas/` 目录中定义项目专属的工件 schema
+  - **schema 管理命令** — 新增 `codespec schema` 命令（`list`、`show`、`export`、`validate`），用于查看和管理工件 schema（实验性）
 
   **问题修复**
 
@@ -221,12 +221,12 @@
 
 ### 次要变更
 
-- [#516](https://github.com/Fission-AI/OpenSpec/pull/516) [`b5a8847`](https://github.com/Fission-AI/OpenSpec/commit/b5a884748be6156a7bb140b4941cfec4f20a9fc8) 感谢 [@TabishB](https://github.com/TabishB)！- 新增反馈命令和 Nix flake 支持
+- [#516](https://github.com/Fission-AI/CodeSpec/pull/516) [`b5a8847`](https://github.com/Fission-AI/CodeSpec/commit/b5a884748be6156a7bb140b4941cfec4f20a9fc8) 感谢 [@TabishB](https://github.com/TabishB)！- 新增反馈命令和 Nix flake 支持
 
   **新功能**
 
-  - **反馈命令** — 可直接通过 CLI 使用 `openspec feedback` 提交反馈；该命令会自动附带元数据创建 GitHub Issue，并在失败时优雅回退为手动提交方式
-  - **Nix flake 支持** — 可通过新的 `flake.nix` 使用 Nix 安装和开发 OpenSDD，并支持自动化 flake 维护与 CI 校验
+  - **反馈命令** — 可直接通过 CLI 使用 `codespec feedback` 提交反馈；该命令会自动附带元数据创建 GitHub Issue，并在失败时优雅回退为手动提交方式
+  - **Nix flake 支持** — 可通过新的 `flake.nix` 使用 Nix 安装和开发 CodeSpec，并支持自动化 flake 维护与 CI 校验
 
   **问题修复**
 
@@ -241,7 +241,7 @@
 
 ### 次要变更
 
-- [#502](https://github.com/Fission-AI/OpenSpec/pull/502) [`9db74aa`](https://github.com/Fission-AI/OpenSpec/commit/9db74aa5ac6547efadaed795217cfa17444f2004) 感谢 [@TabishB](https://github.com/TabishB)！- 新增 `/opsx:verify` 命令并修复 vitest 进程风暴问题
+- [#502](https://github.com/Fission-AI/CodeSpec/pull/502) [`9db74aa`](https://github.com/Fission-AI/CodeSpec/commit/9db74aa5ac6547efadaed795217cfa17444f2004) 感谢 [@TabishB](https://github.com/TabishB)！- 新增 `/opsx:verify` 命令并修复 vitest 进程风暴问题
 
   **新功能**
 
@@ -261,8 +261,8 @@
 
   **新功能**
 
-  - **支持 Continue IDE** – OpenSDD 现在可为 [Continue](https://continue.dev/) 生成斜杠命令，与 Cursor、Windsurf、Claude Code 等一起扩展编辑器集成选项
-  - **支持 Bash、Fish 和 PowerShell 的 shell 补全** – 运行 `openspec completion install` 即可在你偏好的 shell 中启用 Tab 补全
+  - **支持 Continue IDE** – CodeSpec 现在可为 [Continue](https://continue.dev/) 生成斜杠命令，与 Cursor、Windsurf、Claude Code 等一起扩展编辑器集成选项
+  - **支持 Bash、Fish 和 PowerShell 的 shell 补全** – 运行 `codespec completion install` 即可在你偏好的 shell 中启用 Tab 补全
   - **`/opsx:explore` 命令** – 新增一个“思考伙伴”模式，用于在正式提交变更之前探索想法和调查问题
   - **Codebuddy 斜杠命令改进** – 更新 frontmatter 格式以提升兼容性
 
@@ -273,7 +273,7 @@
 
   **其他**
 
-  - 新增可选的匿名使用统计，用于帮助了解 OpenSDD 的使用情况。该功能默认**需要手动关闭**——设置 `OPENSPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 可禁用。仅收集命令名和版本号，不收集参数、文件路径或内容，并会在 CI 环境中自动禁用。
+  - 新增可选的匿名使用统计，用于帮助了解 CodeSpec 的使用情况。该功能默认**需要手动关闭**——设置 `CODESPEC_TELEMETRY=0` 或 `DO_NOT_TRACK=1` 可禁用。仅收集命令名和版本号，不收集参数、文件路径或内容，并会在 CI 环境中自动禁用。
 
 ## 0.18.0
 
@@ -291,7 +291,7 @@
 
   - 带内联指导与 XML 输出的 schema 感知 apply 指令
   - 实验性工件工作流的 agent schema 选择
-  - 通过 `.openspec.yaml` 文件为每个变更保存 schema 元数据
+  - 通过 `.codespec.yaml` 文件为每个变更保存 schema 元数据
   - 实验性工件工作流的 Agent Skills
   - 用于模板加载和变更上下文的指令加载器
   - 将 schema 重构为目录 + 模板形式
@@ -326,11 +326,11 @@
 
 ### 次要变更
 
-- 2e71835：新增 `openspec config` 命令和 Oh-my-zsh 补全支持
+- 2e71835：新增 `codespec config` 命令和 Oh-my-zsh 补全支持
 
   **新功能**
 
-  - 新增 `openspec config` 命令，用于管理全局配置
+  - 新增 `codespec config` 命令，用于管理全局配置
   - 实现支持 XDG Base Directory 规范的全局配置目录
   - 新增 Oh-my-zsh shell 补全支持，提升 CLI 使用体验
 
@@ -363,9 +363,9 @@
 
 ### 次要变更
 
-- 新增 Continue 斜杠命令支持，使 `openspec init` 能生成带有 MARKDOWN frontmatter 和 `$ARGUMENTS` 占位符的 `.continue/prompts/openspec-*.prompt` 文件，并在 `openspec update` 时刷新它们。
+- 新增 Continue 斜杠命令支持，使 `codespec init` 能生成带有 MARKDOWN frontmatter 和 `$ARGUMENTS` 占位符的 `.continue/prompts/codespec-*.prompt` 文件，并在 `codespec update` 时刷新它们。
 
-- 新增 Antigravity 斜杠命令支持，使 `openspec init` 能生成仅含 description frontmatter 的 `.agent/workflows/openspec-*.md` 文件，并让 `openspec update` 在刷新 Windsurf 工作流的同时刷新这些现有工作流。
+- 新增 Antigravity 斜杠命令支持，使 `codespec init` 能生成仅含 description frontmatter 的 `.agent/workflows/codespec-*.md` 文件，并让 `codespec update` 在刷新 Windsurf 工作流的同时刷新这些现有工作流。
 
 ## 0.15.0
 
@@ -373,7 +373,7 @@
 
 - 4758c5c：新增对原生斜杠命令集成的新 AI 工具支持
 
-  - **Gemini CLI**：新增基于 TOML 的 Gemini CLI 原生斜杠命令支持，集成路径为 `.gemini/commands/openspec/`
+  - **Gemini CLI**：新增基于 TOML 的 Gemini CLI 原生斜杠命令支持，集成路径为 `.gemini/commands/codespec/`
   - **RooCode**：新增 RooCode 集成，包括配置器、斜杠命令和模板
   - **Cline**：修复 Cline 斜杠命令使用 `workflows` 而不是 `rules`（路径为 `.clinerules/workflows/`）
   - **文档**：更新文档以反映新的集成与工作流变化
@@ -388,7 +388,7 @@
   - feat：为 apply 斜杠命令新增 `$ARGUMENTS` 支持，以便动态传参
   - feat：新增 Qoder CLI 配置与文档支持
   - feat：新增 CoStrict AI 助手支持
-  - fix：在 extend 模式下重新创建缺失的 openspec 模板文件
+  - fix：在 extend 模式下重新创建缺失的 codespec 模板文件
   - fix：避免错误地将工具识别为“已配置”
   - fix：使用 change-id 作为回退标题，而不是 “Untitled Change”
   - docs：补充项目级上下文填充指南
@@ -432,13 +432,13 @@
   本次发布包含两项新功能：
 
   - **斜杠命令工厂函数支持**：斜杠命令现在可定义为返回命令对象的函数，从而支持动态命令配置
-  - **非交互式 init 选项**：为 `openspec init` 新增 `--tools`、`--all-tools` 和 `--skip-tools` CLI 参数，以便在 CI/CD 流水线中自动初始化，同时保持与交互模式的向后兼容
+  - **非交互式 init 选项**：为 `codespec init` 新增 `--tools`、`--all-tools` 和 `--skip-tools` CLI 参数，以便在 CI/CD 流水线中自动初始化，同时保持与交互模式的向后兼容
 
 ## 0.11.0
 
 ### 次要变更
 
-- 312e1d6：新增 Amazon Q Developer CLI 集成。OpenSDD 现已支持 Amazon Q Developer，可自动在 `.amazonq/prompts/` 目录中生成提示词，使你能够通过 Amazon Q 的 `@` 语法使用 OpenSDD 的斜杠命令。
+- 312e1d6：新增 Amazon Q Developer CLI 集成。CodeSpec 现已支持 Amazon Q Developer，可自动在 `.amazonq/prompts/` 目录中生成提示词，使你能够通过 Amazon Q 的 `@` 语法使用 CodeSpec 的斜杠命令。
 
 ## 0.10.0
 
@@ -450,13 +450,13 @@
 
 ### 补丁变更
 
-- 2ae0484：修复跨平台路径处理问题。本次发布修复了 `joinPath` 行为与斜杠命令路径解析，以确保 OpenSDD 能在所有平台上正确运行。
+- 2ae0484：修复跨平台路径处理问题。本次发布修复了 `joinPath` 行为与斜杠命令路径解析，以确保 CodeSpec 能在所有平台上正确运行。
 
 ## 0.9.1
 
 ### 补丁变更
 
-- 8210970：修复选择 Codex 集成时 OpenSDD 在 Windows 上无法运行的问题。本次发布包含跨平台路径处理和规范化修复，以确保 OpenSDD 在 Windows 系统中正确工作。
+- 8210970：修复选择 Codex 集成时 CodeSpec 在 Windows 上无法运行的问题。本次发布包含跨平台路径处理和规范化修复，以确保 CodeSpec 在 Windows 系统中正确工作。
 
 ## 0.9.0
 
@@ -468,26 +468,26 @@
 
 ### 次要变更
 
-- 新增 GitHub Copilot 斜杠命令支持。OpenSDD 现在会将提示词写入 `.github/prompts/openspec-{proposal,apply,archive}.prompt.md`，并使用 YAML frontmatter 与 `$ARGUMENTS` 占位符，同时在 `openspec update` 时刷新这些文件。
+- 新增 GitHub Copilot 斜杠命令支持。CodeSpec 现在会将提示词写入 `.github/prompts/codespec-{proposal,apply,archive}.prompt.md`，并使用 YAML frontmatter 与 `$ARGUMENTS` 占位符，同时在 `codespec update` 时刷新这些文件。
 
 ## 0.8.1
 
 ### 补丁变更
 
-- d070d08：修复 CLI 版本不一致问题，并新增发布保护机制：通过 `openspec --version` 校验打包产物输出的版本与 `package.json` 一致。
+- d070d08：修复 CLI 版本不一致问题，并新增发布保护机制：通过 `codespec --version` 校验打包产物输出的版本与 `package.json` 一致。
 
 ## 0.8.0
 
 ### 次要变更
 
 - c29b06d：新增 Windsurf 支持。
-- 新增 Codex 斜杠命令支持。OpenSDD 现在会直接将提示词写入 Codex 的全局目录（`~/.codex/prompts` 或 `$CODEX_HOME/prompts`），并在 `openspec update` 时刷新它们。
+- 新增 Codex 斜杠命令支持。CodeSpec 现在会直接将提示词写入 Codex 的全局目录（`~/.codex/prompts` 或 `$CODEX_HOME/prompts`），并在 `codespec update` 时刷新它们。
 
 ## 0.7.0
 
 ### 次要变更
 
-- 新增原生 Kilo Code 工作流集成，使 `openspec init` 和 `openspec update` 能管理 `.kilocode/workflows/openspec-*.md` 文件。
+- 新增原生 Kilo Code 工作流集成，使 `codespec init` 和 `codespec update` 能管理 `.kilocode/workflows/codespec-*.md` 文件。
 - 始终生成受管的根级 `AGENTS.md` 交接 stub，并在 init/update 期间重新整理 AI 工具提示词，以保持指令一致性。
 
 ## 0.6.0
@@ -524,7 +524,7 @@
 
 ### 次要变更
 
-- 新增 OpenSDD 变更提案，以改进 CLI 和提升用户体验
+- 新增 CodeSpec 变更提案，以改进 CLI 和提升用户体验
 - 新增 Opencode 斜杠命令支持，用于 AI 驱动的开发工作流
 
 ### 补丁变更
@@ -536,15 +536,15 @@
 
 ### 次要变更
 
-- 增强 `openspec init`，加入 extend 模式、多工具选择，以及交互式 `AGENTS.md` 配置器。
+- 增强 `codespec init`，加入 extend 模式、多工具选择，以及交互式 `AGENTS.md` 配置器。
 
 ## 0.2.0
 
 ### 次要变更
 
-- ce5cead：- 新增 `openspec view` 仪表盘，可总览规格数量和变更进度
-  - 在重命名后的 `openspec/AGENTS.md` 指令文件旁生成并更新 AI 斜杠命令
-  - 移除已废弃的 `openspec diff` 命令，并引导用户改用 `openspec show`
+- ce5cead：- 新增 `codespec view` 仪表盘，可总览规格数量和变更进度
+  - 在重命名后的 `codespec/AGENTS.md` 指令文件旁生成并更新 AI 斜杠命令
+  - 移除已废弃的 `codespec diff` 命令，并引导用户改用 `codespec show`
 
 ## 0.1.0
 

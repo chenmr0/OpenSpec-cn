@@ -16,7 +16,7 @@ const writingPlansInstructions = `# 编写计划
 
 **开始时宣布：** "我正在使用 writing-plans 技能创建实现计划。"
 
-**计划保存位置：** \`openspec/changes/<name>/plan.md\`
+**计划保存位置：** \`codespec/changes/<name>/plan.md\`
 - （用户对计划位置的偏好优先于此默认值）
 
 ## 范围检查
@@ -26,8 +26,8 @@ const writingPlansInstructions = `# 编写计划
 ## 输入文档
 
 **优先读取顺序（新格式）：**
-1. \`openspec/changes/<name>/spec.md\` — 需求规格（WHAT），包含 WHEN/THEN 场景
-2. \`openspec/changes/<name>/design.md\` — 技术设计（HOW），包含架构和决策
+1. \`codespec/changes/<name>/spec.md\` — 需求规格（WHAT），包含 WHEN/THEN 场景
+2. \`codespec/changes/<name>/design.md\` — 技术设计（HOW），包含架构和决策
 
 **向后兼容：** 如果只有 \`*-design.md\`（旧格式，无对应的 \`*-spec.md\`），按原来的方式处理——将 design.md 同时作为需求和设计使用。
 
@@ -161,7 +161,7 @@ git commit -m "feat: add specific feature"
 
 保存计划后，提供执行选项：
 
-**"计划已完成并保存到 \`openspec/changes/<name>/plan.md\`。
+**"计划已完成并保存到 \`codespec/changes/<name>/plan.md\`。
 
 **使用子代理驱动执行：**
 - **必需子技能：** 使用 superpowers:subagent-driven-development

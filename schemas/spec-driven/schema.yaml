@@ -1,6 +1,6 @@
 name: spec-driven
 version: 2
-description: 默认 OpenSDD 工作流 - 头脑风暴 → 规范 → 设计 → 计划
+description: 默认 CodeSpec 工作流 - 头脑风暴 → 规范 → 设计 → 计划
 artifacts:
   - id: specs
     generates: spec.md

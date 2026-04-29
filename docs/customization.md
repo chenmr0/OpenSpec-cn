@@ -1,6 +1,6 @@
 # 自定义
 
-OpenSDD 提供三个级别的自定义：
+CodeSpec 提供三个级别的自定义：
 
 | 级别 | 功能 | 最适合 |
 |-------|--------------|----------|
@@ -12,7 +12,7 @@ OpenSDD 提供三个级别的自定义：
 
 ## 项目配置
 
-`openspec/config.yaml` 文件是为团队自定义 OpenSDD 的最简单方法。它允许你：
+`codespec/config.yaml` 文件是为团队自定义 CodeSpec 的最简单方法。它允许你：
 
 - **设置默认模式** - 在每个命令上跳过 `--schema`
 - **注入项目上下文** - AI 看到你的技术栈、约定等
@@ -21,13 +21,13 @@ OpenSDD 提供三个级别的自定义：
 ### 快速设置
 
 ```bash
-opensdd init
+codespec init
 ```
 
 这会引导你交互式创建配置。或者手动创建一个：
 
 ```yaml
-# openspec/config.yaml
+# codespec/config.yaml
 schema: spec-driven
 
 context: |
@@ -51,10 +51,10 @@ rules:
 
 ```bash
 # 无配置
-opensdd new change my-feature --schema spec-driven
+codespec new change my-feature --schema spec-driven
 
 # 有配置 - 模式自动应用
-opensdd new change my-feature
+codespec new change my-feature
 ```
 
 **上下文和规则注入：**
@@ -82,22 +82,22 @@ opensdd new change my-feature
 
 ### 模式解析顺序
 
-当 OpenSDD 需要模式时，按此顺序检查：
+当 CodeSpec 需要模式时，按此顺序检查：
 
 1. CLI 标志：`--schema <name>`
-2. 变更元数据（变更文件夹中的 `.openspec.yaml`）
-3. 项目配置（`openspec/config.yaml`）
+2. 变更元数据（变更文件夹中的 `.codespec.yaml`）
+3. 项目配置（`codespec/config.yaml`）
 4. 默认（`spec-driven`）
 
 ---
 
 ## 自定义模式
 
-当项目配置不够时，创建具有完全自定义工作流的模式。自定义模式位于项目的 `openspec/schemas/` 目录中，并与代码一起进行版本控制。
+当项目配置不够时，创建具有完全自定义工作流的模式。自定义模式位于项目的 `codespec/schemas/` 目录中，并与代码一起进行版本控制。
 
 ```text
 your-project/
-├── openspec/
+├── codespec/
 │   ├── config.yaml        # 项目配置
 │   ├── schemas/           # 自定义模式在此
 │   │   └── my-workflow/
@@ -112,15 +112,15 @@ your-project/
 自定义的最快方法是派生内置模式：
 
 ```bash
-opensdd schema fork spec-driven my-workflow
+codespec schema fork spec-driven my-workflow
 ```
 
-这将整个 `spec-driven` 模式复制到 `openspec/schemas/my-workflow/`，你可以在那里自由编辑。
+这将整个 `spec-driven` 模式复制到 `codespec/schemas/my-workflow/`，你可以在那里自由编辑。
 
 **你会得到：**
 
 ```text
-openspec/schemas/my-workflow/
+codespec/schemas/my-workflow/
 ├── schema.yaml           # 工作流定义
 └── templates/
     ├── proposal.md       # 提案制品的模板
@@ -137,10 +137,10 @@ openspec/schemas/my-workflow/
 
 ```bash
 # 交互式
-opensdd schema init research-first
+codespec schema init research-first
 
 # 非交互式
-opensdd schema init rapid \
+codespec schema init rapid \
   --description "快速迭代工作流" \
   --artifacts "proposal,tasks" \
   --default
@@ -151,7 +151,7 @@ opensdd schema init rapid \
 模式定义工作流中的制品及其依赖关系：
 
 ```yaml
-# openspec/schemas/my-workflow/schema.yaml
+# codespec/schemas/my-workflow/schema.yaml
 name: my-workflow
 version: 1
 description: 我团队的自定义工作流
@@ -226,7 +226,7 @@ apply:
 在使用自定义 schema 之前，先验证它：
 
 ```bash
-opensdd schema validate my-workflow
+codespec schema validate my-workflow
 ```
 
 这会检查：
@@ -241,7 +241,7 @@ opensdd schema validate my-workflow
 
 ```bash
 # 在命令上指定
-opensdd new change feature --schema my-workflow
+codespec new change feature --schema my-workflow
 
 # 或者在 config.yaml 中设为默认值
 schema: my-workflow
@@ -253,10 +253,10 @@ schema: my-workflow
 
 ```bash
 # 查看特定 schema 的解析来源
-opensdd schema which my-workflow
+codespec schema which my-workflow
 
 # 列出所有可用 schema
-opensdd schema which --all
+codespec schema which --all
 ```
 
 输出显示它来自你的项目、用户目录还是包：
@@ -264,12 +264,12 @@ opensdd schema which --all
 ```text
 Schema: my-workflow
 来源: project
-路径: /path/to/project/openspec/schemas/my-workflow
+路径: /path/to/project/codespec/schemas/my-workflow
 ```
 
 ---
 
-> **注意：** OpenSDD 也支持用户级 schema，位于 `~/.local/share/openspec/schemas/`，用于跨项目共享，但推荐使用项目级 schema，位于 `openspec/schemas/`，因为它们与你的代码一起进行版本控制。
+> **注意：** CodeSpec 也支持用户级 schema，位于 `~/.local/share/codespec/schemas/`，用于跨项目共享，但推荐使用项目级 schema，位于 `codespec/schemas/`，因为它们与你的代码一起进行版本控制。
 
 ---
 
@@ -280,7 +280,7 @@ Schema: my-workflow
 A minimal workflow for quick iterations:
 
 ```yaml
-# openspec/schemas/rapid/schema.yaml
+# codespec/schemas/rapid/schema.yaml
 name: rapid
 version: 1
 description: 最小开销的快速迭代
@@ -311,7 +311,7 @@ apply:
 派生默认配置并添加审查步骤：
 
 ```bash
-opensdd schema fork spec-driven with-review
+codespec schema fork spec-driven with-review
 ```
 
 然后编辑 `schema.yaml` 添加：

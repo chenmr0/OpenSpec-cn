@@ -8,7 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getVerifyChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-verify-change',
+    name: 'codespec-verify-change',
     description: '验证实现是否与变更产出物匹配。当用户想要在归档前验证实现是否完整、正确且一致时使用。',
     instructions: `验证实现是否与变更产出物（规范、任务、设计）匹配。
 
@@ -18,7 +18,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有实现任务的变更（存在任务产出物）。
    如果可用，包括每个变更使用的 Schema。
@@ -28,7 +28,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   opensdd status --change "<name>" --json
+   codespec status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -37,7 +37,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 3. **获取变更目录并加载产出物**
 
    \`\`\`bash
-   opensdd instructions apply --change "<name>" --json
+   codespec instructions apply --change "<name>" --json
    \`\`\`
 
    这会返回变更目录和 \`contextFiles\`（产出物 ID -> 具体文件路径数组）。从 \`contextFiles\` 读取所有可用产出物。
@@ -62,7 +62,7 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
      - 建议："完成任务：<描述>" 或 "如果已实现则标记为完成"
 
    **规范覆盖率**：
-   - 如果 \`openspec/changes/<name>/specs/\` 中存在增量规范：
+   - 如果 \`codespec/changes/<name>/specs/\` 中存在增量规范：
      - 提取所有需求（标记为 "### 需求:"）
      - 对于每个需求：
        - 在代码库中搜索与需求相关的关键词
@@ -168,8 +168,8 @@ export function getVerifyChangeSkillTemplate(): SkillTemplate {
 - 具体的、可操作的建议
 - 不要使用模糊的建议，如 "考虑审查"`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -187,7 +187,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    显示具有实现任务的变更（存在任务产出物）。
    如果可用，包括每个变更使用的 Schema。
@@ -197,7 +197,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 
 2. **检查状态以了解 Schema**
    \`\`\`bash
-   opensdd status --change "<name>" --json
+   codespec status --change "<name>" --json
    \`\`\`
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
@@ -206,7 +206,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
 3. **获取变更目录并加载产出物**
 
    \`\`\`bash
-   opensdd instructions apply --change "<name>" --json
+   codespec instructions apply --change "<name>" --json
    \`\`\`
 
    这会返回变更目录和 \`contextFiles\`（产出物 ID -> 具体文件路径数组）。从 \`contextFiles\` 读取所有可用产出物。
@@ -231,7 +231,7 @@ export function getOpsxVerifyCommandTemplate(): CommandTemplate {
      - 建议："完成任务：<描述>" 或 "如果已实现则标记为完成"
 
    **规范覆盖率**：
-   - 如果 \`openspec/changes/<name>/specs/\` 中存在增量规范：
+   - 如果 \`codespec/changes/<name>/specs/\` 中存在增量规范：
      - 提取所有需求（标记为 "### 需求:"）
      - 对于每个需求：
        - 在代码库中搜索与需求相关的关键词

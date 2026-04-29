@@ -49,7 +49,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
           console.log(JSON.stringify({ changes: [], message: '没有活跃的变更。' }, null, 2));
           return;
         }
-        console.log('没有活跃的变更。使用以下命令创建: opensdd new change <name>');
+        console.log('没有活跃的变更。使用以下命令创建: codespec new change <name>');
         return;
       }
       // Changes exist but --change not provided

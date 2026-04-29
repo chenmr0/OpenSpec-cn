@@ -1,6 +1,6 @@
 # 工作流
 
-本指南涵盖 OpenSDD 的常见工作流模式以及何时使用每种模式。关于基础设置，请参阅[入门指南](getting-started.md)。关于命令参考，请参阅[命令](commands.md)。
+本指南涵盖 CodeSpec 的常见工作流模式以及何时使用每种模式。关于基础设置，请参阅[入门指南](getting-started.md)。关于命令参考，请参阅[命令](commands.md)。
 
 ## 哲学：行动而非阶段
 
@@ -49,8 +49,8 @@ OPSX（流畅行动）：
 如果你需要显式的脚手架与构建命令（`/opsx:new`、`/opsx:continue`、`/opsx:ff`、`/opsx:verify`、`/opsx:sync`、`/opsx:bulk-archive`、`/opsx:onboard`），可以通过以下方式启用：
 
 ```bash
-opensdd config profile
-opensdd update
+codespec config profile
+codespec update
 ```
 
 ## 工作流模式（扩展模式）
@@ -68,7 +68,7 @@ opensdd update
 ```text
 你：/opsx:new add-logout-button
 
-AI：已创建 openspec/changes/add-logout-button/
+AI：已创建 codespec/changes/add-logout-button/
      准备创建：proposal
 
 你：/opsx:ff
@@ -163,7 +163,7 @@ AI：正在创建规范...
 
 你：/opsx:new fix-login-redirect
 
-AI：已创建 openspec/changes/fix-login-redirect/
+AI：已创建 codespec/changes/fix-login-redirect/
 
 你：/opsx:ff
 
@@ -293,8 +293,8 @@ AI：正在归档 add-auth...
 
 你：是
 
-AI：✓ 已将规范同步到 openspec/specs/auth/spec.md
-     ✓ 已移动到 openspec/changes/archive/2025-01-24-add-auth/
+AI：✓ 已将规范同步到 codespec/specs/auth/spec.md
+     ✓ 已移动到 codespec/changes/archive/2025-01-24-add-auth/
 
      变更已成功归档。
 ```
@@ -413,7 +413,7 @@ AI：正在验证 add-dark-mode...
 
 ### 清晰命名变更
 
-好命名会让 `opensdd list` 更好用：
+好命名会让 `codespec list` 更好用：
 
 ```text
 好的：                         避免：

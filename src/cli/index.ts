@@ -35,7 +35,7 @@ const require = createRequire(import.meta.url);
 const { version } = require('../../package.json');
 
 program
-  .name('opensdd')
+  .name('codespec')
   .description('基于规范驱动开发的AI原生系统')
   .version(version, '-V, --version', '输出版本号')
   .helpOption('-h, --help', '显示命令帮助')
@@ -57,7 +57,7 @@ const toolsOptionDescription = `非交互式配置AI工具。使用 "all"、"non
 
 program
   .command('init [path]')
-  .description('在您的项目中初始化OpenSDD')
+  .description('在您的项目中初始化CodeSpec')
   .option('--tools <tools>', toolsOptionDescription)
   .option('--force', '自动清理旧文件而不提示')
   .option('--profile <profile>', '覆盖全局配置档案（core 或 custom）')
@@ -104,7 +104,7 @@ program
   .option('--no-interactive', '禁用交互式提示')
   .action(async (options?: { tool?: string; noInteractive?: boolean }) => {
     try {
-      console.log('注意："opensdd experimental" 已弃用。请使用 "opensdd init" 代替。');
+      console.log('注意："codespec experimental" 已弃用。请使用 "codespec init" 代替。');
       const { InitCommand } = await import('../core/init.js');
       const initCommand = new InitCommand({
         tools: options?.tool,
@@ -155,11 +155,11 @@ program
 // Change command with subcommands
 const changeCmd = program
   .command('change')
-  .description('管理OpenSDD变更提案');
+  .description('管理CodeSpec变更提案');
 
 // Deprecation notice for noun-based commands
 changeCmd.hook('preAction', () => {
-  console.error('警告："opensdd change ..." 命令已弃用。请优先使用动词开头的命令（例如 "opensdd list", "opensdd validate --changes"）。');
+  console.error('警告："codespec change ..." 命令已弃用。请优先使用动词开头的命令（例如 "codespec list", "codespec validate --changes"）。');
 });
 
 changeCmd
@@ -181,12 +181,12 @@ changeCmd
 
 changeCmd
   .command('list')
-  .description('列出所有活动更改（已弃用：请使用 "opensdd list"）')
+  .description('列出所有活动更改（已弃用：请使用 "codespec list"）')
   .option('--json', '以JSON格式输出')
   .option('--long', '显示ID、标题和计数')
   .action(async (options?: { json?: boolean; long?: boolean }) => {
     try {
-      console.error('警告："opensdd change list" 已弃用。请使用 "opensdd list"。');
+      console.error('警告："codespec change list" 已弃用。请使用 "codespec list"。');
       const changeCommand = new ChangeCommand();
       await changeCommand.list(options);
     } catch (error) {
@@ -245,7 +245,7 @@ program
   .option('--type <type>', '当项目类型不明确时指定类型：change|spec')
   .option('--strict', '启用严格验证模式')
   .option('--json', '以JSON格式输出验证报告')
-  .option('--concurrency <n>', '最大并发验证数 (默认为环境变量 OpenSDD_CONCURRENCY 或 6)')
+  .option('--concurrency <n>', '最大并发验证数 (默认为环境变量 CodeSpec_CONCURRENCY 或 6)')
   .option('--no-interactive', '禁用交互式提示')
   .action(async (itemName?: string, options?: { all?: boolean; changes?: boolean; specs?: boolean; type?: string; strict?: boolean; json?: boolean; noInteractive?: boolean; concurrency?: string }) => {
     try {
@@ -288,7 +288,7 @@ program
 // Completion command with subcommands
 const completionCmd = program
   .command('completion')
-  .description('管理 OpenSDD CLI 的 Shell 补全');
+  .description('管理 CodeSpec CLI 的 Shell 补全');
 
 completionCmd
   .command('generate [shell]')

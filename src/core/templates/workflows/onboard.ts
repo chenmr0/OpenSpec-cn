@@ -8,33 +8,33 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getOnboardSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-onboard',
-    description: 'OpenSDD 引导式入门 - 通过讲解与在真实代码库中动手，走完一个完整的工作流周期。',
+    name: 'codespec-onboard',
+    description: 'CodeSpec 引导式入门 - 通过讲解与在真实代码库中动手，走完一个完整的工作流周期。',
     instructions: getOnboardInstructions(),
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
 function getOnboardInstructions(): string {
-  return `引导用户完成他们的第一个完整OpenSDD工作流周期。这是一个教学体验——你将在他们的代码库中完成实际工作，同时解释每个步骤。
+  return `引导用户完成他们的第一个完整CodeSpec工作流周期。这是一个教学体验——你将在他们的代码库中完成实际工作，同时解释每个步骤。
 
 ---
 
 ## 准备阶段
 
-开始前，检查 opensdd CLI 是否已安装：
+开始前，检查 codespec CLI 是否已安装：
 
 \`\`\`bash
 # macOS / Linux
-opensdd --version 2>&1 || echo "未安装 CLI"
+codespec --version 2>&1 || echo "未安装 CLI"
 # Windows PowerShell
-# if (Get-Command opensdd -ErrorAction SilentlyContinue) { opensdd --version } else { echo "未安装 CLI" }
+# if (Get-Command codespec -ErrorAction SilentlyContinue) { codespec --version } else { echo "未安装 CLI" }
 \`\`\`
 
 **如果 CLI 未安装：**
-> opensdd CLI 未安装。请先安装它，然后返回 \`/opsx:onboard\`。
+> codespec CLI 未安装。请先安装它，然后返回 \`/opsx:onboard\`。
 
 如果未安装，请在此停止。
 
@@ -45,7 +45,7 @@ opensdd --version 2>&1 || echo "未安装 CLI"
 显示：
 
 \`\`\`
-## 欢迎使用OpenSDD！
+## 欢迎使用CodeSpec！
 
 我将引导您完成一个完整的变更周期——从想法到实现——使用您代码库中的真实任务。在此过程中，您将通过实践学习工作流程。
 
@@ -123,7 +123,7 @@ git log --oneline -10 2>/dev/null || echo "没有 Git 历史"
 如果用户选择或描述的内容太大（主要功能，多天工作）：
 
 \`\`\`
-这是一个有价值的任务，但对于您的第一次OpenSDD体验来说可能太大了。
+这是一个有价值的任务，但对于您的第一次CodeSpec体验来说可能太大了。
 
 对于学习工作流程，越小越好——它让您能够看到完整周期而不会陷入实现细节。
 
@@ -176,23 +176,23 @@ git log --oneline -10 2>/dev/null || echo "没有 Git 历史"
 \`\`\`
 ## 创建变更
 
-OpenSDD中的"变更"是围绕一项工作的所有思考和规划的容器。它位于 \`openspec/changes/<name>/\` 中，保存您的产出物——提案、规格说明、设计、任务。
+CodeSpec中的"变更"是围绕一项工作的所有思考和规划的容器。它位于 \`codespec/changes/<name>/\` 中，保存您的产出物——提案、规格说明、设计、任务。
 
 让我为我们的任务创建一个。
 \`\`\`
 
 **执行：** 使用派生的kebab-case名称创建变更：
 \`\`\`bash
-opensdd new change "<derived-name>"
+codespec new change "<derived-name>"
 \`\`\`
 
 **显示：**
 \`\`\`
-已创建：\`openspec/changes/<name>/\`
+已创建：\`codespec/changes/<name>/\`
 
 文件夹结构：
 \`\`\`
-openspec/changes/<name>/
+codespec/changes/<name>/
 ├── spec.md        ← 详细需求（空，我们将填充它）
 ├── design.md      ← 我们将如何构建它（空）
 └── plan.md        ← 实现检查清单（空）
@@ -217,9 +217,9 @@ openspec/changes/<name>/
 **执行：** 创建规格说明文件：
 \`\`\`bash
 # Unix/macOS
-mkdir -p openspec/changes/<name>/specs/<capability-name>
+mkdir -p codespec/changes/<name>/specs/<capability-name>
 # Windows (PowerShell)
-# New-Item -ItemType Directory -Force -Path "openspec/changes/<name>/specs/<capability-name>"
+# New-Item -ItemType Directory -Force -Path "codespec/changes/<name>/specs/<capability-name>"
 \`\`\`
 
 起草规格说明内容：
@@ -246,7 +246,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 这种格式——当/那么/并且——使需求可测试。您可以将它们字面地读作测试用例。
 \`\`\`
 
-保存到 \`openspec/changes/<name>/spec.md\`。
+保存到 \`codespec/changes/<name>/spec.md\`。
 
 ---
 
@@ -291,7 +291,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 对于小任务，这捕获了关键决策而不过度工程化。
 \`\`\`
 
-保存到 \`openspec/changes/<name>/design.md\`。
+保存到 \`codespec/changes/<name>/design.md\`。
 
 ---
 
@@ -329,7 +329,7 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 
 **暂停** - 等待用户确认他们准备好实现。
 
-保存到 \`openspec/changes/<name>/plan.md\`。
+保存到 \`codespec/changes/<name>/plan.md\`。
 
 ---
 
@@ -373,19 +373,19 @@ mkdir -p openspec/changes/<name>/specs/<capability-name>
 \`\`\`
 ## 归档
 
-当变更完成时，我们归档它。这将把它从 \`openspec/changes/\` 移动到 \`openspec/changes/archive/YYYY-MM-DD-<name>/\`。
+当变更完成时，我们归档它。这将把它从 \`codespec/changes/\` 移动到 \`codespec/changes/archive/YYYY-MM-DD-<name>/\`。
 
 归档的变更成为您项目的决策历史——您随时可以找到它们来理解为什么某物以某种方式构建。
 \`\`\`
 
 **执行：**
 \`\`\`bash
-opensdd archive "<name>"
+codespec archive "<name>"
 \`\`\`
 
 **显示：**
 \`\`\`
-已归档到：\`openspec/changes/archive/YYYY-MM-DD-<name>/\`
+已归档到：\`codespec/changes/archive/YYYY-MM-DD-<name>/\`
 
 变更现在是您项目历史的一部分。代码在您的代码库中，决策记录被保留。
 \`\`\`
@@ -397,7 +397,7 @@ opensdd archive "<name>"
 \`\`\`
 ## 恭喜！
 
-您刚刚完成了一个完整的OpenSDD周期：
+您刚刚完成了一个完整的CodeSpec周期：
 
 1. **探索** - 思考问题
 2. **新建** - 创建变更容器
@@ -448,7 +448,7 @@ opensdd archive "<name>"
 如果用户说他们需要停止、想要暂停或似乎不投入：
 
 \`\`\`
-没问题！您的变更保存在 \`openspec/changes/<name>/\`。
+没问题！您的变更保存在 \`codespec/changes/<name>/\`。
 
 要在以后继续：
 - \`/opsx:continue <name>\` - 恢复产出物创建
@@ -464,7 +464,7 @@ opensdd archive "<name>"
 如果用户说他们只想看命令或跳过教程：
 
 \`\`\`
-## OpenSDD快速参考
+## CodeSpec快速参考
 
 **核心工作流：**
 
@@ -505,7 +505,7 @@ opensdd archive "<name>"
 export function getOpsxOnboardCommandTemplate(): CommandTemplate {
   return {
     name: 'OPSX: Onboard',
-    description: '引导式入门 - 通过完整的OpenSDD工作流周期进行讲解',
+    description: '引导式入门 - 通过完整的CodeSpec工作流周期进行讲解',
     category: 'Workflow',
     tags: ['workflow', 'onboarding', 'tutorial', 'learning'],
     content: getOnboardInstructions(),

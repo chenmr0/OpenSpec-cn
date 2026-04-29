@@ -8,7 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-bulk-archive-change',
+    name: 'codespec-bulk-archive-change',
     description: '一次归档多个已完成的变更。用于归档多个并行变更。',
     instructions: `在单个操作中归档多个已完成的变更。
 
@@ -20,7 +20,7 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 
 1. **获取活动变更**
 
-   运行 \`opensdd list --json\` 获取所有活动变更。
+   运行 \`codespec list --json\` 获取所有活动变更。
 
    如果不存在活动变更，通知用户并停止。
 
@@ -37,15 +37,15 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 
    对于每个选定的变更，收集：
 
-   a. **产出物状态** - 运行 \`opensdd status --change "<name>" --json\`
+   a. **产出物状态** - 运行 \`codespec status --change "<name>" --json\`
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 
-   b. **任务完成度** - 读取 \`openspec/changes/<name>/plan.md\`
+   b. **任务完成度** - 读取 \`codespec/changes/<name>/plan.md\`
       - 统计 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）
       - 如果不存在任务文件，标注为"无任务"
 
-   c. **增量规格说明** - 检查 \`openspec/changes/<name>/specs/\` 目录
+   c. **增量规格说明** - 检查 \`codespec/changes/<name>/specs/\` 目录
       - 列出存在哪些能力规格说明
       - 对于每个，提取需求名称（匹配 \`### 需求: <name>\` 的行）
 
@@ -122,14 +122,14 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
    按确定的顺序处理变更（遵循冲突解决方案）：
 
    a. **如果存在增量规格说明则同步规格说明**：
-      - 使用 openspec-sync-specs 方法（代理驱动的智能合并）
+      - 使用 codespec-sync-specs 方法（代理驱动的智能合并）
       - 对于冲突，按已解决的顺序应用
       - 跟踪是否已完成同步
 
    b. **执行归档**：
       \`\`\`bash
-      mkdir -p openspec/changes/archive
-      mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+      mkdir -p codespec/changes/archive
+      mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
       \`\`\`
 
    c. **跟踪每个变更的结果**：
@@ -242,12 +242,12 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 - 在确认前显示清晰的每个变更状态
 - 对整个批次使用单次确认
 - 跟踪并报告所有结果（成功/跳过/失败）
-- 移动到归档时保留 .openspec.yaml
+- 移动到归档时保留 .codespec.yaml
 - 归档目录目标使用当前日期：YYYY-MM-DD-<name>
 - 如果归档目标已存在，该变更失败但继续处理其他变更`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -267,7 +267,7 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
 
 1. **获取活动变更**
 
-   运行 \`opensdd list --json\` 获取所有活动变更。
+   运行 \`codespec list --json\` 获取所有活动变更。
 
    如果不存在活动变更，通知用户并停止。
 
@@ -284,15 +284,15 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
 
    对于每个选定的变更，收集：
 
-   a. **产出物状态** - 运行 \`opensdd status --change "<name>" --json\`
+   a. **产出物状态** - 运行 \`codespec status --change "<name>" --json\`
       - 解析 \`schemaName\` 和 \`artifacts\` 列表
       - 注意哪些产出物是 \`done\` 状态而非其他状态
 
-   b. **任务完成度** - 读取 \`openspec/changes/<name>/plan.md\`
+   b. **任务完成度** - 读取 \`codespec/changes/<name>/plan.md\`
       - 统计 \`- [ ]\`（未完成）与 \`- [x]\`（已完成）
       - 如果不存在任务文件，标注为"无任务"
 
-   c. **增量规格说明** - 检查 \`openspec/changes/<name>/specs/\` 目录
+   c. **增量规格说明** - 检查 \`codespec/changes/<name>/specs/\` 目录
       - 列出存在哪些能力规格说明
       - 对于每个，提取需求名称（匹配 \`### 需求: <name>\` 的行）
 
@@ -369,14 +369,14 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
    按确定的顺序处理变更（遵循冲突解决方案）：
 
    a. **如果存在增量规格说明则同步规格说明**：
-      - 使用 openspec-sync-specs 方法（代理驱动的智能合并）
+      - 使用 codespec-sync-specs 方法（代理驱动的智能合并）
       - 对于冲突，按已解决的顺序应用
       - 跟踪是否已完成同步
 
    b. **执行归档**：
       \`\`\`bash
-      mkdir -p openspec/changes/archive
-      mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+      mkdir -p codespec/changes/archive
+      mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
       \`\`\`
 
    c. **跟踪每个变更的结果**：
@@ -489,7 +489,7 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
 - 在确认前显示清晰的每个变更状态
 - 对整个批次使用单次确认
 - 跟踪并报告所有结果（成功/跳过/失败）
-- 移动到归档时保留 .openspec.yaml
+- 移动到归档时保留 .codespec.yaml
 - 归档目录目标使用当前日期：YYYY-MM-DD-<name>
 - 如果归档目标已存在，该变更失败但继续处理其他变更`
   };

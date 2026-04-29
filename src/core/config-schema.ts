@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /**
- * Zod schema for global OpenSDD configuration.
+ * Zod schema for global CodeSpec configuration.
  * Uses passthrough() to preserve unknown fields for forward compatibility.
  */
 export const GlobalConfigSchema = z

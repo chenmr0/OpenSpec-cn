@@ -15,8 +15,8 @@ export class BashInstaller {
    * Markers for .bashrc configuration management
    */
   private readonly BASHRC_MARKERS = {
-    start: '# OPENSPEC:START',
-    end: '# OPENSPEC:END',
+    start: '# CODESPEC:START',
+    end: '# CODESPEC:END',
   };
 
   constructor(homeDir: string = os.homedir()) {
@@ -61,7 +61,7 @@ export class BashInstaller {
     const localCompletionDir = path.join(this.homeDir, '.local', 'share', 'bash-completion', 'completions');
 
     // For user installation, use local directory
-    return path.join(localCompletionDir, 'openspec');
+    return path.join(localCompletionDir, 'codespec');
   }
 
   /**
@@ -101,7 +101,7 @@ export class BashInstaller {
    */
   private generateBashrcConfig(completionsDir: string): string {
     return [
-      '# OpenSDD shell 补全配置',
+      '# CodeSpec shell 补全配置',
       `if [ -d "${completionsDir}" ]; then`,
       `  for f in "${completionsDir}"/*; do`,
       '    [ -f "$f" ] && . "$f"',
@@ -118,7 +118,7 @@ export class BashInstaller {
    */
   async configureBashrc(completionsDir: string): Promise<boolean> {
     // Check if auto-configuration is disabled
-    if (process.env.OPENSPEC_NO_AUTO_CONFIG === '1') {
+    if (process.env.CODESPEC_NO_AUTO_CONFIG === '1') {
       return false;
     }
 
@@ -314,7 +314,7 @@ export class BashInstaller {
       '',
       '如需启用补全，请在您的 ~/.bashrc 文件中添加以下内容：',
       '',
-      `  # 加载 OpenSDD 补全`,
+      `  # 加载 CodeSpec 补全`,
       `  if [ -d "${completionsDir}" ]; then`,
       `    for f in "${completionsDir}"/*; do`,
       '      [ -f "$f" ] && . "$f"',

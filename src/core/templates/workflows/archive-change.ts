@@ -8,7 +8,7 @@ import type { SkillTemplate, CommandTemplate } from '../types.js';
 
 export function getArchiveChangeSkillTemplate(): SkillTemplate {
   return {
-    name: 'openspec-archive-change',
+    name: 'codespec-archive-change',
     description: '归档实验性工作流中已完成的变更。当用户想要在实现完成后最终确定并归档变更时使用。',
     instructions: `归档实验性工作流中已完成的变更。
 
@@ -18,7 +18,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    仅显示活动变更（未归档的）。
    如果可用，包括每个变更使用的 Schema。
@@ -27,7 +27,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 2. **检查产出物完成状态**
 
-   运行 \`opensdd status --change "<name>" --json\` 检查产出物完成情况。
+   运行 \`codespec status --change "<name>" --json\` 检查产出物完成情况。
 
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema
@@ -53,10 +53,10 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 4. **评估增量规范同步状态**
 
-   检查 \`openspec/changes/<name>/specs/\` 中的增量规范。如果不存在，则在没有同步提示的情况下继续。
+   检查 \`codespec/changes/<name>/specs/\` 中的增量规范。如果不存在，则在没有同步提示的情况下继续。
 
    **如果存在增量规范：**
-   - 将每个增量规范与其在 \`openspec/specs/<capability>/spec.md\` 对应的各主规范进行比较
+   - 将每个增量规范与其在 \`codespec/specs/<capability>/spec.md\` 对应的各主规范进行比较
    - 确定将应用哪些更改（添加、修改、移除、重命名）
    - 在提示前显示综合摘要
 
@@ -64,13 +64,13 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
    - 如果需要更改："立即同步（推荐）"、"归档而不同步"
    - 如果已同步："立即归档"、"仍然同步"、"取消"
 
-   如果用户选择同步，使用 Task tool（subagent_type: "general-purpose", prompt: "Use Skill tool to invoke openspec-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"）。无论选择如何，都继续归档。
+   如果用户选择同步，使用 Task tool（subagent_type: "general-purpose", prompt: "Use Skill tool to invoke codespec-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"）。无论选择如何，都继续归档。
 
 5. **执行归档**
 
    如果归档目录不存在，则创建它：
    \`\`\`bash
-   mkdir -p openspec/changes/archive
+   mkdir -p codespec/changes/archive
    \`\`\`
 
    使用当前日期生成目标名称：\`YYYY-MM-DD-<change-name>\`
@@ -80,7 +80,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
    - 如果否：将变更目录移动到归档
 
    \`\`\`bash
-   mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+   mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
    \`\`\`
 
 6. **显示摘要**
@@ -99,7 +99,7 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 **变更：** <change-name>
 **Schema：** <schema-name>
-**归档至：** openspec/changes/archive/YYYY-MM-DD-<name>/
+**归档至：** codespec/changes/archive/YYYY-MM-DD-<name>/
 **规范：** ✓ 已同步到主规范（或 "无增量规范" 或 "同步已跳过"）
 
 所有产出物已完成。所有任务已完成。
@@ -107,15 +107,15 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 **防护措施**
 - 如果未提供变更，始终提示选择
-- 使用产出物图（opensdd status --json）进行完成度检查
+- 使用产出物图（codespec status --json）进行完成度检查
 - 不要在警告时阻止归档 - 只需告知并确认
-- 移动到归档时保留 .openspec.yaml（它与目录一起移动）
+- 移动到归档时保留 .codespec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要
-- 如果请求同步，使用 openspec-sync-specs 方法（代理驱动）
+- 如果请求同步，使用 codespec-sync-specs 方法（代理驱动）
 - 如果存在增量规格说明，始终运行同步评估并在提示前显示综合摘要`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }
 
@@ -133,7 +133,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 1. **如果没有提供变更名称，提示选择**
 
-   运行 \`opensdd list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
+   运行 \`codespec list --json\` 获取可用变更。使用 **AskUserQuestion tool** 让用户选择。
 
    仅显示活动变更（未归档的）。
    如果可用，包括每个变更使用的 Schema。
@@ -142,7 +142,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 2. **检查产出物完成状态**
 
-   运行 \`opensdd status --change "<name>" --json\` 检查产出物完成情况。
+   运行 \`codespec status --change "<name>" --json\` 检查产出物完成情况。
 
    解析 JSON 以了解：
    - \`schemaName\`：正在使用的工作流 Schema
@@ -168,10 +168,10 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 4. **评估增量规格说明同步状态**
 
-   在 \`openspec/changes/<name>/specs/\` 检查增量规格说明。如果不存在，不提示同步直接继续。
+   在 \`codespec/changes/<name>/specs/\` 检查增量规格说明。如果不存在，不提示同步直接继续。
 
    **如果存在增量规格说明：**
-   - 将每个增量规格说明与其在 \`openspec/specs/<capability>/spec.md\` 的相应主规格说明进行比较
+   - 将每个增量规格说明与其在 \`codespec/specs/<capability>/spec.md\` 的相应主规格说明进行比较
    - 确定将应用哪些更改（添加、修改、删除、重命名）
    - 在提示前显示合并摘要
 
@@ -185,7 +185,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
    如果归档目录不存在，则创建它：
    \`\`\`bash
-   mkdir -p openspec/changes/archive
+   mkdir -p codespec/changes/archive
    \`\`\`
 
    使用当前日期生成目标名称：\`YYYY-MM-DD-<change-name>\`
@@ -195,7 +195,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
    - 如果否：将变更目录移动到归档
 
    \`\`\`bash
-   mv openspec/changes/<name> openspec/changes/archive/YYYY-MM-DD-<name>
+   mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
    \`\`\`
 
 6. **显示摘要**
@@ -214,7 +214,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 **变更：** <change-name>
 **Schema：** <schema-name>
-**归档至：** openspec/changes/archive/YYYY-MM-DD-<name>/
+**归档至：** codespec/changes/archive/YYYY-MM-DD-<name>/
 **规范：** ✓ 已同步到主规范
 
 所有产出物已完成。所有任务已完成。
@@ -227,7 +227,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 **变更：** <change-name>
 **Schema：** <schema-name>
-**归档至：** openspec/changes/archive/YYYY-MM-DD-<name>/
+**归档至：** codespec/changes/archive/YYYY-MM-DD-<name>/
 **规范：** 无增量规范
 
 所有产出物已完成。所有任务已完成。
@@ -240,7 +240,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 **变更：** <change-name>
 **Schema：** <schema-name>
-**归档至：** openspec/changes/archive/YYYY-MM-DD-<name>/
+**归档至：** codespec/changes/archive/YYYY-MM-DD-<name>/
 **规格说明：** 跳过同步（用户选择跳过）
 
 **警告：**
@@ -257,7 +257,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 ## 归档失败
 
 **变更：** <change-name>
-**目标：** openspec/changes/archive/YYYY-MM-DD-<name>/
+**目标：** codespec/changes/archive/YYYY-MM-DD-<name>/
 
 目标归档目录已存在。
 
@@ -269,11 +269,11 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 **防护措施**
 - 如果未提供变更，始终提示选择
-- 使用产出物图（opensdd status --json）进行完成度检查
+- 使用产出物图（codespec status --json）进行完成度检查
 - 不要在警告时阻止归档 - 只需告知并确认
-- 移动到归档时保留 .openspec.yaml（它与目录一起移动）
+- 移动到归档时保留 .codespec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要
-- 如果请求同步，使用 Skill tool 调用 \`openspec-sync-specs\`（代理驱动）
+- 如果请求同步，使用 Skill tool 调用 \`codespec-sync-specs\`（代理驱动）
 - 如果存在增量规格说明，请始终运行同步评估，并在提示前显示综合摘要`
   };
 }

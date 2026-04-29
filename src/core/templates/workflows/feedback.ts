@@ -9,8 +9,8 @@ import type { SkillTemplate } from '../types.js';
 export function getFeedbackSkillTemplate(): SkillTemplate {
   return {
     name: 'feedback',
-    description: '收集并提交有关 OpenSDD 的用户反馈，包含上下文增强和匿名化。',
-    instructions: `帮助用户提交有关 OpenSDD 的反馈。
+    description: '收集并提交有关 CodeSpec 的用户反馈，包含上下文增强和匿名化。',
+    instructions: `帮助用户提交有关 CodeSpec 的反馈。
 
 **目标**：引导用户完成收集、增强和提交反馈的过程，同时通过匿名化确保隐私。
 
@@ -45,8 +45,8 @@ export function getFeedbackSkillTemplate(): SkillTemplate {
    - 允许用户要求修改
 
 5. **确认后提交**
-   - 使用 \`opensdd feedback\` 命令进行提交
-   - 格式：\`opensdd feedback "标题" --body "正文内容"\`
+   - 使用 \`codespec feedback\` 命令进行提交
+   - 格式：\`codespec feedback "标题" --body "正文内容"\`
    - 该命令将自动添加元数据（版本、平台、时间戳）
 
 **草案示例**
@@ -107,7 +107,7 @@ export function getFeedbackSkillTemplate(): SkillTemplate {
 
 只有在用户确认后才继续提交。`,
     license: 'MIT',
-    compatibility: '需要 opensdd CLI。',
-    metadata: { author: 'openspec', version: '1.0' },
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
   };
 }

@@ -6,9 +6,9 @@ import { execSync } from 'child_process';
 describe('top-level show command', () => {
   const projectRoot = process.cwd();
   const testDir = path.join(projectRoot, 'test-show-command-tmp');
-  const changesDir = path.join(testDir, 'openspec', 'changes');
-  const specsDir = path.join(testDir, 'openspec', 'specs');
-  const openspecBin = path.join(projectRoot, 'bin', 'openspec.js');
+  const changesDir = path.join(testDir, 'codespec', 'changes');
+  const specsDir = path.join(testDir, 'codespec', 'specs');
+  const codespecBin = path.join(projectRoot, 'bin', 'codespec.js');
 
 
   beforeEach(async () => {
@@ -36,15 +36,15 @@ describe('top-level show command', () => {
       process.env.OPEN_SPEC_INTERACTIVE = '0';
       let err: any;
       try {
-        execSync(`node ${openspecBin} show`, { encoding: 'utf-8' });
+        execSync(`node ${codespecBin} show`, { encoding: 'utf-8' });
       } catch (e) { err = e; }
       expect(err).toBeDefined();
       expect(err.status).not.toBe(0);
       const stderr = err.stderr.toString();
       expect(stderr).toContain('没有可显示的内容');
-      expect(stderr).toContain('opensdd show <item>');
-      expect(stderr).toContain('opensdd change show');
-      expect(stderr).toContain('opensdd spec show');
+      expect(stderr).toContain('codespec show <item>');
+      expect(stderr).toContain('codespec change show');
+      expect(stderr).toContain('codespec spec show');
     } finally {
       process.chdir(originalCwd);
       process.env = originalEnv;
@@ -55,7 +55,7 @@ describe('top-level show command', () => {
     const originalCwd = process.cwd();
     try {
       process.chdir(testDir);
-      const output = execSync(`node ${openspecBin} show demo --json`, { encoding: 'utf-8' });
+      const output = execSync(`node ${codespecBin} show demo --json`, { encoding: 'utf-8' });
       const json = JSON.parse(output);
       expect(json.id).toBe('demo');
       expect(Array.isArray(json.deltas)).toBe(true);
@@ -68,7 +68,7 @@ describe('top-level show command', () => {
     const originalCwd = process.cwd();
     try {
       process.chdir(testDir);
-      const output = execSync(`node ${openspecBin} show auth --json --requirements`, { encoding: 'utf-8' });
+      const output = execSync(`node ${codespecBin} show auth --json --requirements`, { encoding: 'utf-8' });
       const json = JSON.parse(output);
       expect(json.id).toBe('auth');
       expect(Array.isArray(json.requirements)).toBe(true);
@@ -89,7 +89,7 @@ describe('top-level show command', () => {
       process.chdir(testDir);
       let err: any;
       try {
-        execSync(`node ${openspecBin} show foo`, { encoding: 'utf-8' });
+        execSync(`node ${codespecBin} show foo`, { encoding: 'utf-8' });
       } catch (e) { err = e; }
       expect(err).toBeDefined();
       expect(err.status).not.toBe(0);
@@ -107,7 +107,7 @@ describe('top-level show command', () => {
       process.chdir(testDir);
       let err: any;
       try {
-        execSync(`node ${openspecBin} show unknown-item`, { encoding: 'utf-8' });
+        execSync(`node ${codespecBin} show unknown-item`, { encoding: 'utf-8' });
       } catch (e) { err = e; }
       expect(err).toBeDefined();
       expect(err.status).not.toBe(0);

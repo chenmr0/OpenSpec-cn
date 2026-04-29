@@ -29,13 +29,13 @@ const COMMON_FLAGS = {
 } as const;
 
 /**
- * Registry of all OpenSDD CLI commands with their flags and metadata.
+ * Registry of all CodeSpec CLI commands with their flags and metadata.
  * This registry is used to generate shell completion scripts.
  */
 export const COMMAND_REGISTRY: CommandDefinition[] = [
   {
     name: 'init',
-    description: '在您的项目中初始化 OpenSDD',
+    description: '在您的项目中初始化 CodeSpec',
     acceptsPositional: true,
     positionalType: 'path',
     flags: [
@@ -48,7 +48,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'update',
-    description: '更新 OpenSDD 指令文件',
+    description: '更新 CodeSpec 指令文件',
     acceptsPositional: true,
     positionalType: 'path',
     flags: [],
@@ -95,7 +95,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
       COMMON_FLAGS.jsonValidation,
       {
         name: 'concurrency',
-        description: '最大并发验证数（默认为环境变量 OPENSPEC_CONCURRENCY 或 6）',
+        description: '最大并发验证数（默认为环境变量 CODESPEC_CONCURRENCY 或 6）',
         takesValue: true,
       },
       COMMON_FLAGS.noInteractive,
@@ -157,7 +157,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'feedback',
-    description: '提交关于 OpenSDD 的反馈',
+    description: '提交关于 CodeSpec 的反馈',
     acceptsPositional: true,
     flags: [
       {
@@ -169,7 +169,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'change',
-    description: '管理 OpenSDD 变更提案（已弃用）',
+    description: '管理 CodeSpec 变更提案（已弃用）',
     flags: [],
     subcommands: [
       {
@@ -216,7 +216,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'spec',
-    description: '管理 OpenSDD 规范',
+    description: '管理 CodeSpec 规范',
     flags: [],
     subcommands: [
       {
@@ -269,7 +269,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'completion',
-    description: '管理 OpenSDD CLI 的 Shell 补全',
+    description: '管理 CodeSpec CLI 的 Shell 补全',
     flags: [],
     subcommands: [
       {
@@ -308,7 +308,7 @@ export const COMMAND_REGISTRY: CommandDefinition[] = [
   },
   {
     name: 'config',
-    description: '查看并修改全局 OpenSDD 配置',
+    description: '查看并修改全局 CodeSpec 配置',
     flags: [
       {
         name: 'scope',

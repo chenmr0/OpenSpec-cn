@@ -24,7 +24,7 @@ interface CompleteOptions {
 }
 
 /**
- * Command for managing shell completions for OpenSDD CLI
+ * Command for managing shell completions for CodeSpec CLI
  */
 export class CompletionCommand {
   private completionProvider: CompletionProvider;
@@ -58,7 +58,7 @@ export class CompletionCommand {
 
       // No shell specified and cannot auto-detect
       console.error('错误：无法自动检测 Shell。请明确指定 Shell。');
-      console.error(`用法：opensdd completion ${operationName} [shell]`);
+      console.error(`用法：codespec completion ${operationName} [shell]`);
       console.error(`当前支持的 Shell 有：${CompletionFactory.getSupportedShells().join(', ')}`);
       process.exitCode = 1;
       return null;
@@ -224,7 +224,7 @@ export class CompletionCommand {
       const configPath = configPaths[shell] || `${shell} 配置`;
 
       const confirmed = await confirm({
-        message: `是否从 ${configPath} 中移除 OpenSDD 配置？`,
+        message: `是否从 ${configPath} 中移除 CodeSpec 配置？`,
         default: false,
       });
 

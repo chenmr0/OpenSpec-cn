@@ -15,8 +15,8 @@ export class PowerShellInstaller {
    * Markers for PowerShell profile configuration management
    */
   private readonly PROFILE_MARKERS = {
-    start: '# OPENSPEC:START',
-    end: '# OPENSPEC:END',
+    start: '# CODESPEC:START',
+    end: '# CODESPEC:END',
   };
 
   constructor(homeDir: string = os.homedir()) {
@@ -119,7 +119,7 @@ export class PowerShellInstaller {
   getInstallationPath(): string {
     const profilePath = this.getProfilePath();
     const profileDir = path.dirname(profilePath);
-    return path.join(profileDir, 'OpenSpecCompletion.ps1');
+    return path.join(profileDir, 'CodeSpecCompletion.ps1');
   }
 
   /**
@@ -150,7 +150,7 @@ export class PowerShellInstaller {
    */
   private generateProfileConfig(scriptPath: string): string {
     return [
-      '# OpenSDD shell 补全配置',
+      '# CodeSpec shell 补全配置',
       `if (Test-Path "${scriptPath}") {`,
       `    . "${scriptPath}"`,
       '}',
@@ -198,16 +198,16 @@ export class PowerShellInstaller {
           continue; // Already configured, skip
         }
 
-        // Add OpenSDD completion configuration with markers
-        const openspecBlock = [
+        // Add CodeSpec completion configuration with markers
+        const codespecBlock = [
           '',
-          '# OPENSPEC:START - OpenSDD 补全（管理块，请勿手动编辑）',
+          '# CODESPEC:START - CodeSpec 补全（管理块，请勿手动编辑）',
           scriptLine,
-          '# OPENSPEC:END',
+          '# CODESPEC:END',
           '',
         ].join('\n');
 
-        const newContent = profileContent + openspecBlock;
+        const newContent = profileContent + codespecBlock;
         // Use UTF-8 with BOM for Windows PowerShell 5.1 compatibility
         const bomContent = '\uFEFF' + newContent;
         await this.writeProfileFile(profilePath, bomContent, fileEncoding, fileBom);
@@ -250,13 +250,13 @@ export class PowerShellInstaller {
           continue;
         }
 
-        // Remove OPENSPEC:START -> OPENSPEC:END block
-        const startMarker = '# OPENSPEC:START';
-        const endMarker = '# OPENSPEC:END';
+        // Remove CODESPEC:START -> CODESPEC:END block
+        const startMarker = '# CODESPEC:START';
+        const endMarker = '# CODESPEC:END';
         const startIndex = profileContent.indexOf(startMarker);
 
         if (startIndex === -1) {
-          continue; // No OpenSDD block found
+          continue; // No CodeSpec block found
         }
 
         const endIndex = profileContent.indexOf(endMarker, startIndex);
@@ -379,7 +379,7 @@ export class PowerShellInstaller {
       '',
       `如需启用补全，请在您的 PowerShell 配置文件 (${profilePath}) 中添加以下内容：`,
       '',
-      '  # 加载 OpenSDD 补全',
+      '  # 加载 CodeSpec 补全',
       `  if (Test-Path "${installedPath}") {`,
       `      . "${installedPath}"`,
       '  }',

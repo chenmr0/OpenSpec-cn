@@ -18,10 +18,10 @@ const tempRoots: string[] = [];
 
 async function createTempGlobalConfig(baseDir: string): Promise<{ XDG_CONFIG_HOME: string }> {
   const configDir = path.join(baseDir, 'xdg-config');
-  const openspecDir = path.join(configDir, 'openspec');
-  await fs.mkdir(openspecDir, { recursive: true });
+  const codespecDir = path.join(configDir, 'codespec');
+  await fs.mkdir(codespecDir, { recursive: true });
   await fs.writeFile(
-    path.join(openspecDir, 'config.json'),
+    path.join(codespecDir, 'config.json'),
     JSON.stringify({
       profile: 'core',
       delivery: 'both',
@@ -32,7 +32,7 @@ async function createTempGlobalConfig(baseDir: string): Promise<{ XDG_CONFIG_HOM
 }
 
 async function prepareFixture(fixtureName: string): Promise<string> {
-  const base = await fs.mkdtemp(path.join(tmpdir(), 'opensdd-cli-e2e-'));
+  const base = await fs.mkdtemp(path.join(tmpdir(), 'codespec-cli-e2e-'));
   tempRoots.push(base);
   const projectDir = path.join(base, 'project');
   await fs.mkdir(projectDir, { recursive: true });
@@ -51,11 +51,11 @@ afterAll(async () => {
   await Promise.all(tempRoots.map((dir) => fs.rm(dir, { recursive: true, force: true })));
 });
 
-describe('openspec CLI e2e basics', () => {
+describe('codespec CLI e2e basics', () => {
   it('shows help output', async () => {
     const result = await runCLI(['--help']);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain('Usage: opensdd');
+    expect(result.stdout).toContain('Usage: codespec');
     expect(result.stderr).toBe('');
 
   });
@@ -151,11 +151,11 @@ describe('openspec CLI e2e basics', () => {
         env: { CODEX_HOME: codexHome, ...(await createTempGlobalConfig(emptyProjectDir)) },
       });
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('OpenSpec 设置完成');
+      expect(result.stdout).toContain('CodeSpec 设置完成');
 
       // Check that skills were created for multiple tools
-      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/openspec-explore/SKILL.md');
-      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/openspec-explore/SKILL.md');
+      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/codespec-explore/SKILL.md');
+      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/codespec-explore/SKILL.md');
       expect(await fileExists(claudeSkillPath)).toBe(true);
       expect(await fileExists(cursorSkillPath)).toBe(true);
     });
@@ -170,12 +170,12 @@ describe('openspec CLI e2e basics', () => {
         env: await createTempGlobalConfig(emptyProjectDir),
       });
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('OpenSpec 设置完成');
+      expect(result.stdout).toContain('CodeSpec 设置完成');
       expect(result.stdout).toContain('Claude Code');
 
       // New init creates skills, not CLAUDE.md
-      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/openspec-explore/SKILL.md');
-      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/openspec-explore/SKILL.md');
+      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/codespec-explore/SKILL.md');
+      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/codespec-explore/SKILL.md');
       expect(await fileExists(claudeSkillPath)).toBe(true);
       expect(await fileExists(cursorSkillPath)).toBe(false); // Not selected
     });
@@ -187,11 +187,11 @@ describe('openspec CLI e2e basics', () => {
 
       const result = await runCLI(['init', '--tools', 'none'], { cwd: emptyProjectDir });
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('OpenSpec 设置完成');
+      expect(result.stdout).toContain('CodeSpec 设置完成');
 
       // With --tools none, no tool skills should be created
-      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/openspec-explore/SKILL.md');
-      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/openspec-explore/SKILL.md');
+      const claudeSkillPath = path.join(emptyProjectDir, '.claude/skills/codespec-explore/SKILL.md');
+      const cursorSkillPath = path.join(emptyProjectDir, '.cursor/skills/codespec-explore/SKILL.md');
 
       expect(await fileExists(claudeSkillPath)).toBe(false);
       expect(await fileExists(cursorSkillPath)).toBe(false);

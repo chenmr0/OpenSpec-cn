@@ -165,7 +165,7 @@ export function loadTemplate(
  *
  * Schema resolution order:
  * 1. Explicit schemaName parameter (if provided)
- * 2. Schema from .openspec.yaml metadata (if exists in change directory)
+ * 2. Schema from .codespec.yaml metadata (if exists in change directory)
  * 3. Default 'spec-driven'
  *
  * @param projectRoot - Project root directory
@@ -179,7 +179,7 @@ export function loadChangeContext(
   schemaName?: string
 ): ChangeContext {
   const changeDir = FileSystemUtils.canonicalizeExistingPath(
-    path.join(projectRoot, 'openspec', 'changes', changeName)
+    path.join(projectRoot, 'codespec', 'changes', changeName)
   );
 
   // Resolve schema: explicit > metadata > default

@@ -1,10 +1,10 @@
 # 多语言指南
 
-配置 OpenSDD 以生成非英语语言的制品。
+配置 CodeSpec 以生成非英语语言的制品。
 
 ## 快速设置
 
-将语言指令添加到您的 `openspec/config.yaml` 中：
+将语言指令添加到您的 `codespec/config.yaml` 中：
 
 ```yaml
 schema: spec-driven
@@ -104,7 +104,7 @@ context: |
 
 ```bash
 # 检查指令 - 应该显示您的语言上下文
-opensdd instructions proposal --change my-change
+codespec instructions proposal --change my-change
 
 # 输出将包含您的语言上下文
 ```

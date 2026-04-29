@@ -42,7 +42,7 @@ export function findMainSpecStructureIssues(content: string): MainSpecStructureI
         header: trimmed,
         message:
           `主规范包含增量标题 "${trimmed}"。` +
-          '增量标题仅在 openspec/changes/<name>/specs/<capability>/spec.md 中有效，' +
+          '增量标题仅在 codespec/changes/<name>/specs/<capability>/spec.md 中有效，' +
           '并且会截断已解析的 ## Requirements 部分。',
       });
       continue;

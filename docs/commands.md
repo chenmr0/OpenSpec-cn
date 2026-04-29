@@ -1,6 +1,6 @@
 # 命令参考
 
-这是 OpenSDD 斜杠命令的参考文档。这些命令在你的 AI 编程助手的聊天界面中调用（例如 Claude Code、Cursor、Windsurf）。
+这是 CodeSpec 斜杠命令的参考文档。这些命令在你的 AI 编程助手的聊天界面中调用（例如 Claude Code、Cursor、Windsurf）。
 
 关于工作流模式以及何时使用每个命令，请参阅[工作流](workflows.md)。关于 CLI 命令，请参阅[CLI](cli.md)。
 
@@ -27,7 +27,7 @@
 | `/opsx:bulk-archive` | 批量归档多个变更 |
 | `/opsx:onboard` | 通过完整工作流的引导式教程 |
 
-默认全局配置文件为 `core`。要启用扩展工作流命令，运行 `opensdd config profile` 选择工作流，然后在项目中运行 `opensdd update`。
+默认全局配置文件为 `core`。要启用扩展工作流命令，运行 `codespec config profile` 选择工作流，然后在项目中运行 `codespec update`。
 
 ---
 
@@ -48,7 +48,7 @@
 | `change-name-or-description` | 否 | Kebab-case 名称或自然语言变更描述 |
 
 **功能：**
-- 创建 `openspec/changes/<change-name>/`
+- 创建 `codespec/changes/<change-name>/`
 - 生成实施前所需的制品（对于 `spec-driven`：提案、规范、设计、任务）
 - 当变更准备好执行 `/opsx:apply` 时停止
 
@@ -56,7 +56,7 @@
 ```text
 你：/opsx:propose add-dark-mode
 
-AI：已创建 openspec/changes/add-dark-mode/
+AI：已创建 codespec/changes/add-dark-mode/
      ✓ proposal.md
      ✓ specs/ui/spec.md
      ✓ design.md
@@ -144,22 +144,22 @@ AI：随时可以开始。运行 /opsx:propose add-jwt-auth 来开始。
 | `--schema` | 否 | 使用的工作流 schema（默认：从配置或 `spec-driven`） |
 
 **功能：**
-- 创建 `openspec/changes/<change-name>/` 目录
-- 在变更文件夹中创建 `.openspec.yaml` 元数据文件
+- 创建 `codespec/changes/<change-name>/` 目录
+- 在变更文件夹中创建 `.codespec.yaml` 元数据文件
 - 显示第一个准备创建的制品模板
 - 如果未提供变更名称和 schema 会进行提示
 
 **创建的内容：**
 ```
-openspec/changes/<change-name>/
-└── .openspec.yaml    # 变更元数据（schema、创建日期）
+codespec/changes/<change-name>/
+└── .codespec.yaml    # 变更元数据（schema、创建日期）
 ```
 
 **示例：**
 ```
 你：/opsx:new add-dark-mode
 
-AI：已创建 openspec/changes/add-dark-mode/
+AI：已创建 codespec/changes/add-dark-mode/
      Schema：spec-driven
 
      准备创建：proposal
@@ -169,7 +169,7 @@ AI：已创建 openspec/changes/add-dark-mode/
 **提示：**
 - 使用描述性名称：`add-feature`、`fix-bug`、`refactor-module`
 - 避免通用名称如 `update`、`changes`、`wip`
-- schema 也可以在项目配置中设置（`openspec/config.yaml`）
+- schema 也可以在项目配置中设置（`codespec/config.yaml`）
 
 ---
 
@@ -211,7 +211,7 @@ AI：变更：add-dark-mode
 
      [读取 proposal.md，基于需求创建 specs]
 
-     ✓ 已创建 openspec/changes/add-dark-mode/specs/ui/spec.md
+     ✓ 已创建 codespec/changes/add-dark-mode/specs/ui/spec.md
 
      现在可用：tasks
      运行 /opsx:continue 创建下一个制品。
@@ -407,7 +407,7 @@ AI：正在校验 add-dark-mode...
 **功能：**
 - 从变更文件夹读取增量规范
 - 解析 ADDED/MODIFIED/REMOVED/RENAMED 部分
-- 将更改合并到主 `openspec/specs/` 目录
+- 将更改合并到主 `codespec/specs/` 目录
 - 保留增量中未提及的现有内容
 - 不归档变更（保持活动状态）
 
@@ -417,15 +417,15 @@ AI：正在校验 add-dark-mode...
 
 AI：正在同步 add-dark-mode 的增量规范...
 
-     读取：openspec/changes/add-dark-mode/specs/ui/spec.md
-     目标：openspec/specs/ui/spec.md
+     读取：codespec/changes/add-dark-mode/specs/ui/spec.md
+     目标：codespec/specs/ui/spec.md
 
      要应用的更改：
      ✓ 新增：主题选择需求（2 个场景）
      ✓ 新增：可访问性需求（1 个场景）
 
      正在合并...
-     ✓ openspec/specs/ui/spec.md 已更新
+     ✓ codespec/specs/ui/spec.md 已更新
 
      变更保持活动状态。准备完成时运行 /opsx:archive。
 ```
@@ -466,7 +466,7 @@ AI：正在同步 add-dark-mode 的增量规范...
 - 检查制品完成状态
 - 检查任务完成情况（未完成时发出警告）
 - 如果尚未同步，提供同步增量规范选项
-- 将变更文件夹移动到 `openspec/changes/archive/YYYY-MM-DD-<name>/`
+- 将变更文件夹移动到 `codespec/changes/archive/YYYY-MM-DD-<name>/`
 - 保留所有制品用于审计追踪
 
 **示例：**
@@ -486,8 +486,8 @@ AI：正在归档 add-dark-mode...
 
 你：是
 
-AI：✓ 已将规范同步到 openspec/specs/ui/spec.md
-     ✓ 已移动到 openspec/changes/archive/2025-01-24-add-dark-mode/
+AI：✓ 已将规范同步到 codespec/specs/ui/spec.md
+     ✓ 已移动到 codespec/changes/archive/2025-01-24-add-dark-mode/
 
      变更已成功归档。
 ```
@@ -559,7 +559,7 @@ AI：✓ 已归档 add-dark-mode
 
 ### `/opsx:onboard`
 
-通过完整的 OpenSDD 工作流进行引导式入门。使用你的实际代码库的交互式教程。
+通过完整的 CodeSpec 工作流进行引导式入门。使用你的实际代码库的交互式教程。
 
 **语法：**
 ```
@@ -591,7 +591,7 @@ AI：✓ 已归档 add-dark-mode
 ```text
 你：/opsx:onboard
 
-AI：欢迎使用 OpenSDD！
+AI：欢迎使用 CodeSpec！
 
      我将使用你的实际代码库引导你完成完整的工作流。
      我们会找到一个小改进点，为其创建适当的变更，
@@ -627,7 +627,7 @@ AI：欢迎使用 OpenSDD！
 | Cursor | `/opsx-propose`, `/opsx-apply` |
 | Windsurf | `/opsx-propose`, `/opsx-apply` |
 | Copilot (IDE) | `/opsx-propose`, `/opsx-apply` |
-| Trae | 基于技能的调用，如 `/openspec-propose`、`/openspec-apply-change`（不生成 `opsx-*` 命令文件） |
+| Trae | 基于技能的调用，如 `/codespec-propose`、`/codespec-apply-change`（不生成 `opsx-*` 命令文件） |
 
 各工具的意图相同，但命令的呈现方式可能因集成方式而异。
 
@@ -663,7 +663,7 @@ AI：欢迎使用 OpenSDD！
 
 **解决方案：**
 - 明确指定变更名称：`/opsx:apply add-dark-mode`
-- 检查变更文件夹是否存在：`opensdd list`
+- 检查变更文件夹是否存在：`codespec list`
 - 验证是否在正确的项目目录中
 
 ### "No artifacts ready"
@@ -671,7 +671,7 @@ AI：欢迎使用 OpenSDD！
 所有制品要么已完成，要么被缺失的依赖项阻塞。
 
 **解决方案：**
-- 运行 `opensdd status --change <name>` 查看阻塞状态
+- 运行 `codespec status --change <name>` 查看阻塞状态
 - 检查所需的制品是否存在
 - 首先创建缺失的依赖制品
 
@@ -680,17 +680,17 @@ AI：欢迎使用 OpenSDD！
 指定的 schema 不存在。
 
 **解决方案：**
-- 列出可用 schema：`opensdd schemas`
+- 列出可用 schema：`codespec schemas`
 - 检查 schema 名称拼写
-- 如果是自定义 schema，请创建：`opensdd schema init <name>`
+- 如果是自定义 schema，请创建：`codespec schema init <name>`
 
 ### 命令无法识别
 
-AI 工具无法识别 OpenSDD 命令。
+AI 工具无法识别 CodeSpec 命令。
 
 **解决方案：**
-- 确保 OpenSDD 已初始化：`opensdd init`
-- 重新生成技能：`opensdd update`
+- 确保 CodeSpec 已初始化：`codespec init`
+- 重新生成技能：`codespec update`
 - 检查 `.claude/skills/` 目录是否存在（针对 Claude Code）
 - 重启 AI 工具以获取新技能
 
@@ -699,7 +699,7 @@ AI 工具无法识别 OpenSDD 命令。
 AI 创建了不完整或不正确的制品。
 
 **解决方案：**
-- 在 `openspec/config.yaml` 中添加项目上下文
+- 在 `codespec/config.yaml` 中添加项目上下文
 - 添加针对每个制品的规则以提供具体指导
 - 在变更描述中提供更多细节
 - 使用 `/opsx:continue` 代替 `/opsx:ff` 以获得更多控制

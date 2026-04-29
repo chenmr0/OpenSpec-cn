@@ -303,17 +303,17 @@ export async function generateApplyInstructions(
 
   if (missingArtifacts.length > 0) {
     state = 'blocked';
-    instruction = `尚无法应用此变更。缺失的产出物: ${missingArtifacts.join(', ')}。\n请使用 openspec-continue-change 技能首先创建缺失的产出物。`;
+    instruction = `尚无法应用此变更。缺失的产出物: ${missingArtifacts.join(', ')}。\n请使用 codespec-continue-change 技能首先创建缺失的产出物。`;
   } else if (tracksFile && !tracksFileExists) {
     // Tracking file configured but doesn't exist yet
     const tracksFilename = path.basename(tracksFile);
     state = 'blocked';
-    instruction = `${tracksFilename} 文件缺失,必须创建。\n请使用 openspec-continue-change 生成跟踪文件。`;
+    instruction = `${tracksFilename} 文件缺失,必须创建。\n请使用 codespec-continue-change 生成跟踪文件。`;
   } else if (tracksFile && tracksFileExists && total === 0) {
     // Tracking file exists but contains no tasks
     const tracksFilename = path.basename(tracksFile);
     state = 'blocked';
-    instruction = `${tracksFilename} 文件存在但不包含任何任务。\n请向 ${tracksFilename} 添加任务或使用 openspec-continue-change 重新生成它。`;
+    instruction = `${tracksFilename} 文件存在但不包含任何任务。\n请向 ${tracksFilename} 添加任务或使用 codespec-continue-change 重新生成它。`;
   } else if (tracksFile && remaining === 0 && total > 0) {
     state = 'all_done';
     instruction = '所有任务已完成!此变更已准备好归档。\n建议在归档之前运行测试并审查更改。';
@@ -380,7 +380,7 @@ export function printApplyInstructionsText(instructions: ApplyInstructions): voi
     console.log('⚠️ 被阻塞');
     console.log();
     console.log(`缺失的产出物： ${missingArtifacts.join(', ')}`);
-    console.log('请使用 openspec-continue-change 技能首先创建这些产出物。');
+    console.log('请使用 codespec-continue-change 技能首先创建这些产出物。');
     console.log();
   }
 

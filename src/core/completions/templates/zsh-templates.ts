@@ -5,32 +5,32 @@
 
 export const ZSH_DYNAMIC_HELPERS = `# Dynamic completion helpers
 
-# Use opensdd __complete to get available changes
-_openspec_complete_changes() {
+# Use codespec __complete to get available changes
+_codespec_complete_changes() {
   local -a changes
   while IFS=$'\\t' read -r id desc; do
     changes+=("$id:$desc")
-  done < <(opensdd __complete changes 2>/dev/null)
+  done < <(codespec __complete changes 2>/dev/null)
   _describe "change" changes
 }
 
-# Use opensdd __complete to get available specs
-_openspec_complete_specs() {
+# Use codespec __complete to get available specs
+_codespec_complete_specs() {
   local -a specs
   while IFS=$'\\t' read -r id desc; do
     specs+=("$id:$desc")
-  done < <(opensdd __complete specs 2>/dev/null)
+  done < <(codespec __complete specs 2>/dev/null)
   _describe "spec" specs
 }
 
 # Get both changes and specs
-_openspec_complete_items() {
+_codespec_complete_items() {
   local -a items
   while IFS=$'\\t' read -r id desc; do
     items+=("$id:$desc")
-  done < <(opensdd __complete changes 2>/dev/null)
+  done < <(codespec __complete changes 2>/dev/null)
   while IFS=$'\\t' read -r id desc; do
     items+=("$id:$desc")
-  done < <(opensdd __complete specs 2>/dev/null)
+  done < <(codespec __complete specs 2>/dev/null)
   _describe "item" items
 }`;
