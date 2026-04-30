@@ -10,6 +10,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import * as fs from 'fs';
 import { createRequire } from 'module';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { FileSystemUtils } from '../utils/file-system.js';
 import { transformToHyphenCommands } from '../utils/command-references.js';
 import {
@@ -597,6 +598,15 @@ export class InitCommand {
           removedCommandCount += await this.removeCommandFiles(projectPath, tool.value);
         }
 
+        // Configure opencode continuation plugin when opencode tool is selected
+        if (tool.value === 'opencode') {
+          try {
+            await this.configureOpenCodePlugin(projectPath);
+          } catch (pluginError) {
+            console.log(chalk.dim(`  插件配置: ${pluginError instanceof Error ? pluginError.message : String(pluginError)}`));
+          }
+        }
+
         spinner.succeed(`${tool.name} 配置完成`);
 
         if (tool.wasConfigured) {
@@ -712,6 +722,12 @@ export class InitCommand {
       console.log(chalk.dim(`已删除：${results.removedSkillCount} 个技能目录（交付方式: commands）`));
     }
 
+    // Show opencode plugin info
+    const hasOpenCode = tools.some((t) => t.value === 'opencode');
+    if (hasOpenCode) {
+      console.log(chalk.dim('插件：codespec 已注册到 .opencode/opencode.json（自动续行未完成任务）'));
+    }
+
     // Config status
     if (configStatus === 'created') {
       console.log(`配置：openspec/config.yaml (schema: ${DEFAULT_SCHEMA})`);
@@ -759,6 +775,65 @@ export class InitCommand {
       color: 'gray',
       spinner: PROGRESS_SPINNER,
     }).start();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // OPENCODE PLUGIN CONFIGURATION
+  // ═══════════════════════════════════════════════════════════
+
+  /**
+   * Configure the codespec continuation plugin for OpenCode.
+   * Adds "codespec" to the plugin array in .opencode/opencode.json.
+   *
+   * OpenCode discovers plugins from these config files (in priority order):
+   *   1. <project>/.opencode/opencode.json[c]
+   *   2. ~/.config/opencode/opencode.json[c] (Windows: %APPDATA%/opencode/)
+   *
+   * The "plugin" array contains npm package name strings, e.g. ["codespec"].
+   * OpenCode will import the package and call its default export as Plugin().
+   */
+  private async configureOpenCodePlugin(projectPath: string): Promise<void> {
+    const opencodeDir = path.join(projectPath, '.opencode');
+    const configPath = path.join(opencodeDir, 'opencode.json');
+
+    await FileSystemUtils.createDirectory(opencodeDir);
+
+    // Read existing config or start fresh
+    let config: Record<string, unknown> = {};
+    if (fs.existsSync(configPath)) {
+      try {
+        const raw = await fs.promises.readFile(configPath, 'utf-8');
+        config = JSON.parse(raw);
+      } catch {
+        // Corrupted or empty config, start fresh
+        config = {};
+      }
+    }
+
+    // The "plugin" array contains specifier strings (npm names or file:// URLs).
+    // We use a file:// URL pointing to the codespec package root to avoid
+    // collision with an unrelated "codespec" package on the npm registry.
+    const packageName = 'codespec';
+    // This file is at <codespec-root>/dist/core/init.js, so go up 2 levels to find root.
+    const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
+    const codespecRoot = path.resolve(thisFileDir, '..', '..');
+    const fileUrl = pathToFileURL(codespecRoot).href;
+    const plugins = ((config.plugin as string[]) ?? []).filter(
+      (p) => typeof p === 'string'
+    );
+
+    // Check if codespec is already in the plugin list (by name, versioned name, or file URL)
+    const alreadyConfigured = plugins.some(
+      (p) => p === packageName || p.startsWith(`${packageName}@`) || p === fileUrl
+    );
+
+    if (!alreadyConfigured) {
+      plugins.push(fileUrl);
+    }
+
+    config.plugin = plugins;
+
+    await FileSystemUtils.writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
   }
 
   private async removeSkillDirs(skillsDir: string): Promise<number> {

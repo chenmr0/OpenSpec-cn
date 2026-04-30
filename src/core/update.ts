@@ -10,6 +10,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import * as fs from 'fs';
 import { createRequire } from 'module';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { FileSystemUtils } from '../utils/file-system.js';
 import { transformToHyphenCommands } from '../utils/command-references.js';
 import { AI_TOOLS, CODESPEC_DIR_NAME } from './config.js';
@@ -234,6 +235,15 @@ export class UpdateCommand {
 
         spinner.succeed(`已更新 ${tool.name}`);
         updatedTools.push(tool.name);
+
+        // Refresh opencode plugin config when updating opencode tool
+        if (tool.value === 'opencode') {
+          try {
+            await this.refreshOpenCodePluginConfig(resolvedProjectPath);
+          } catch (pluginError) {
+            console.log(chalk.dim(`  插件配置: ${pluginError instanceof Error ? pluginError.message : String(pluginError)}`));
+          }
+        }
       } catch (error) {
         spinner.fail(`更新失败 ${tool.name}`);
         failedTools.push({
@@ -348,6 +358,47 @@ export class UpdateCommand {
           `检测到新的${toolNoun}：${newToolNames.join(', ')}。运行 'codespec init' 以添加${isSingleTool ? '它' : '它们'}。`
         )
       );
+    }
+  }
+
+  /**
+   * Refresh the codespec continuation plugin configuration for OpenCode.
+   * Ensures "codespec" exists in the plugin array in .opencode/opencode.json.
+   */
+  private async refreshOpenCodePluginConfig(projectPath: string): Promise<void> {
+    const opencodeDir = path.join(projectPath, '.opencode');
+    const configPath = path.join(opencodeDir, 'opencode.json');
+
+    if (!fs.existsSync(configPath)) {
+      // No opencode config file yet; skip (init will create it)
+      return;
+    }
+
+    let config: Record<string, unknown>;
+    try {
+      const raw = await fs.promises.readFile(configPath, 'utf-8');
+      config = JSON.parse(raw);
+    } catch {
+      return;
+    }
+
+    const packageName = 'codespec';
+    // Resolve codespec package root via this file's location
+    const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
+    const codespecRoot = path.resolve(thisFileDir, '..', '..');
+    const fileUrl = pathToFileURL(codespecRoot).href;
+    const plugins = ((config.plugin as string[]) ?? []).filter(
+      (p) => typeof p === 'string'
+    );
+
+    const alreadyConfigured = plugins.some(
+      (p) => p === packageName || p.startsWith(`${packageName}@`) || p === fileUrl
+    );
+
+    if (!alreadyConfigured) {
+      plugins.push(fileUrl);
+      config.plugin = plugins;
+      await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
     }
   }
 

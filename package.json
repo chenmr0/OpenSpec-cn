@@ -21,6 +21,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "main": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -79,5 +80,13 @@
     "ora": "^8.2.0",
     "yaml": "^2.8.2",
     "zod": "^4.0.17"
+  },
+  "peerDependencies": {
+    "@opencode-ai/plugin": ">=0.1.0"
+  },
+  "peerDependenciesMeta": {
+    "@opencode-ai/plugin": {
+      "optional": true
+    }
   }
 }

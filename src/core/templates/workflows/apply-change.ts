@@ -64,9 +64,15 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 
 ### 任务实施（调用子智能体驱动开发技能）
 
-   **无人值守原则：** 一旦进入实现阶段，自主推进所有任务直到全部完成。遇到问题时自行解决，不暂停等待用户介入。
+   **无人值守原则：** 一旦进入实现阶段，自主推进所有任务直到全部完成。遇到问题时自行解决，不暂停等待用户介入。**continuation enforcer 会在你试图提前停止时自动注入 prompt 强制你继续，所以不要停下来等待用户确认——直接执行。**
 
    **加载 \`subagent-driven-development\` 技能，严格按照该技能的流程执行所有任务。**
+
+   **TodoWrite 纪律（关键）：**
+   - 在开始实现前，**必须**用 Todo 为所有任务创建条目(任务级，非步骤级)
+   - 每完成一个任务后，**立即**将其标记为 completed
+   - 不要批量标记——完成一个标记一个
+   - TodoWrite 是 continuation enforcer 判断进度的基础，不遵守 = 系统误判
 
    该技能会自动执行：为每个任务分派隔离的实现子智能体 → 规格合规审查 → 代码质量审查 → 标记完成 → 继续下一个任务。你只需确保传递正确的上下文（完整任务文本 + 场景铺设 + 工作目录），其余流程由技能驱动。
 
@@ -180,6 +186,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 - 使用 CLI 输出中的 contextFiles，不要假设特定的文件名
 - 保持代码更改最小化并限定在每个任务范围内
 - 实施阶段的子智能体纪律、审查流程、验证纪律全部由 \`subagent-driven-development\` 技能定义，严格遵循该技能的红线和要求
+- **不要试图提前结束**：continuation enforcer 机制会在你停下来时自动注入续行 prompt。如果你想停下来"等待确认"或"询问用户"，系统会强制你继续。只有所有任务真正完成并通过验证时才停下来。
 
 **流畅的工作流集成**
 
