@@ -12,6 +12,10 @@ import type { Plugin, PluginInput } from "@opencode-ai/plugin";
 import { handleSessionIdle } from "./opencode-plugin/continuation/idle-event.js";
 import { handleNonIdleEvent } from "./opencode-plugin/continuation/handler.js";
 import { createSessionStateStore, type SessionStateStore } from "./opencode-plugin/continuation/session-state.js";
+import { createCompressionStateStore, type CompressionStateStore } from "./opencode-plugin/context-compression/compression-state-store.js";
+import { createMessagesTransformHandler } from "./opencode-plugin/context-compression/message-transform.js";
+import { createSystemTransformHandler } from "./opencode-plugin/context-compression/system-transform.js";
+import { createTaskCompressTool } from "./opencode-plugin/context-compression/task-compress-tool.js";
 
 function createEventHandler(
   ctx: PluginInput,
@@ -19,9 +23,12 @@ function createEventHandler(
 ) {
   return async ({ event }: { event: { type: string; properties?: unknown } }): Promise<void> => {
     const props = event.properties as Record<string, unknown> | undefined;
+    const part = props?.part as Record<string, unknown> | undefined;
+    const sessionID = (props?.sessionID as string | undefined)
+      ?? (part?.sessionID as string | undefined)
+      ?? ((props?.info as Record<string, unknown>)?.sessionID as string | undefined);
 
     if (event.type === "session.idle") {
-      const sessionID = props?.sessionID as string | undefined;
       if (!sessionID) return;
 
       await handleSessionIdle({
@@ -32,7 +39,6 @@ function createEventHandler(
       return;
     }
 
-    // Handle all non-idle events (message updates, tool executions, errors, etc.)
     handleNonIdleEvent({
       eventType: event.type,
       properties: props,
@@ -43,9 +49,19 @@ function createEventHandler(
 
 const CodeSpecPlugin: Plugin = async (ctx) => {
   const sessionStateStore = createSessionStateStore();
+  const compressionStateStore = createCompressionStateStore();
 
   return {
     event: createEventHandler(ctx, sessionStateStore),
+
+    "experimental.chat.messages.transform":
+      createMessagesTransformHandler(compressionStateStore) as any,
+    "experimental.chat.system.transform":
+      createSystemTransformHandler(compressionStateStore) as any,
+
+    tool: {
+      "task-compress": createTaskCompressTool(compressionStateStore) as any,
+    },
   };
 };
 

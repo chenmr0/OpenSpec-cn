@@ -34,6 +34,9 @@ declare module "@opencode-ai/plugin" {
 
   interface Hooks {
     event?: (input: { event: { type: string; properties?: unknown } }) => Promise<void>;
+    "experimental.chat.messages.transform"?: (input: Record<string, unknown>, output: { messages: Array<{ info: { id: string; sessionID: string; role: string; time: { created: number } }; parts: Array<{ type: string; text?: string; callID?: string; tool?: string; state?: { status: string; output?: string; input?: unknown } }> }> }) => Promise<void>;
+    "experimental.chat.system.transform"?: (input: { sessionID?: string }, output: { system: string[] }) => Promise<void>;
+    tool?: { [key: string]: any };
   }
 
   type Plugin = (
