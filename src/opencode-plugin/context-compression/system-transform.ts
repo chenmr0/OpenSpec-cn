@@ -9,9 +9,8 @@ function debugLog(msg: string): void {
     const ts = new Date().toISOString();
     writeFileSync(DEBUG_LOG, `[${ts}] ${msg}\n`, { flag: "a" });
   } catch {
-    process.stderr.write(`[codespec] ${msg}\n`);
+    // file logging failed, silently ignore
   }
-  process.stderr.write(`[codespec] ${msg}\n`);
 }
 
 export function createSystemTransformHandler(

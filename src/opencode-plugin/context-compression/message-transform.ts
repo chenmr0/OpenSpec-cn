@@ -12,11 +12,8 @@ function debugLog(msg: string): void {
     const ts = new Date().toISOString();
     writeFileSync(DEBUG_LOG, `[${ts}] ${msg}\n`, { flag: "a" });
   } catch {
-    // file logging may fail, also write to stderr
-    process.stderr.write(`[codespec] ${msg}\n`);
+    // file logging failed, silently ignore
   }
-  // Always also write to stderr so it shows up in OpenCode logs
-  process.stderr.write(`[codespec] ${msg}\n`);
 }
 
 /**
