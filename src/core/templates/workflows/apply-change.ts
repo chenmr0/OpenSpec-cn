@@ -69,7 +69,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    **加载 \`subagent-driven-development\` 技能，严格按照该技能的流程执行所有任务。**
 
    **TodoWrite 纪律（关键）：**
-   - 在开始实现前，**必须**用 Todo 为所有任务创建条目(任务级，非步骤级)
+   - 在开始实现前，**必须**用 Todo 为所有任务创建条目(**只跟踪任务，不要跟踪子步骤**)
    - 每完成一个任务后，**立即**将其标记为 completed
    - 不要批量标记——完成一个标记一个
    - TodoWrite 是 continuation enforcer 判断进度的基础，不遵守 = 系统误判
@@ -193,6 +193,8 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 此技能支持"变更上的操作"模型：
 
 - **可以随时调用**：在所有产出物完成之前（如果存在任务），部分实现之后，与其他操作交错
-- **允许产出物更新**：如果实现揭示了设计问题，建议更新产出物 - 不是阶段锁定的，流畅地工作`
+- **允许产出物更新**：如果实现揭示了设计问题，建议更新产出物 - 不是阶段锁定的，流畅地工作
+
+<!-- command: codespec-apply-change -->`
   };
 }

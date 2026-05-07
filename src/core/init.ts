@@ -833,6 +833,20 @@ export class InitCommand {
 
     config.plugin = plugins;
 
+    // Auto-configure permissions for unattended /codespec/apply sessions.
+    // Only set if the user hasn't already configured permissions.
+    if (config.permission === undefined) {
+      config.permission = {
+        "bash": "allow",
+        "edit": "allow",
+        "write": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "read": "allow",
+        "external_directory": "allow",
+      };
+    }
+
     await FileSystemUtils.writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
   }
 

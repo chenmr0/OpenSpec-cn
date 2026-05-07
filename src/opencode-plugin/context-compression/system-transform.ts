@@ -24,6 +24,12 @@ export function createSystemTransformHandler(
       debugLog(`=== system.transform called === sessionID=${input.sessionID}`);
       const state = compressionStateStore.getState(input.sessionID || 'default');
 
+      // Only inject compression prompt in /codespec/apply sessions
+      if (!state.isApplySession) {
+        debugLog(`system.transform: not an apply session — skipping`);
+        return;
+      }
+
       if (state.compressionBlocks.size === 0 && state.completedOrder.length < 3) {
         debugLog(`system.transform: skipping (blocks=${state.compressionBlocks.size} completed=${state.completedOrder.length})`);
         return;

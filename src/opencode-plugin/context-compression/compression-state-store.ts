@@ -19,6 +19,7 @@ export function createCompressionStateStore(): CompressionStateStore {
           completedOrder: [],
           lastTodoSnapshot: new Map(),
           nudgeInjectedForTask: null,
+          isApplySession: false,
         };
         sessions.set(sessionID, state);
       }

@@ -9,6 +9,7 @@ function makeState(): CompressionState {
     completedOrder: [],
     lastTodoSnapshot: new Map(),
     nudgeInjectedForTask: null,
+    isApplySession: false,
   };
 }
 

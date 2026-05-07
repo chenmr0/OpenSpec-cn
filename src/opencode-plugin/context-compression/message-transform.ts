@@ -2,6 +2,7 @@ import type { WithParts, CompressionState } from "./types.js";
 import type { CompressionStateStore } from "./compression-state-store.js";
 import { injectNudge, removePreviousNudgeMessages } from "./nudge.js";
 import { createSyntheticUserMessage } from "./message-utils.js";
+import { detectApplySession } from "./session-detection.js";
 import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -53,6 +54,12 @@ export function createMessagesTransformHandler(
             }
           }
         }
+      }
+
+      // Only run compression logic in /codespec/apply sessions
+      if (!detectApplySession(state, messages)) {
+        debugLog(`not an apply session — skipping compression`);
+        return;
       }
 
       detectCompletedTasks(state, messages);

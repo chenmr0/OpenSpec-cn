@@ -8,6 +8,7 @@ describe('context-compression types', () => {
       completedOrder: [] as string[],
       lastTodoSnapshot: new Map() as Map<string, string>,
       nudgeInjectedForTask: null as string | null,
+      isApplySession: false as boolean,
     };
     expect(state.taskBoundaries.size).toBe(0);
     expect(state.compressionBlocks.size).toBe(0);

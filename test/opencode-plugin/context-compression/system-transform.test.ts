@@ -9,6 +9,7 @@ function makeState(): CompressionState {
     completedOrder: [],
     lastTodoSnapshot: new Map(),
     nudgeInjectedForTask: null,
+    isApplySession: false,
   };
 }
 
@@ -28,6 +29,7 @@ describe('createSystemTransformHandler', () => {
 
   it('injects when completedOrder >= 3', async () => {
     const state = makeState();
+    state.isApplySession = true;
     state.completedOrder = ['1', '2', '3'];
     const store = {
   getState: (sessionID: string) => state,
@@ -43,6 +45,7 @@ describe('createSystemTransformHandler', () => {
 
   it('injects when compressionBlocks exist', async () => {
     const state = makeState();
+    state.isApplySession = true;
     state.compressionBlocks.set('1', {
       taskId: '1', summary: 's', modifiedFiles: [], startMessageId: 'm1', endMessageId: 'm2', compressedAt: 1, messageIds: [],
     });
@@ -59,6 +62,7 @@ describe('createSystemTransformHandler', () => {
 
   it('pushes to empty system array', async () => {
     const state = makeState();
+    state.isApplySession = true;
     state.completedOrder = ['1', '2', '3'];
     const store = {
   getState: (sessionID: string) => state,

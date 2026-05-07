@@ -27,6 +27,8 @@ export interface CompressionState {
   /** Maps todo content hash → last known status */
   lastTodoSnapshot: Map<string, string>;
   nudgeInjectedForTask: string | null;
+  /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
+  isApplySession: boolean;
 }
 
 /** WithParts — 消息结构，与 OpenCode SDK 对齐 */

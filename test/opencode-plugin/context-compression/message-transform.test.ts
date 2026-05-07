@@ -3,15 +3,21 @@ import { createMessagesTransformHandler } from '../../../dist/opencode-plugin/co
 import { createCompressionStateStore } from '../../../dist/opencode-plugin/context-compression/compression-state-store.js';
 import type { WithParts } from '../../../dist/opencode-plugin/context-compression/types.js';
 
+const APPLY_MARKER = 'codespec-apply-change';
+
 function makeMessagesWithTodoWrite(
   sessionId: string,
   todos: Array<{ content: string; status: string; priority?: string }>,
   toolStatus = 'completed',
+  includeMarker = true,
 ): WithParts[] {
+  const userText = includeMarker
+    ? `do the tasks\n<!-- command: ${APPLY_MARKER} -->`
+    : 'do the tasks';
   return [
     {
       info: { id: 'msg-user-1', sessionID: sessionId, role: 'user', time: { created: 1 } },
-      parts: [{ type: 'text', text: 'do the tasks' }],
+      parts: [{ type: 'text', text: userText }],
     },
     {
       info: { id: 'msg-assistant-1', sessionID: sessionId, role: 'assistant', time: { created: 2 } },
@@ -94,7 +100,7 @@ describe('createMessagesTransformHandler', () => {
     const messages: WithParts[] = [
       {
         info: { id: 'msg-1', sessionID: 'ses-4', role: 'user', time: { created: 1 } },
-        parts: [{ type: 'text', text: 'hello' }],
+        parts: [{ type: 'text', text: `hello\n<!-- command: ${APPLY_MARKER} -->` }],
       },
     ];
 
@@ -149,7 +155,7 @@ describe('createMessagesTransformHandler', () => {
       },
       {
         info: { id: 'msg-user-1', sessionID: 'ses-6', role: 'user', time: { created: 1 } },
-        parts: [{ type: 'text', text: 'do the tasks' }],
+        parts: [{ type: 'text', text: `do the tasks\n<!-- command: ${APPLY_MARKER} -->` }],
       },
       {
         info: { id: 'msg-assistant-1', sessionID: 'ses-6', role: 'assistant', time: { created: 2 } },
@@ -175,5 +181,25 @@ describe('createMessagesTransformHandler', () => {
     await handler({}, { messages: messages2 });
     // The compressed range (msg-user-1 .. msg-assistant-1) should be replaced
     expect(messages2.some(m => m.parts.some(p => p.text?.includes('实现了用户登录功能')))).toBe(true);
+  });
+
+  it('does not trigger compression in non-apply sessions', async () => {
+    const store = createCompressionStateStore();
+    const handler = createMessagesTransformHandler(store);
+    const state = store.getState('ses-non-apply');
+
+    // Use includeMarker=false to simulate a non-apply session
+    const messages = makeMessagesWithTodoWrite('ses-non-apply', [
+      { content: 'Task A', status: 'completed', priority: 'high' },
+      { content: 'Task B', status: 'completed', priority: 'high' },
+      { content: 'Task C', status: 'completed', priority: 'high' },
+    ], 'completed', false);
+
+    await handler({}, { messages });
+
+    // No tasks should be detected — compression is skipped entirely
+    expect(state.completedOrder.length).toBe(0);
+    expect(state.taskBoundaries.size).toBe(0);
+    expect(state.isApplySession).toBe(false);
   });
 });
