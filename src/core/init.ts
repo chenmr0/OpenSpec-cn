@@ -1,7 +1,7 @@
 /**
  * Init Command
  *
- * Sets up OpenSDD with Agent Skills and /opsx:* slash commands.
+ * Sets up CodeSpec with Agent Skills and /opsx:* slash commands.
  * This is the unified setup command that replaces both the old init and experimental commands.
  */
 
@@ -33,19 +33,15 @@ import {
   type LegacyDetectionResult,
 } from './legacy-cleanup.js';
 import {
-  SKILL_NAMES,
   getToolsWithSkillsDir,
   getToolSkillStatus,
   getToolStates,
-  getSkillTemplates,
   getExternalSkillTemplates,
   getExternalAgentTemplates,
   getCommandContents,
   generateSkillContent,
   type ToolSkillStatus,
 } from './shared/index.js';
-import { getGlobalConfig, type Delivery, type Profile } from './global-config.js';
-import { getProfileWorkflows, CORE_WORKFLOWS, ALL_WORKFLOWS } from './profiles.js';
 import { getAvailableTools } from './available-tools.js';
 import { migrateIfNeeded } from './migration.js';
 
@@ -61,20 +57,6 @@ const DEFAULT_SCHEMA = 'spec-driven';
 const PROGRESS_SPINNER = {
   interval: 80,
   frames: ['░░░', '▒░░', '▒▒░', '▒▒▒', '▓▒▒', '▓▓▒', '▓▓▓', '▒▓▓', '░▒▓'],
-};
-
-const WORKFLOW_TO_SKILL_DIR: Record<string, string> = {
-  'new': 'openspec-new-change',
-  'continue': 'openspec-continue-change',
-  'ff': 'openspec-ff-change',
-  'sync': 'openspec-sync-specs',
-  'bulk-archive': 'openspec-bulk-archive-change',
-  'verify': 'openspec-verify-change',
-  'onboard': 'openspec-onboard',
-  '_external:writing-plans': 'writing-plans',
-  '_external:test-driven-development': 'test-driven-development',
-  '_external:subagent-driven-development': 'subagent-driven-development',
-  '_external:verification-before-completion': 'verification-before-completion',
 };
 
 // -----------------------------------------------------------------------------
@@ -96,13 +78,11 @@ export class InitCommand {
   private readonly toolsArg?: string;
   private readonly force: boolean;
   private readonly interactiveOption?: boolean;
-  private readonly profileOverride?: string;
 
   constructor(options: InitCommandOptions = {}) {
     this.toolsArg = options.tools;
     this.force = options.force ?? false;
     this.interactiveOption = options.interactive;
-    this.profileOverride = options.profile;
   }
 
   async execute(targetPath: string): Promise<void> {
@@ -130,10 +110,6 @@ export class InitCommand {
       const { showWelcomeScreen } = await import('../ui/welcome-screen.js');
       await showWelcomeScreen();
     }
-
-    // Validate profile override early so invalid values fail before tool setup.
-    // The resolved value is consumed later when generation reads effective config.
-    this.resolveProfileOverride();
 
     // Get tool states before processing
     const toolStates = getToolStates(projectPath);
@@ -180,18 +156,6 @@ export class InitCommand {
     return isInteractive({ interactive: this.interactiveOption });
   }
 
-  private resolveProfileOverride(): Profile | undefined {
-    if (this.profileOverride === undefined) {
-      return undefined;
-    }
-
-    if (this.profileOverride === 'core' || this.profileOverride === 'custom') {
-      return this.profileOverride;
-    }
-
-    throw new Error(`无效的档案 "${this.profileOverride}"。可用档案： core、custom`);
-  }
-
   // ═══════════════════════════════════════════════════════════
   // LEGACY CLEANUP
   // ═══════════════════════════════════════════════════════════
@@ -213,7 +177,7 @@ export class InitCommand {
 
     if (this.force || !canPrompt) {
       // --force flag or non-interactive mode: proceed with cleanup automatically.
-      // Legacy slash commands are 100% OpenSDD-managed, and config file cleanup
+      // Legacy slash commands are 100% CodeSpec-managed, and config file cleanup
       // only removes markers (never deletes files), so auto-cleanup is safe.
       await this.performLegacyCleanup(projectPath, detection);
       return;
@@ -324,7 +288,7 @@ export class InitCommand {
       .map((toolId) => AI_TOOLS.find((t) => t.value === toolId)?.name || toolId);
 
     if (configuredNames.length > 0) {
-      console.log(`OpenSDD 已配置：${configuredNames.join(', ')}（已预选）`);
+      console.log(`CodeSpec 已配置：${configuredNames.join(', ')}（已预选）`);
     }
 
     const detectedOnlyNames = detectedTools
@@ -469,7 +433,7 @@ export class InitCommand {
       return;
     }
 
-    const spinner = this.startSpinner('正在创建 OpenSDD 结构...');
+    const spinner = this.startSpinner('正在创建 CodeSpec 结构...');
 
     const directories = [
       openspecPath,
@@ -484,7 +448,7 @@ export class InitCommand {
 
     spinner.stopAndPersist({
       symbol: PALETTE.white('▌'),
-      text: PALETTE.white('OpenSDD 结构已创建'),
+      text: PALETTE.white('CodeSpec 结构已创建'),
     });
   }
 
@@ -510,43 +474,20 @@ export class InitCommand {
     let removedCommandCount = 0;
     let removedSkillCount = 0;
 
-    // Read global config for profile and delivery settings (use --profile override if set)
-    const globalConfig = getGlobalConfig();
-    const profile: Profile = this.resolveProfileOverride() ?? globalConfig.profile ?? 'core';
-    const delivery: Delivery = globalConfig.delivery ?? 'both';
-    const workflows = getProfileWorkflows(profile, globalConfig.workflows);
-
-    // Get skill and command templates filtered by profile workflows
-    const shouldGenerateSkills = delivery !== 'commands';
-    const shouldGenerateCommands = delivery !== 'skills';
-    const skillTemplates = shouldGenerateSkills ? getSkillTemplates(workflows) : [];
-    // External skills are always installed regardless of profile/delivery
+    // Only generate external skills (4), agents (3), and 3 core commands.
+    // Internal skillTemplates are workflow-specific (new/continue/ff/sync etc.)
+    // and never matched the core propose/apply/archive workflows, so skip them.
     const externalSkillTemplates = getExternalSkillTemplates();
-    const commandContents = shouldGenerateCommands ? getCommandContents(workflows) : [];
+    const commandContents = getCommandContents(['propose', 'apply', 'archive']);
 
     // Process each tool
     for (const tool of tools) {
       const spinner = ora(`正在配置 ${tool.name}...`).start();
 
       try {
-        // Generate skill files if delivery includes skills
-        if (shouldGenerateSkills) {
+        {
           // Use tool-specific skillsDir
           const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
-
-          // Create workflow skill directories and SKILL.md files
-          for (const { template, dirName } of skillTemplates) {
-            const skillDir = path.join(skillsDir, dirName);
-            const skillFile = path.join(skillDir, 'SKILL.md');
-
-            // Generate SKILL.md content with YAML frontmatter including generatedBy
-            // Use hyphen-based command references for tools where filename = command name
-            const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
-            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
-
-            // Write the skill file
-            await FileSystemUtils.writeFile(skillFile, skillContent);
-          }
 
           // Always create external skills (writing-plans, test-driven-development, etc.)
           for (const { template, dirName, extraFiles } of externalSkillTemplates) {
@@ -575,13 +516,9 @@ export class InitCommand {
             await FileSystemUtils.writeFile(agentFile, agent.content);
           }
         }
-        if (!shouldGenerateSkills) {
-          const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
-          removedSkillCount += await this.removeSkillDirs(skillsDir);
-        }
 
-        // Generate commands if delivery includes commands
-        if (shouldGenerateCommands) {
+        // Always generate commands
+        {
           const adapter = CommandAdapterRegistry.get(tool.value);
           if (adapter) {
             const generatedCommands = generateCommands(commandContents, adapter);
@@ -593,9 +530,6 @@ export class InitCommand {
           } else {
             commandsSkipped.push(tool.value);
           }
-        }
-        if (!shouldGenerateCommands) {
-          removedCommandCount += await this.removeCommandFiles(projectPath, tool.value);
         }
 
         // Configure opencode continuation plugin when opencode tool is selected
@@ -676,7 +610,7 @@ export class InitCommand {
     configStatus: 'created' | 'exists' | 'skipped'
   ): void {
     console.log();
-    console.log(chalk.bold('OpenSDD 设置完成'));
+    console.log(chalk.bold('CodeSpec 设置完成'));
     console.log();
 
     // Show created vs refreshed tools
@@ -687,16 +621,12 @@ export class InitCommand {
       console.log(`已刷新：${results.refreshedTools.map((t) => t.name).join(', ')}`);
     }
 
-    // Show counts (respecting profile filter)
+    // Show counts
     const successfulTools = [...results.createdTools, ...results.refreshedTools];
     if (successfulTools.length > 0) {
-      const globalConfig = getGlobalConfig();
-      const profile: Profile = (this.profileOverride as Profile) ?? globalConfig.profile ?? 'core';
-      const delivery: Delivery = globalConfig.delivery ?? 'both';
-      const workflows = getProfileWorkflows(profile, globalConfig.workflows);
       const toolDirs = [...new Set(successfulTools.map((t) => t.skillsDir))].join(', ');
-      const skillCount = delivery !== 'commands' ? getSkillTemplates(workflows).length + getExternalSkillTemplates().length : 0;
-      const commandCount = delivery !== 'skills' ? getCommandContents(workflows).length : 0;
+      const skillCount = getExternalSkillTemplates().length;
+      const commandCount = getCommandContents(['propose', 'apply', 'archive']).length;
       if (skillCount > 0 && commandCount > 0) {
         console.log(`${skillCount} 个技能和 ${commandCount} 个命令在 ${toolDirs}/ 中`);
       } else if (skillCount > 0) {
@@ -714,12 +644,6 @@ export class InitCommand {
     // Show skipped commands
     if (results.commandsSkipped.length > 0) {
       console.log(chalk.dim(`已跳过命令：${results.commandsSkipped.join(', ')} (无适配器)`));
-    }
-    if (results.removedCommandCount > 0) {
-      console.log(chalk.dim(`已删除：${results.removedCommandCount} 个命令文件（交付方式: skills）`));
-    }
-    if (results.removedSkillCount > 0) {
-      console.log(chalk.dim(`已删除：${results.removedSkillCount} 个技能目录（交付方式: commands）`));
     }
 
     // Show opencode plugin info
@@ -741,20 +665,10 @@ export class InitCommand {
       console.log(chalk.dim(`配置：已跳过 (非交互模式)`));
     }
 
-    // Getting started (task 7.6: show propose if in profile)
-    const globalCfg = getGlobalConfig();
-    const activeProfile: Profile = (this.profileOverride as Profile) ?? globalCfg.profile ?? 'core';
-    const activeWorkflows = [...getProfileWorkflows(activeProfile, globalCfg.workflows)];
+    // Getting started
     console.log();
-    if (activeWorkflows.includes('propose')) {
-      console.log(chalk.bold('开始使用：'));
-      console.log('  开始您的第一个变更：/codespec/plan "您的想法"');
-    } else if (activeWorkflows.includes('new')) {
-      console.log(chalk.bold('开始使用：'));
-      console.log('  开始您的第一个变更：/codespec/plan "您的想法"');
-    } else {
-      console.log("完成。运行 'opensdd config profile' 配置您的工作流程。");
-    }
+    console.log(chalk.bold('开始使用：'));
+    console.log('  开始您的第一个变更：/codespec/plan "您的想法"');
 
     // Links
     console.log();
@@ -848,48 +762,5 @@ export class InitCommand {
     }
 
     await FileSystemUtils.writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
-  }
-
-  private async removeSkillDirs(skillsDir: string): Promise<number> {
-    let removed = 0;
-
-    for (const workflow of ALL_WORKFLOWS) {
-      const dirName = WORKFLOW_TO_SKILL_DIR[workflow];
-      if (!dirName) continue;
-
-      const skillDir = path.join(skillsDir, dirName);
-      try {
-        if (fs.existsSync(skillDir)) {
-          await fs.promises.rm(skillDir, { recursive: true, force: true });
-          removed++;
-        }
-      } catch {
-        // Ignore errors
-      }
-    }
-
-    return removed;
-  }
-
-  private async removeCommandFiles(projectPath: string, toolId: string): Promise<number> {
-    let removed = 0;
-    const adapter = CommandAdapterRegistry.get(toolId);
-    if (!adapter) return 0;
-
-    for (const workflow of ALL_WORKFLOWS) {
-      const cmdPath = adapter.getFilePath(workflow);
-      const fullPath = path.isAbsolute(cmdPath) ? cmdPath : path.join(projectPath, cmdPath);
-
-      try {
-        if (fs.existsSync(fullPath)) {
-          await fs.promises.unlink(fullPath);
-          removed++;
-        }
-      } catch {
-        // Ignore errors
-      }
-    }
-
-    return removed;
   }
 }
