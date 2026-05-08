@@ -725,7 +725,7 @@ export class InitCommand {
     // Show opencode plugin info
     const hasOpenCode = tools.some((t) => t.value === 'opencode');
     if (hasOpenCode) {
-      console.log(chalk.dim('插件：codespec 已注册到 .opencode/opencode.json（自动续行未完成任务）'));
+      console.log(chalk.dim('插件：codespec 已注册到 .opencode/opencode.json（自动续行未完成任务，主动回收上下文）'));
     }
 
     // Config status

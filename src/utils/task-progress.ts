@@ -1,8 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const TASK_PATTERN = /^[-*]\s+\[[\sx]\]/i;
-const COMPLETED_TASK_PATTERN = /^[-*]\s+\[x\]/i;
+const TASK_PATTERN = /^#{1,6}\s+\[[\sx]\]/i;
+const COMPLETED_TASK_PATTERN = /^#{1,6}\s+\[x\]/i;
 
 export interface TaskProgress {
   total: number;

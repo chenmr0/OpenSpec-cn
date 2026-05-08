@@ -9,8 +9,8 @@ import { getActiveChangeIds } from '../utils/item-discovery.js';
 
 // Constants for better maintainability
 const ARCHIVE_DIR = 'archive';
-const TASK_PATTERN = /^[-*]\s+\[[\sx]\]/i;
-const COMPLETED_TASK_PATTERN = /^[-*]\s+\[x\]/i;
+const TASK_PATTERN = /^#{1,6}\s+\[[\sx]\]/i;
+const COMPLETED_TASK_PATTERN = /^#{1,6}\s+\[x\]/i;
 
 export class ChangeCommand {
   private converter: JsonConverter;

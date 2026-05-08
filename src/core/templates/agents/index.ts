@@ -7,3 +7,5 @@
 
 export { codeReviewerContent } from './code-reviewer.js';
 export { codeGeneratorContent } from './code-generator.js';
+export { specReviewerContent } from './spec-reviewer.js';
+export { codeQualityReviewerContent } from './code-quality-reviewer.js';

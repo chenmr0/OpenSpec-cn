@@ -222,7 +222,7 @@ function parseTasksFile(content: string): TaskItem[] {
 
   for (const line of lines) {
     // Match checkbox patterns: - [ ] or - [x] or - [X]
-    const checkboxMatch = line.match(/^[-*]\s*\[([ xX])\]\s*(.+)\s*$/);
+    const checkboxMatch = line.match(/^#{1,6}\s*\[([ xX])\]\s*(.+)\s*$/);
     if (checkboxMatch) {
       taskIndex++;
       const done = checkboxMatch[1].toLowerCase() === 'x';

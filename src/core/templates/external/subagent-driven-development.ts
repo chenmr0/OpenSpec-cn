@@ -3,7 +3,7 @@
  *
  * Copied from superpowers-cn/skills/subagent-driven-development.
  * This skill is always installed during init alongside other external skills.
- * Includes three prompt template files as extra files.
+ * Spec reviewer and code quality reviewer are installed as agents (see agents/ directory).
  */
 import type { SkillTemplate } from '../types.js';
 
@@ -27,10 +27,10 @@ digraph process {
         "实现子智能体有疑问?" [shape=diamond];
         "回答问题，提供上下文" [shape=box];
         "实现子智能体实现、测试、提交、自审" [shape=box];
-        "分派规格审查子智能体 (./spec-reviewer-prompt.md)" [shape=box];
+        "分派规格审查子智能体 (spec-reviewer)" [shape=box];
         "规格审查子智能体确认代码匹配规格?" [shape=diamond];
         "实现子智能体修复规格差距" [shape=box];
-        "分派代码质量审查子智能体 (./code-quality-reviewer-prompt.md)" [shape=box];
+        "分派代码质量审查子智能体 (code-quality-reviewer)" [shape=box];
         "代码质量审查子智能体通过?" [shape=diamond];
         "实现子智能体修复质量问题" [shape=box];
         "在 TodoWrite 中标记任务完成" [shape=box];
@@ -46,14 +46,14 @@ digraph process {
     "实现子智能体(code-generator)有疑问?" -> "回答问题，提供上下文" [label="是"];
     "回答问题，提供上下文" -> "分派实现子智能体 (code-generator)";
     "实现子智能体有疑问?" -> "实现子智能体实现、测试、提交、自审" [label="否"];
-    "实现子智能体实现、测试、提交、自审" -> "分派规格审查子智能体 (./spec-reviewer-prompt.md)";
-    "分派规格审查子智能体 (./spec-reviewer-prompt.md)" -> "规格审查子智能体确认代码匹配规格?";
+    "实现子智能体实现、测试、提交、自审" -> "分派规格审查子智能体 (spec-reviewer)";
+    "分派规格审查子智能体 (spec-reviewer)" -> "规格审查子智能体确认代码匹配规格?";
     "规格审查子智能体确认代码匹配规格?" -> "实现子智能体修复规格差距" [label="否"];
-    "实现子智能体修复规格差距" -> "分派规格审查子智能体 (./spec-reviewer-prompt.md)" [label="重新审查"];
-    "规格审查子智能体确认代码匹配规格?" -> "分派代码质量审查子智能体 (./code-quality-reviewer-prompt.md)" [label="是"];
-    "分派代码质量审查子智能体 (./code-quality-reviewer-prompt.md)" -> "代码质量审查子智能体通过?";
+    "实现子智能体修复规格差距" -> "分派规格审查子智能体 (spec-reviewer)" [label="重新审查"];
+    "规格审查子智能体确认代码匹配规格?" -> "分派代码质量审查子智能体 (code-quality-reviewer)" [label="是"];
+    "分派代码质量审查子智能体 (code-quality-reviewer)" -> "代码质量审查子智能体通过?";
     "代码质量审查子智能体通过?" -> "实现子智能体修复质量问题" [label="否"];
-    "实现子智能体修复质量问题" -> "分派代码质量审查子智能体 (./code-quality-reviewer-prompt.md)" [label="重新审查"];
+    "实现子智能体修复质量问题" -> "分派代码质量审查子智能体 (code-quality-reviewer)" [label="重新审查"];
     "代码质量审查子智能体通过?" -> "在 TodoWrite 中标记任务完成" [label="是"];
     "在 TodoWrite 中标记任务完成" -> "还有剩余任务?";
     "还有剩余任务?" -> "分派实现子智能体 (code-generator)" [label="是"];
@@ -79,12 +79,6 @@ digraph process {
 4. 实施阶段为无人值守，只有在反复尝试仍无法通过时才暂停报告状态（最低优先级）
 
 **绝不** 忽略上报或在不做任何更改的情况下让同一模型重试。如果实现者说卡住了，说明有什么东西需要改变。
-
-## 提示词模板
-
-- \`code-generator\` - 分派实现子智能体
-- \`./spec-reviewer-prompt.md\` - 分派规格合规审查子智能体
-- \`./code-quality-reviewer-prompt.md\` - 分派代码质量审查子智能体
 
 ## 示例工作流
 

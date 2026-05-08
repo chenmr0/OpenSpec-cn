@@ -31,7 +31,7 @@ const writingPlansInstructions = `# 编写计划
 
 **向后兼容：** 如果只有 \`*-design.md\`（旧格式，无对应的 \`*-spec.md\`），按原来的方式处理——将 design.md 同时作为需求和设计使用。
 
-**规格对齐：** 计划中的每个任务都应能追溯到 SPEC.md 中的某个需求或场景。
+**规格对齐：** 计划中的每个任务都应能追溯到 spec.md 中的某个需求或场景。
 
 ## 文件结构
 
@@ -68,7 +68,7 @@ const writingPlansInstructions = `# 编写计划
 \`\`\`markdown
 # [功能名称] 实现计划
 
-> **面向 AI 代理的工作者：** 必需子技能：使用 subagent-driven-development 逐任务实现此计划。步骤使用复选框（\`- [ ]\`）语法来跟踪进度。
+> **面向 AI 代理的工作者：** 必需子技能：使用 subagent-driven-development 逐任务实现此计划。任务标题使用复选框（\`### [ ]\`）语法来跟踪进度，步骤使用（\`-\`）语法记录详细操作。
 
 **目标：** [一句话描述要构建什么]
 
@@ -87,14 +87,14 @@ const writingPlansInstructions = `# 编写计划
 > **注意：** 以下模板展示了 TDD 格式的任务步骤。如果用户选择了 TDD，每个任务必须严格遵循此模板（先写失败测试，再写实现）。如果未选择 TDD，则跳过测试步骤。
 
 \`\`\`\`markdown
-### 任务 N：[组件名称]
+### [ ] 任务 N：[组件名称]
 
 **文件：**
 - 创建：\`exact/path/to/file.py\`
 - 修改：\`exact/path/to/existing.py:123-145\`
 - 测试：\`tests/exact/path/to/test.py\`
 
-- [ ] **步骤 1：编写失败的测试**
+- **步骤 1：编写失败的测试**
 
 \`\`\`python
 def test_specific_behavior():
@@ -102,24 +102,24 @@ def test_specific_behavior():
     assert result == expected
 \`\`\`
 
-- [ ] **步骤 2：运行测试验证失败**
+- **步骤 2：运行测试验证失败**
 
 运行：\`pytest tests/path/test.py::test_name -v\`
 预期：FAIL，报错 "function not defined"
 
-- [ ] **步骤 3：编写最少实现代码**
+- **步骤 3：编写最少实现代码**
 
 \`\`\`python
 def function(input):
     return expected
 \`\`\`
 
-- [ ] **步骤 4：运行测试验证通过**
+- **步骤 4：运行测试验证通过**
 
 运行：\`pytest tests/path/test.py::test_name -v\`
 预期：PASS
 
-- [ ] **步骤 5：Commit**
+- **步骤 5：Commit**
 
 \`\`\`bash
 git add tests/path/test.py src/path/file.py
