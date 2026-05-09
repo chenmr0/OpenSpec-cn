@@ -21,9 +21,9 @@ function makeMessage(role: string, text: string, id = 'msg-1'): WithParts {
 }
 
 describe('injectNudge', () => {
-  it('does nothing when completedOrder < 3', () => {
+  it('does nothing when completedOrder < 2', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2'];
+    state.completedOrder = ['1'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'T1', startMessageId: 'm1', endMessageId: 'm2', completedAt: 1, compressed: false });
     const messages = [makeMessage('assistant', 'hello', 'm3')];
     injectNudge(state, messages);
@@ -31,11 +31,10 @@ describe('injectNudge', () => {
     expect(messages[0].parts[0].text).toBe('hello');
   });
 
-  it('injects nudge as a new user message when completedOrder >= 3 and task not compressed', () => {
+  it('injects nudge as a new user message when completedOrder >= 2 and task not compressed', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'Task one', startMessageId: 'm0', endMessageId: 'm1', completedAt: 1, compressed: false });
-    state.taskBoundaries.set('2', { taskId: '2', description: 'Task two', startMessageId: 'm1', endMessageId: 'm2', completedAt: 2, compressed: false });
     const messages = [makeMessage('assistant', 'hello', 'm3')];
     injectNudge(state, messages);
     expect(messages.length).toBe(2);
@@ -43,13 +42,15 @@ describe('injectNudge', () => {
     expect(nudgeMsg.info.role).toBe('user');
     expect(nudgeMsg.info.id.startsWith(NUDGE_MSG_ID_PREFIX)).toBe(true);
     expect(nudgeMsg.parts[0].text).toContain('task-compress');
+    expect(nudgeMsg.parts[0].text).toContain('task_id="1"');
     expect(nudgeMsg.parts[0].text).toContain('Task one');
+    expect(nudgeMsg.parts[0].text).toContain('<codespec-system-reminder>');
     expect(state.nudgeInjectedForTask).toBe('1');
   });
 
   it('does not inject when candidate is already compressed', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'T1', startMessageId: 'm0', endMessageId: 'm1', completedAt: 1, compressed: true });
     const messages = [makeMessage('assistant', 'hello', 'm3')];
     injectNudge(state, messages);
@@ -58,7 +59,7 @@ describe('injectNudge', () => {
 
   it('does not inject when nudge already injected', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'T1', startMessageId: 'm0', endMessageId: 'm1', completedAt: 1, compressed: false });
     state.nudgeInjectedForTask = '1';
     const messages = [makeMessage('assistant', 'hello', 'm3')];
@@ -68,7 +69,7 @@ describe('injectNudge', () => {
 
   it('does nothing when messages array is empty', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'T1', startMessageId: 'm0', endMessageId: 'm1', completedAt: 1, compressed: false });
     const messages: WithParts[] = [];
     injectNudge(state, messages);
@@ -77,15 +78,15 @@ describe('injectNudge', () => {
 
   it('injects nudge for multiple compressible tasks', () => {
     const state = makeState();
-    state.completedOrder = ['1', '2', '3', '4'];
+    state.completedOrder = ['1', '2', '3'];
     state.taskBoundaries.set('1', { taskId: '1', description: 'Task 1', startMessageId: 'm0', endMessageId: 'm1', completedAt: 1, compressed: false });
     state.taskBoundaries.set('2', { taskId: '2', description: 'Task 2', startMessageId: 'm1', endMessageId: 'm2', completedAt: 2, compressed: false });
     const messages = [makeMessage('assistant', 'hello', 'm3')];
     injectNudge(state, messages);
     expect(messages.length).toBe(2);
     const nudgeMsg = messages[1];
-    expect(nudgeMsg.parts[0].text).toContain('Task 1');
-    expect(nudgeMsg.parts[0].text).toContain('Task 2');
+    expect(nudgeMsg.parts[0].text).toContain('task_id="1"');
+    expect(nudgeMsg.parts[0].text).toContain('task_id="2"');
   });
 });
 

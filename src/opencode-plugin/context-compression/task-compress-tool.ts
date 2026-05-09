@@ -10,7 +10,15 @@ export function handleTaskCompress(
 ): string {
   const boundary = state.taskBoundaries.get(taskId);
   if (!boundary) {
-    throw new Error(`任务 ${taskId} 不存在或未记录边界`);
+    const availableIds = state.completedOrder
+      .filter(id => {
+        const b = state.taskBoundaries.get(id);
+        return b && !b.compressed;
+      })
+      .join(", ");
+    throw new Error(
+      `任务 ${taskId} 不存在或未记录边界。当前可用的任务 ID：[${availableIds}]。请使用以上 ID 重试。`
+    );
   }
   if (boundary.compressed) {
     throw new Error(`任务 ${taskId} 已被压缩`);
@@ -37,10 +45,11 @@ export function handleTaskCompress(
 export function createTaskCompressTool(compressionStateStore: CompressionStateStore) {
   return {
     description:
-      "为已完成的任务生成压缩摘要。当看到 <codespec-system-reminder> 中的压缩提示时使用此工具。" +
-      "摘要将替换该任务的完整对话上下文，以节省 token 空间。",
+      "为已完成的任务生成压缩摘要以节省上下文空间。" +
+      "当看到 <codespec-system-reminder> 中的压缩提示时，必须立即调用此工具。" +
+      "taskId 参数必须原样使用提示中 task_id=\"...\" 的值，不要使用其他 ID（如 session ID）。",
     args: {
-      taskId: z.string().describe("要压缩的任务 ID"),
+      taskId: z.string().describe("要压缩的任务 ID，必须与 <codespec-system-reminder> 提示中的 task_id 值完全一致"),
       summary: z.string().describe("任务的简洁摘要，包含：做了什么、修改了哪些文件、审查结论"),
       modifiedFiles: z.array(z.string()).describe("该任务修改或创建的文件路径列表"),
     },

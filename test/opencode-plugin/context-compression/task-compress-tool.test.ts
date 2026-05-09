@@ -17,6 +17,11 @@ describe('handleTaskCompress', () => {
   it('throws if task boundary not found', () => {
     const state = makeState();
     expect(() => handleTaskCompress(state, 'unknown', 'summary', [])).toThrow('不存在');
+    try {
+      handleTaskCompress(state, 'unknown', 'summary', []);
+    } catch (e: any) {
+      expect(e.message).toContain('当前可用的任务 ID');
+    }
   });
 
   it('throws if task already compressed', () => {

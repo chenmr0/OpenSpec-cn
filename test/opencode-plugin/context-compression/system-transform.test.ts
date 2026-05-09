@@ -14,7 +14,7 @@ function makeState(): CompressionState {
 }
 
 describe('createSystemTransformHandler', () => {
-  it('does not inject when no blocks and < 3 completed', async () => {
+  it('does not inject when no blocks and < 2 completed', async () => {
     const state = makeState();
     const store = {
   getState: (sessionID: string) => state,
@@ -27,10 +27,10 @@ describe('createSystemTransformHandler', () => {
     expect(output.system[0]).toBe('existing system prompt');
   });
 
-  it('injects when completedOrder >= 3', async () => {
+  it('injects when completedOrder >= 2', async () => {
     const state = makeState();
     state.isApplySession = true;
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     const store = {
   getState: (sessionID: string) => state,
   getExistingState: (sessionID: string) => state,
@@ -63,7 +63,7 @@ describe('createSystemTransformHandler', () => {
   it('pushes to empty system array', async () => {
     const state = makeState();
     state.isApplySession = true;
-    state.completedOrder = ['1', '2', '3'];
+    state.completedOrder = ['1', '2'];
     const store = {
   getState: (sessionID: string) => state,
   getExistingState: (sessionID: string) => state,
