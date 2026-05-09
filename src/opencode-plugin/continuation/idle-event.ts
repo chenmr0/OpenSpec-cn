@@ -19,6 +19,42 @@ import type { Todo } from "./types.js";
 import type { SessionStateStore } from "./session-state.js";
 import { startCountdown } from "./countdown.js";
 
+/**
+ * Check if the last assistant message in a list has an abort error.
+ * This is a fallback detection mechanism: even if session.error events are
+ * missed or wasCancelled is reset by trailing events, we can still detect
+ * the abort by inspecting the actual message content via the API.
+ */
+function isLastAssistantMessageAborted(
+  messages: Array<Record<string, unknown>>,
+): boolean {
+  if (!messages || messages.length === 0) return false;
+
+  const assistantMessages = messages.filter(
+    (msg) => {
+      const info = msg.info as Record<string, unknown> | undefined;
+      return info?.role === "assistant";
+    },
+  );
+  if (assistantMessages.length === 0) return false;
+
+  const lastAssistant = assistantMessages[assistantMessages.length - 1];
+  const info = lastAssistant.info as Record<string, unknown> | undefined;
+  const error = info?.error as { name?: string } | undefined;
+  if (!error?.name) return false;
+
+  return error.name === "MessageAbortedError" || error.name === "AbortError";
+}
+
+function normalizeSDKResponse<T>(response: unknown, fallback: T): T {
+  if (response && typeof response === "object" && "data" in response) {
+    const data = (response as { data?: unknown }).data;
+    return Array.isArray(data) ? (data as T) : fallback;
+  }
+  if (Array.isArray(response)) return response as T;
+  return fallback;
+}
+
 export async function handleSessionIdle(args: {
   ctx: PluginInput;
   sessionID: string;
@@ -51,6 +87,24 @@ export async function handleSessionIdle(args: {
       return;
     }
     state.abortDetectedAt = undefined;
+  }
+
+  // API fallback: check if the last assistant message was aborted.
+  // This catches aborts that were missed by session.error events or
+  // had their wasCancelled state reset by trailing cleanup events.
+  try {
+    const messagesResp = await ctx.client.session.messages({
+      path: { id: sessionID },
+    });
+    const messages = normalizeSDKResponse<Record<string, unknown>[]>(
+      messagesResp,
+      [],
+    );
+    if (isLastAssistantMessageAborted(messages)) {
+      return;
+    }
+  } catch {
+    // If messages fetch fails, continue with other checks
   }
 
   // Fetch todos
