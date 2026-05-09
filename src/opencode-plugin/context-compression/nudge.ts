@@ -13,6 +13,7 @@ const TASK_COMPRESS_NUDGE = `<codespec-system-reminder>
 - 以上 task_id 是系统自动生成的，直接使用即可，无需验证
 - 每个 task_id 必须单独调用一次 task-compress
 - 调用 task-compress 之前不要继续执行下一个任务
+- 后续任务请逐项执行，严禁将多项任务合并
 </codespec-system-reminder>`;
 
 /**
