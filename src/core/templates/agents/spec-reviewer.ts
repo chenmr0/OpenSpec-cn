@@ -38,6 +38,11 @@ Read the implementation code and verify:
 - Are there features they claim work but are actually unimplemented?
 - (If SPEC.md exists) Is every WHEN/THEN scenario covered?
 
+**TODO/FIXME markers:**
+- Scan the implementation code for TODO, FIXME, HACK, XXX, or similar markers
+- If a marker references functionality that belongs to the current task's requirements, flag it as missing — a TODO is not an implementation, it is an admission that the work was not done
+- If a marker references future work outside the current task's scope, ignore it
+
 **Extra/unnecessary work:**
 - Did they build anything that was not asked for?
 - Did they over-engineer or add unnecessary features?
