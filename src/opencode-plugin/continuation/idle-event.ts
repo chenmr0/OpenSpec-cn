@@ -15,9 +15,10 @@ import {
 } from "./constants.js";
 import { shouldStopForStagnation } from "./stagnation-detection.js";
 import { getIncompleteCount } from "./todo.js";
-import type { Todo } from "./types.js";
+import type { SessionState, Todo } from "./types.js";
 import type { SessionStateStore } from "./session-state.js";
 import { startCountdown } from "./countdown.js";
+import { APPLY_MARKER } from "../context-compression/session-detection.js";
 
 /**
  * Check if the last assistant message in a list has an abort error.
@@ -44,6 +45,31 @@ function isLastAssistantMessageAborted(
   if (!error?.name) return false;
 
   return error.name === "MessageAbortedError" || error.name === "AbortError";
+}
+
+/**
+ * Check if messages contain the APPLY_MARKER, indicating a /codespec/apply session.
+ * Caches result in state.isApplySession.
+ */
+function detectApplySessionFromMessages(
+  state: SessionState,
+  messages: Array<Record<string, unknown>>,
+): boolean {
+  if (state.isApplySession) return true;
+
+  for (const msg of messages) {
+    const info = msg.info as Record<string, unknown> | undefined;
+    if (info?.role !== "user") continue;
+    const parts = (msg as { parts?: Array<{ type?: string; text?: string }> }).parts;
+    if (!parts) continue;
+    for (const part of parts) {
+      if (part.type === "text" && part.text?.includes(APPLY_MARKER)) {
+        state.isApplySession = true;
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function normalizeSDKResponse<T>(response: unknown, fallback: T): T {
@@ -92,6 +118,7 @@ export async function handleSessionIdle(args: {
   // API fallback: check if the last assistant message was aborted.
   // This catches aborts that were missed by session.error events or
   // had their wasCancelled state reset by trailing cleanup events.
+  // Also detects /codespec/apply sessions via APPLY_MARKER.
   try {
     const messagesResp = await ctx.client.session.messages({
       path: { id: sessionID },
@@ -100,6 +127,12 @@ export async function handleSessionIdle(args: {
       messagesResp,
       [],
     );
+
+    // Only run continuation enforcer in /codespec/apply sessions
+    if (!detectApplySessionFromMessages(state, messages)) {
+      return;
+    }
+
     if (isLastAssistantMessageAborted(messages)) {
       return;
     }

@@ -91,6 +91,7 @@ export function createSessionStateStore(): SessionStateStore {
     const rawState: SessionState = {
       stagnationCount: 0,
       consecutiveFailures: 0,
+      isApplySession: false,
     };
     const trackedSession: TrackedSessionState = {
       state: rawState,

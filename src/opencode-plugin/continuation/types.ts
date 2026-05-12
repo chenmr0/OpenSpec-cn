@@ -23,6 +23,8 @@ export interface SessionState {
   inFlight?: boolean;
   stagnationCount: number;
   consecutiveFailures: number;
+  /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
+  isApplySession?: boolean;
 }
 
 export interface ContinuationProgressUpdate {
