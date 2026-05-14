@@ -52,6 +52,9 @@ export function createMessagesTransformHandler(
             if (part.tool === "todowrite" && part.state?.input) {
               debugLog(`todowrite input JSON: ${JSON.stringify(part.state.input).slice(0, 500)}`);
             }
+            if (part.tool === "task-compress") {
+              debugLog(`task-compress status=${part.state?.status} input=${JSON.stringify(part.state?.input)} output=${part.state?.output ?? "(none)"}`);
+            }
           }
         }
       }

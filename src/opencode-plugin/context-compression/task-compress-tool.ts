@@ -16,12 +16,10 @@ export function handleTaskCompress(
         return b && !b.compressed;
       })
       .join(", ");
-    throw new Error(
-      `任务 ${taskId} 不存在或未记录边界。当前可用的任务 ID：[${availableIds}]。请使用以上 ID 重试。`
-    );
+    return `错误：任务 ${taskId} 不存在或未记录边界。当前可用的任务 ID：[${availableIds}]。请使用以上 ID 重试。`;
   }
   if (boundary.compressed) {
-    throw new Error(`任务 ${taskId} 已被压缩`);
+    return `错误：任务 ${taskId} 已被压缩，无需重复操作。`;
   }
 
   boundary.compressed = true;
