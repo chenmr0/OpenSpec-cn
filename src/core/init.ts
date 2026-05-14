@@ -44,6 +44,7 @@ import {
 } from './shared/index.js';
 import { getAvailableTools } from './available-tools.js';
 import { migrateIfNeeded } from './migration.js';
+import { getOpenCodeUserConfigDir } from './global-config.js';
 
 const require = createRequire(import.meta.url);
 const { version: OPENSPEC_VERSION } = require('../../package.json');
@@ -509,9 +510,12 @@ export class InitCommand {
           }
 
           // Always install agent files to agents directory
+          // For opencode, write agents to user-level config dir so they are shared across projects
           const agentTemplates = getExternalAgentTemplates();
           for (const agent of agentTemplates) {
-            const agentsDir = path.join(projectPath, tool.skillsDir, 'agents');
+            const agentsDir = tool.value === 'opencode'
+              ? path.join(getOpenCodeUserConfigDir(), 'agents')
+              : path.join(projectPath, tool.skillsDir, 'agents');
             const agentFile = path.join(agentsDir, agent.filename);
             await FileSystemUtils.writeFile(agentFile, agent.content);
           }

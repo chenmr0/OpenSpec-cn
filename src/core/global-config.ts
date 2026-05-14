@@ -153,3 +153,22 @@ export function saveGlobalConfig(config: GlobalConfig): void {
 
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
 }
+
+/**
+ * Gets the opencode user-level config directory.
+ * Matches the xdg-basedir logic used by opencode's Global.Path.config.
+ *
+ * - $XDG_CONFIG_HOME/opencode/ if XDG_CONFIG_HOME is set
+ * - Windows fallback: %APPDATA%/opencode/
+ * - Unix/macOS fallback: ~/.config/opencode/
+ */
+export function getOpenCodeUserConfigDir(): string {
+  // Match xdg-basedir behavior: always use ~/.config on all platforms,
+  // including Windows. opencode uses xdg-basedir which has no Windows
+  // special handling.
+  const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+  if (xdgConfigHome) {
+    return path.join(xdgConfigHome, 'opencode');
+  }
+  return path.join(os.homedir(), '.config', 'opencode');
+}
