@@ -26,7 +26,7 @@ const writingPlansInstructions = `# 编写计划
 ## 输入文档
 
 **优先读取顺序（新格式）：**
-1. \`codespec/changes/<name>/spec.md\` — 需求规格（WHAT），包含 WHEN/THEN 场景
+1. \`codespec/changes/<name>/spec.md\` — 包含业务规则、交互流程、异常场景和数据约束的需求规范
 2. \`codespec/changes/<name>/design.md\` — 技术设计（HOW），包含架构和决策
 
 **向后兼容：** 如果只有 \`*-design.md\`（旧格式，无对应的 \`*-spec.md\`），按原来的方式处理——将 design.md 同时作为需求和设计使用。
@@ -87,37 +87,37 @@ const writingPlansInstructions = `# 编写计划
 > **注意：** 以下模板展示了 TDD 格式的任务步骤。如果用户选择了 TDD，每个任务必须严格遵循此模板（先写失败测试，再写实现）。如果未选择 TDD，则跳过测试步骤。
 
 \`\`\`\`markdown
-### [ ] 任务 N：[组件名称]
+### [ ] 任务 N：[任务名称]
+
+> 根据项目架构填写：业务逻辑模块、核心算法、规则引擎、状态机等。
+> 每个任务关联 spec.md 中对应的业务规则编号。
+
+**任务目标**：[说明本任务要改变哪条核心执行逻辑]
+**涉及模块**：[模块/组件描述]
 
 **文件：**
 - 创建：\`exact/path/to/file.py\`
 - 修改：\`exact/path/to/existing.py:123-145\`
 - 测试：\`tests/exact/path/to/test.py\`
 
-- **步骤 1：编写失败的测试**
+**修改入口：**
+- \`[函数 / 类 / 方法 / 状态机节点 / 规则判断入口]\`
 
-\`\`\`python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-\`\`\`
+**验收标准：**
+- [触发场景] → [预期行为]
+- [边界场景] → [预期行为]
 
-- **步骤 2：运行测试验证失败**
+- **步骤 1：编写失败的测试**：\`tests/path/test.py::test_name\`
 
-运行：\`pytest tests/path/test.py::test_name -v\`
-预期：FAIL，报错 "function not defined"
+- **步骤 2：运行测试验证失败**：\`pytest tests/path/test.py::test_name -v\`。
+   - 预期：FAIL，原因为 \`[预期失败原因]\`
 
-- **步骤 3：编写最少实现代码**
+- **步骤 3：编写最少实现代码**：
+   - [核心实现要求 1]
+   - [核心实现要求 2]
 
-\`\`\`python
-def function(input):
-    return expected
-\`\`\`
-
-- **步骤 4：运行测试验证通过**
-
-运行：\`pytest tests/path/test.py::test_name -v\`
-预期：PASS
+- **步骤 4：运行测试验证通过**：\`pytest tests/path/test.py::test_name -v\`
+   - 预期：PASS
 
 - **步骤 5：Commit**
 
@@ -139,9 +139,9 @@ git commit -m "feat: add specific feature"
 
 ## 注意事项
 - 始终使用精确的文件路径
-- 每个步骤都包含完整代码——如果步骤涉及代码变更，就展示代码
+- 每个步骤都建议包含伪代码——请勿编写完整代码，但伪代码需要精准准确
 - 精确的命令和预期输出
-- DRY、YAGNI、TDD、频繁 commit
+- DRY、YAGNI、TDD、 commit
 
 ## 自检
 

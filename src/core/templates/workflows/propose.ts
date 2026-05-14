@@ -161,12 +161,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
     设计获得用户批准后，创建实现计划：
 
-    a. 获取指令：
-    \`\`\`bash
-    codespec instructions plan --change "<name>" --json
-    \`\`\`
-
-    b. **强制使用外部技能创建计划。你必须按顺序执行：**
+    a. **强制使用外部技能创建计划。你必须按顺序执行：**
 
        **第一步：加载 \`writing-plans\` 技能技能创建详细的实现计划。
 
@@ -174,7 +169,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
        **计划保存位置：** \`codespec/changes/<name>/plan.md\`
 
-    c. **用户审查关卡**：
+    b. **用户审查关卡**：
    计划自检完成后，请用户在继续之前审查书面规格：
    > "计划文档已写入 \`plan.md\`。请审查一下，如果你想做任何修改，请告诉我。"
    使用 **AskUserQuestion tool** 等待用户回复。如果他们要求修改，做出修改并重新运行计划自检。只有在用户批准后才继续。
