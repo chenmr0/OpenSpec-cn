@@ -46,9 +46,9 @@ export interface ValidationResult {
  * validateChangeName('Add-Auth') // { valid: false, error: '...' }
  */
 export function validateChangeName(name: string): ValidationResult {
-  // Pattern: starts with lowercase letter, followed by lowercase letters/numbers,
+  // Pattern: starts with lowercase letter or digit, followed by lowercase letters/numbers,
   // optionally followed by hyphen + lowercase letters/numbers (repeatable)
-  const kebabCasePattern = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+  const kebabCasePattern = /^[a-z0-9][a-z0-9]*(-[a-z0-9]+)*$/;
 
   if (!name) {
     return { valid: false, error: '变更名称不能为空' };
@@ -77,10 +77,6 @@ export function validateChangeName(name: string): ValidationResult {
     if (/[^a-z0-9-]/.test(name)) {
       return { valid: false, error: '变更名称只能包含小写字母、数字和短横线' };
     }
-    if (/^[0-9]/.test(name)) {
-      return { valid: false, error: '变更名称必须以字母开头' };
-    }
-
     return { valid: false, error: '变更名称必须符合 kebab-case 规范（例如：add-auth, refactor-db）' };
   }
 

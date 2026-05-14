@@ -4,26 +4,8 @@ description: 默认 CodeSpec 工作流 - 头脑风暴 → 规范 → 设计 → 
 artifacts:
   - id: specs
     generates: spec.md
-    description: 包含 WHEN/THEN 场景的需求规范
+    description: 包含业务规则、交互流程、异常场景和数据约束的需求规范
     template: spec.md
-    instruction: |
-      示例：
-      ```
-      ## ADDED Requirements
-
-      ### 需求:用户可以导出数据
-      系统应当允许用户以 CSV 格式导出其数据。
-
-      #### 场景:成功导出
-      - **当** 用户点击"导出"按钮
-      - **那么** 系统下载包含所有用户数据的 CSV 文件
-
-      ## REMOVED Requirements
-
-      ### 需求:旧版导出
-      **Reason**: 被新导出系统取代
-      **Migration**: 使用 /api/v2/export 处的新导出端点
-      ```
     requires: []
 
   - id: design
