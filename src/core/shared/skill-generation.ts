@@ -29,7 +29,7 @@ import { getWritingPlansSkillTemplate } from '../templates/external/writing-plan
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
-import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent } from '../templates/agents/index.js';
+import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -201,5 +201,6 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
     { filename: 'code-generator.md', content: codeGeneratorContent },
     { filename: 'spec-reviewer.md', content: specReviewerContent },
     { filename: 'code-quality-reviewer.md', content: codeQualityReviewerContent },
+    { filename: 'change-verifier.md', content: changeVerifierContent },
   ];
 }
