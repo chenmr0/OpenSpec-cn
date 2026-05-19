@@ -183,6 +183,66 @@ describe('createMessagesTransformHandler', () => {
     expect(messages2.some(m => m.parts.some(p => p.text?.includes('实现了用户登录功能')))).toBe(true);
   });
 
+  it('uses first todowrite message as start for the first completed task', async () => {
+    const store = createCompressionStateStore();
+    const handler = createMessagesTransformHandler(store);
+    const state = store.getState('ses-start');
+
+    const messages: WithParts[] = [
+      {
+        info: { id: 'msg-user-plan', sessionID: 'ses-start', role: 'user', time: { created: 1 } },
+        parts: [{ type: 'text', text: `plan tasks\n<!-- command: ${APPLY_MARKER} -->` }],
+      },
+      {
+        // First todowrite: all pending
+        info: { id: 'msg-assistant-plan', sessionID: 'ses-start', role: 'assistant', time: { created: 2 } },
+        parts: [
+          { type: 'text', text: 'Planning...' },
+          {
+            type: 'tool',
+            tool: 'todowrite',
+            callID: 'call-plan',
+            state: {
+              status: 'completed',
+              input: { todos: [
+                { content: 'Task A', status: 'pending', priority: 'high' },
+                { content: 'Task B', status: 'pending', priority: 'high' },
+              ] },
+            },
+          } as any,
+        ],
+      },
+      {
+        // Work happens, then task A marked completed
+        info: { id: 'msg-assistant-done', sessionID: 'ses-start', role: 'assistant', time: { created: 3 } },
+        parts: [
+          { type: 'text', text: 'Done with Task A' },
+          {
+            type: 'tool',
+            tool: 'todowrite',
+            callID: 'call-done',
+            state: {
+              status: 'completed',
+              input: { todos: [
+                { content: 'Task A', status: 'completed', priority: 'high' },
+                { content: 'Task B', status: 'in_progress', priority: 'high' },
+              ] },
+            },
+          } as any,
+        ],
+      },
+    ];
+
+    await handler({}, { messages });
+
+    expect(state.completedOrder.length).toBe(1);
+    const boundary = state.taskBoundaries.get(state.completedOrder[0])!;
+    // startMessageId should be the FIRST todowrite message (msg-assistant-plan),
+    // NOT the completion message (msg-assistant-done)
+    expect(boundary.startMessageId).toBe('msg-assistant-plan');
+    expect(boundary.endMessageId).toBe('msg-assistant-done');
+  });
+
   it('does not trigger compression in non-apply sessions', async () => {
     const store = createCompressionStateStore();
     const handler = createMessagesTransformHandler(store);

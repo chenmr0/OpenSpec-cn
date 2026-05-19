@@ -104,6 +104,7 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
   // any todowrite tool part. We process from oldest to newest so the final
   // snapshot reflects the most-recent write.
   const currentSnapshot = new Map<string, { status: string; desc: string }>();
+  let firstTodowriteMsgId: string | undefined;
 
   for (const msg of messages) {
     for (const part of msg.parts) {
@@ -120,6 +121,10 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
       const messageId = (part as any).messageID as string | undefined
         ?? msg.info.id;
 
+      if (firstTodowriteMsgId === undefined) {
+        firstTodowriteMsgId = messageId;
+      }
+
       for (const todo of todos) {
         const id = todoId(todo.content);
         const previousStatus = state.lastTodoSnapshot.get(id);
@@ -128,7 +133,7 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
           const prevCompleted = state.completedOrder;
           const startMessageId = prevCompleted.length > 0
             ? state.taskBoundaries.get(prevCompleted[prevCompleted.length - 1])!.endMessageId
-            : messageId;
+            : firstTodowriteMsgId!;
 
           if (!state.taskBoundaries.has(id)) {
             state.taskBoundaries.set(id, {
