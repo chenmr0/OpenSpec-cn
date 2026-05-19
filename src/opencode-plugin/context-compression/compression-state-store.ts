@@ -18,6 +18,7 @@ export function createCompressionStateStore(): CompressionStateStore {
           compressionBlocks: new Map(),
           completedOrder: [],
           lastTodoSnapshot: new Map(),
+          inProgressStart: new Map(),
           nudgeInjectedForTask: null,
           isApplySession: false,
         };

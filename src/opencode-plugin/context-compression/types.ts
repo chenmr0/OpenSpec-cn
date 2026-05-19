@@ -26,6 +26,8 @@ export interface CompressionState {
   completedOrder: string[];
   /** Maps todo content hash → last known status */
   lastTodoSnapshot: Map<string, string>;
+  /** Maps todo content hash → messageId where it first became in_progress */
+  inProgressStart: Map<string, string>;
   nudgeInjectedForTask: string | null;
   /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
   isApplySession: boolean;

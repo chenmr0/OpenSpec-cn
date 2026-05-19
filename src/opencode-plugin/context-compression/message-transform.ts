@@ -129,6 +129,11 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
         const id = todoId(todo.content);
         const previousStatus = state.lastTodoSnapshot.get(id);
 
+        // Track when a todo first becomes in_progress
+        if (todo.status === "in_progress" && !state.inProgressStart.has(id)) {
+          state.inProgressStart.set(id, messageId);
+        }
+
         if (todo.status === "completed" && previousStatus !== "completed") {
           const prevCompleted = state.completedOrder;
           let startMessageId: string;
@@ -155,7 +160,8 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
               startMessageId = messageId;
             }
           } else {
-            startMessageId = firstTodowriteMsgId!;
+            // First completed task: prefer in_progress start, fallback to first todowrite
+            startMessageId = state.inProgressStart.get(id) ?? firstTodowriteMsgId!;
           }
 
           if (!state.taskBoundaries.has(id)) {
