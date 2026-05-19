@@ -1,6 +1,6 @@
 import type { WithParts, CompressionState } from "./types.js";
 import type { CompressionStateStore } from "./compression-state-store.js";
-import { injectNudge, removePreviousNudgeMessages } from "./nudge.js";
+import { injectNudge, removePreviousNudgeMessages, NUDGE_MSG_ID_PREFIX } from "./nudge.js";
 import { createSyntheticUserMessage } from "./message-utils.js";
 import { detectApplySession } from "./session-detection.js";
 import { writeFileSync } from "node:fs";
@@ -131,9 +131,32 @@ function detectCompletedTasks(state: CompressionState, messages: WithParts[]): v
 
         if (todo.status === "completed" && previousStatus !== "completed") {
           const prevCompleted = state.completedOrder;
-          const startMessageId = prevCompleted.length > 0
-            ? state.taskBoundaries.get(prevCompleted[prevCompleted.length - 1])!.endMessageId
-            : firstTodowriteMsgId!;
+          let startMessageId: string;
+          if (prevCompleted.length > 0) {
+            const prevEndId = state.taskBoundaries.get(
+              prevCompleted[prevCompleted.length - 1],
+            )!.endMessageId;
+            const prevEndIdx = messages.findIndex(m => m.info.id === prevEndId);
+            if (prevEndIdx >= 0) {
+              // Skip synthetic messages (nudge / compression summaries)
+              let nextIdx = prevEndIdx + 1;
+              while (nextIdx < messages.length) {
+                const nid = messages[nextIdx].info.id;
+                if (
+                  !nid.startsWith(NUDGE_MSG_ID_PREFIX) &&
+                  !nid.startsWith("codespec_compress_")
+                ) break;
+                nextIdx++;
+              }
+              startMessageId = nextIdx < messages.length
+                ? messages[nextIdx].info.id
+                : messageId;
+            } else {
+              startMessageId = messageId;
+            }
+          } else {
+            startMessageId = firstTodowriteMsgId!;
+          }
 
           if (!state.taskBoundaries.has(id)) {
             state.taskBoundaries.set(id, {
