@@ -16,7 +16,7 @@ const writingPlansInstructions = `# 编写计划
 
 **开始时宣布：** "我正在使用 writing-plans 技能创建实现计划。"
 
-**计划保存位置：** \`codespec/changes/<name>/plan.md\`
+**计划保存位置：** \`codespec/changes/<name>/task.md\`
 - （用户对计划位置的偏好优先于此默认值）
 
 ## 范围检查
@@ -160,7 +160,7 @@ git commit -m "feat: add specific feature"
 
 保存计划后，提供执行选项：
 
-**"计划已完成并保存到 \`codespec/changes/<name>/plan.md\`。
+**"计划已完成并保存到 \`codespec/changes/<name>/task.md\`。
 
 **使用子代理驱动执行：**
 - **必需子技能：** 使用 superpowers:subagent-driven-development

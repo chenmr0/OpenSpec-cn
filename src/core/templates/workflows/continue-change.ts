@@ -101,7 +101,7 @@ export function getContinueChangeSkillTemplate(): SkillTemplate {
 **spec-driven Schema**（specs → design → plan）：
 - **spec.md**：将所有需求规范写入单个文件，按能力分区组织。
 - **design.md**：记录技术决策、系统设计和实现方法。
-- **plan.md**：把实现拆分为带复选框的任务。
+- **task.md**：把实现拆分为带复选框的任务。
 
 对于其他 Schema，遵循 CLI 输出中的 \`instruction\` 字段。
 
@@ -218,7 +218,7 @@ export function getOpsxContinueCommandTemplate(): CommandTemplate {
 **spec-driven Schema**（specs → design → plan）：
 - **spec.md**：将所有需求规范写入单个文件，按能力分区组织。
 - **design.md**：记录技术决策、系统设计和实现方法。
-- **plan.md**：把实现拆分为带复选框的任务。
+- **task.md**：把实现拆分为带复选框的任务。
 
 对于其他 Schema，遵循 CLI 输出中的 \`instruction\` 字段。
 

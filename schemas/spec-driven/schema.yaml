@@ -15,16 +15,16 @@ artifacts:
     requires:
       - specs
 
-  - id: plan
-    generates: plan.md
+  - id: task
+    generates: task.md
     description: 包含文件结构和详细任务的实现计划
-    template: plan.md
+    template: task.md
     requires:
       - specs
       - design
 
 apply:
-  requires: [plan]
-  tracks: plan.md
+  requires: [task]
+  tracks: task.md
   instruction: |
     逐个处理待办任务(使用 Todo 跟踪，并在任务完成后刷新任务状态)

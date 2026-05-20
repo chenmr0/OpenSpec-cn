@@ -271,10 +271,10 @@ const DEFAULT_ARTIFACTS: Array<{
     template: 'design.md',
   },
   {
-    id: 'plan',
+    id: 'task',
     description: '包含可追踪任务的实施清单',
-    generates: 'plan.md',
-    template: 'plan.md',
+    generates: 'task.md',
+    template: 'task.md',
   },
 ];
 
@@ -814,7 +814,7 @@ export function registerSchemaCommand(program: Command): void {
             artifact.requires = [];
           } else if (id === 'design' && selectedArtifactIds.includes('specs')) {
             artifact.requires = ['specs'];
-          } else if (id === 'plan') {
+          } else if (id === 'task') {
             const requires: string[] = [];
             if (selectedArtifactIds.includes('design')) requires.push('design');
             else if (selectedArtifactIds.includes('specs')) requires.push('specs');
@@ -833,10 +833,10 @@ export function registerSchemaCommand(program: Command): void {
         };
 
         // Add apply phase if plan is included
-        if (selectedArtifactIds.includes('plan')) {
+        if (selectedArtifactIds.includes('task')) {
           schema.apply = {
-            requires: ['plan'],
-            tracks: 'plan.md',
+            requires: ['task'],
+            tracks: 'task.md',
           };
         }
 
@@ -960,7 +960,7 @@ function createDefaultTemplate(artifactId: string): string {
 <!-- 列出风险和权衡 -->
 `;
 
-    case 'plan':
+    case 'task':
       return `## 实施任务
 
 - [ ] 任务 1

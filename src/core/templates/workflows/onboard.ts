@@ -195,7 +195,7 @@ codespec new change "<derived-name>"
 codespec/changes/<name>/
 ├── spec.md        ← 详细需求（空，我们将填充它）
 ├── design.md      ← 我们将如何构建它（空）
-└── plan.md        ← 实现检查清单（空）
+└── task.md        ← 实现检查清单（空）
 \`\`\`
 
 现在让我们填充第一个产出物——规格说明。
@@ -329,7 +329,7 @@ mkdir -p codespec/changes/<name>/specs/<capability-name>
 
 **暂停** - 等待用户确认他们准备好实现。
 
-保存到 \`codespec/changes/<name>/plan.md\`。
+保存到 \`codespec/changes/<name>/task.md\`。
 
 ---
 
@@ -347,7 +347,7 @@ mkdir -p codespec/changes/<name>/specs/<capability-name>
 1. 宣布："正在处理任务N：[描述]"
 2. 在代码库中实现变更
 3. 自然地引用规格说明/设计："规格说明说X，所以我做Y"
-4. 在 plan.md 中标记完成：\`- [ ]\` → \`- [x]\`
+4. 在 task.md 中标记完成：\`- [ ]\` → \`- [x]\`
 5. 简要状态："✓ 任务N完成"
 
 保持叙述轻量——不要过度解释每一行代码。

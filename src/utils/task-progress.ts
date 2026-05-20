@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 import path from 'path';
 
 const TASK_PATTERN = /^#{1,6}\s+\[[\sx]\]/i;
@@ -24,8 +24,15 @@ export function countTasksFromContent(content: string): TaskProgress {
   return { total, completed };
 }
 
-export async function getTaskProgressForChange(changesDir: string, changeName: string, tracksFile: string = 'plan.md'): Promise<TaskProgress> {
-  const tasksPath = path.join(changesDir, changeName, tracksFile);
+export async function getTaskProgressForChange(changesDir: string, changeName: string, tracksFile: string = 'task.md'): Promise<TaskProgress> {
+  let tasksPath = path.join(changesDir, changeName, tracksFile);
+  // Backward compatibility: fall back to plan.md if task.md doesn't exist
+  if (!existsSync(tasksPath) && tracksFile === 'task.md') {
+    const legacyPath = path.join(changesDir, changeName, 'plan.md');
+    if (existsSync(legacyPath)) {
+      tasksPath = legacyPath;
+    }
+  }
   try {
     const content = await fs.readFile(tasksPath, 'utf-8');
     return countTasksFromContent(content);

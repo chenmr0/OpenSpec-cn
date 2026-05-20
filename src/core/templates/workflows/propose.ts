@@ -29,7 +29,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 6. **用户审查规格文档** — 在继续之前请用户审查 spec.md
 7. **编写设计文档（design.md）** — 提取技术决策、架构、风险，保存到 \`design.md\`
 8. **用户审查规格文档** — 在继续之前请用户审查 \`design.md\`
-9. 过渡到 writing-plans
+9. 过渡到 writing-plans（task.md）
 
 ## 流程详述
 
@@ -157,7 +157,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
    > "设计文档已写入 \`design.md\`。请审查一下，如果在我们开始编写实现计划之前你想做任何修改，请告诉我。"
    使用 **AskUserQuestion tool** 等待用户回复。如果他们要求修改，做出修改并重新运行规格自检。只有在用户批准后才继续。
 
-### 编写  plan.md（计划文档）
+### 编写  task.md（任务计划文档）
 
     设计获得用户批准后，创建实现计划：
 
@@ -167,11 +167,11 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
        **第二步：使用 **AskUserQuestion tool** 询问用户，是否启用测试驱动开发（TDD）。** 如果用户选择启用，必须立即加载 \`test-driven-development\` 技能。 必须将其应用于 writing-plans，**每个任务必须先写失败测试，再写最少实现**。
 
-       **计划保存位置：** \`codespec/changes/<name>/plan.md\`
+       **任务保存位置：** \`codespec/changes/<name>/task.md\`
 
     b. **用户审查关卡**：
    计划自检完成后，请用户在继续之前审查书面规格：
-   > "计划文档已写入 \`plan.md\`。请审查一下，如果你想做任何修改，请告诉我。"
+   > "任务文档已写入 \`task.md\`。请审查一下，如果你想做任何修改，请告诉我。"
    使用 **AskUserQuestion tool** 等待用户回复。如果他们要求修改，做出修改并重新运行计划自检。只有在用户批准后才继续。
 
 **显示最终状态**

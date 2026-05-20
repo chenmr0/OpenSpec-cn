@@ -106,7 +106,7 @@ codespec list --json
 1. **阅读现有产出物以获取上下文**
    - \`codespec/changes/<name>/spec.md\`
    - \`codespec/changes/<name>/design.md\`
-   - \`codespec/changes/<name>/plan.md\`
+   - \`codespec/changes/<name>/task.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -121,7 +121,7 @@ codespec list --json
     | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`spec.md\`                |
-    | 识别出新工作        | \`plan.md\`                   |
+    | 识别出新工作        | \`task.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：
@@ -405,7 +405,7 @@ codespec list --json
 1. **阅读现有产出物以获取上下文**
    - \`codespec/changes/<name>/spec.md\`
    - \`codespec/changes/<name>/design.md\`
-   - \`codespec/changes/<name>/plan.md\`
+   - \`codespec/changes/<name>/task.md\`
    - 等等
 
 2. **在对话中自然地引用它们**
@@ -420,7 +420,7 @@ codespec list --json
     | 需求变更        | \`spec.md\` |
     | 做出设计决策       | \`design.md\`                  |
     | 范围变更              | \`spec.md\`                |
-    | 识别出新工作        | \`plan.md\`                   |
+    | 识别出新工作        | \`task.md\`                   |
     | 假设失效 | 相关产出物              |
 
    提议示例：

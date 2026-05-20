@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 import path from 'path';
 import { JsonConverter } from '../core/converters/json-converter.js';
 import { Validator } from '../core/validation/validator.js';
@@ -103,14 +103,14 @@ export class ChangeCommand {
       const changeDetails = await Promise.all(
         changes.map(async (changeName) => {
           const specPath = path.join(changesPath, changeName, 'spec.md');
-          const tasksPath = path.join(changesPath, changeName, 'plan.md');
+          const tasksPath = this.resolveTasksPath(changesPath, changeName);
 
           try {
             const content = await fs.readFile(specPath, 'utf-8');
             const changeDir = path.join(changesPath, changeName);
             const parser = new ChangeParser(content, changeDir);
             const change = await parser.parseChangeWithDeltas(changeName);
-            
+
             let taskStatus = { total: 0, completed: 0 };
             try {
               const tasksContent = await fs.readFile(tasksPath, 'utf-8');
@@ -156,7 +156,7 @@ export class ChangeCommand {
       // Long format: id: title and minimal counts
       for (const changeName of sorted) {
         const specPath = path.join(changesPath, changeName, 'spec.md');
-        const tasksPath = path.join(changesPath, changeName, 'plan.md');
+        const tasksPath = this.resolveTasksPath(changesPath, changeName);
         try {
           const content = await fs.readFile(specPath, 'utf-8');
           const title = this.extractTitle(content, changeName);
@@ -279,6 +279,12 @@ export class ChangeCommand {
     }
     
     return { total, completed };
+  }
+
+  private resolveTasksPath(changesPath: string, changeName: string): string {
+    const taskPath = path.join(changesPath, changeName, 'task.md');
+    if (existsSync(taskPath)) return taskPath;
+    return path.join(changesPath, changeName, 'plan.md');
   }
 
   private printNextSteps(): void {

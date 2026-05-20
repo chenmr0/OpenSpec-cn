@@ -31,7 +31,7 @@ export function createReadProtectionHandler() {
 
     // Skip key project files that are expected to be read in full
     const basename = path.basename(filePath).toLowerCase();
-    if (basename === "design.md" || basename === "spec.md" || basename === "plan.md") return;
+    if (basename === "design.md" || basename === "spec.md" || basename === "task.md" || basename === "plan.md") return;
 
     let stat: fs.Stats;
     try {
