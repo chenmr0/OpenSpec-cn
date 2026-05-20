@@ -16,6 +16,7 @@ import { createCompressionStateStore, type CompressionStateStore } from "./openc
 import { createMessagesTransformHandler } from "./opencode-plugin/context-compression/message-transform.js";
 import { createSystemTransformHandler } from "./opencode-plugin/context-compression/system-transform.js";
 import { createTaskCompressTool } from "./opencode-plugin/context-compression/task-compress-tool.js";
+import { createReadProtectionHandler } from "./opencode-plugin/read-protection/index.js";
 
 function createEventHandler(
   ctx: PluginInput,
@@ -53,6 +54,8 @@ const CodeSpecPlugin: Plugin = async (ctx) => {
 
   return {
     event: createEventHandler(ctx, sessionStateStore),
+
+    "tool.execute.before": createReadProtectionHandler(),
 
     "experimental.chat.messages.transform":
       createMessagesTransformHandler(compressionStateStore) as any,
