@@ -30,7 +30,7 @@ export function createSystemTransformHandler(
         return;
       }
 
-      if (state.compressionBlocks.size === 0 && state.completedOrder.length < 2) {
+      if (state.compressionBlocks.size === 0 && state.completedOrder.length < state.keepRecentTasks + 1) {
         debugLog(`system.transform: skipping (blocks=${state.compressionBlocks.size} completed=${state.completedOrder.length})`);
         return;
       }

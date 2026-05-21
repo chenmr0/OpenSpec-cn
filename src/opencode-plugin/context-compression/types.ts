@@ -31,6 +31,8 @@ export interface CompressionState {
   nudgeInjectedForTask: string | null;
   /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
   isApplySession: boolean;
+  /** Number of recently completed tasks to keep uncompressed (default: 1) */
+  keepRecentTasks: number;
 }
 
 /** WithParts — 消息结构，与 OpenCode SDK 对齐 */

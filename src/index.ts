@@ -48,9 +48,10 @@ function createEventHandler(
   };
 }
 
-const CodeSpecPlugin: Plugin = async (ctx) => {
+const CodeSpecPlugin: Plugin = async (ctx, options?: Record<string, unknown>) => {
+  const keepRecentTasks = typeof options?.keepRecentTasks === 'number' ? options.keepRecentTasks : undefined;
   const sessionStateStore = createSessionStateStore();
-  const compressionStateStore = createCompressionStateStore();
+  const compressionStateStore = createCompressionStateStore({ keepRecentTasks });
 
   return {
     event: createEventHandler(ctx, sessionStateStore),

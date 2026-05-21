@@ -60,8 +60,8 @@ export function injectNudge(
 }
 
 function getCompressibleTask(state: CompressionState): TaskBoundary | null {
-  const { completedOrder, taskBoundaries } = state;
-  const compressibleIndex = completedOrder.length - 2;
+  const { completedOrder, taskBoundaries, keepRecentTasks } = state;
+  const compressibleIndex = completedOrder.length - keepRecentTasks - 1;
   if (compressibleIndex < 0) return null;
 
   const candidateId = completedOrder[compressibleIndex];
@@ -72,8 +72,8 @@ function getCompressibleTask(state: CompressionState): TaskBoundary | null {
 }
 
 function getAllCompressibleTasks(state: CompressionState): TaskBoundary[] {
-  const { completedOrder, taskBoundaries } = state;
-  const threshold = completedOrder.length - 1;
+  const { completedOrder, taskBoundaries, keepRecentTasks } = state;
+  const threshold = completedOrder.length - keepRecentTasks;
   return completedOrder
     .slice(0, threshold)
     .map(id => taskBoundaries.get(id)!)

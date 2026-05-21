@@ -6,7 +6,10 @@ export interface CompressionStateStore {
   cleanup: (sessionID: string) => void;
 }
 
-export function createCompressionStateStore(): CompressionStateStore {
+const DEFAULT_KEEP_RECENT_TASKS = 1;
+
+export function createCompressionStateStore(options?: { keepRecentTasks?: number }): CompressionStateStore {
+  const keepRecentTasks = options?.keepRecentTasks ?? DEFAULT_KEEP_RECENT_TASKS;
   const sessions = new Map<string, CompressionState>();
 
   return {
@@ -21,6 +24,7 @@ export function createCompressionStateStore(): CompressionStateStore {
           inProgressStart: new Map(),
           nudgeInjectedForTask: null,
           isApplySession: false,
+          keepRecentTasks,
         };
         sessions.set(sessionID, state);
       }
