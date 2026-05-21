@@ -57,10 +57,9 @@
 ```text
 你：/opsx:propose add-dark-mode
 AI：已创建 codespec/changes/add-dark-mode/
-     ✓ proposal.md — 为什么要做这个，什么在变
-     ✓ specs/       — 需求和场景
-     ✓ design.md    — 技术方案
-     ✓ tasks.md     — 实现清单
+     ✓ spec.md     — 需求和场景
+     ✓ design.md   — 技术方案
+     ✓ task.md     — 实现清单
      准备好开始实现了！
 
 你：/opsx:apply
@@ -87,7 +86,7 @@ AI：已归档至 codespec/changes/archive/2025-01-23-add-dark-mode/
 
 ## 快速开始
 
-**需要 Node.js 20.19.0 或更高版本。**
+**需要 Node.js 18.0.0 或更高版本。**
 
 全局安装 codespec：
 
@@ -159,7 +158,7 @@ codespec update
 
 ## 使用注意事项
 
-**模型选择**：CodeSpec 更适合高推理模型。我们推荐在规划与实现阶段都使用 Opus 4.5 和 GPT 5.2。
+**模型选择**：CodeSpec 更适合高推理模型。我们推荐在规划与实现阶段都使用 Opus 4.7 和 GPT 5.2。
 
 **上下文卫生**：CodeSpec 受益于更干净的上下文窗口。在开始实现前清理上下文，并在整个会话中保持良好的上下文卫生。
 
