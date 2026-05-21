@@ -38,6 +38,19 @@ export const ProjectConfigSchema = z.object({
     )
     .optional()
     .describe('Per-artifact rules, keyed by artifact ID'),
+
+  // Optional: compression settings for completed task context
+  compression: z
+    .object({
+      keepRecentTasks: z
+        .number()
+        .int()
+        .min(0)
+        .default(1)
+        .describe('Number of recently completed tasks to keep uncompressed'),
+    })
+    .optional()
+    .describe('Compression settings for completed task context'),
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
@@ -149,6 +162,19 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         }
       } else {
         console.warn(`Invalid 'rules' field in config (must be object)`);
+      }
+    }
+
+    // Parse compression field using Zod
+    if (raw.compression !== undefined) {
+      const compressionSchema = z.object({
+        keepRecentTasks: z.number().int().min(0).default(1),
+      });
+      const compressionResult = compressionSchema.safeParse(raw.compression);
+      if (compressionResult.success) {
+        config.compression = compressionResult.data;
+      } else {
+        console.warn(`Invalid 'compression' field in config`);
       }
     }
 

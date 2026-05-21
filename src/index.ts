@@ -17,6 +17,7 @@ import { createMessagesTransformHandler } from "./opencode-plugin/context-compre
 import { createSystemTransformHandler } from "./opencode-plugin/context-compression/system-transform.js";
 import { createTaskCompressTool } from "./opencode-plugin/context-compression/task-compress-tool.js";
 import { createReadProtectionHandler } from "./opencode-plugin/read-protection/index.js";
+import { readProjectConfig } from "./core/project-config.js";
 
 function createEventHandler(
   ctx: PluginInput,
@@ -48,8 +49,9 @@ function createEventHandler(
   };
 }
 
-const CodeSpecPlugin: Plugin = async (ctx, options?: Record<string, unknown>) => {
-  const keepRecentTasks = typeof options?.keepRecentTasks === 'number' ? options.keepRecentTasks : undefined;
+const CodeSpecPlugin: Plugin = async (ctx) => {
+  const projectConfig = readProjectConfig(ctx.directory);
+  const keepRecentTasks = projectConfig?.compression?.keepRecentTasks;
   const sessionStateStore = createSessionStateStore();
   const compressionStateStore = createCompressionStateStore({ keepRecentTasks });
 

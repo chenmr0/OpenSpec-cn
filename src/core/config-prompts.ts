@@ -13,6 +13,14 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push(`schema: ${config.schema}`);
   lines.push('');
 
+  // Compression section — write as active config with comment
+  lines.push('# 上下文压缩设置');
+  lines.push('# 已完成任务的对话上下文会被压缩为摘要以节省 token。');
+  lines.push('# keepRecentTasks: 保留最近几个已完成任务不压缩');
+  lines.push('compression:');
+  lines.push('  keepRecentTasks: 1');
+  lines.push('');
+
   // Context section with comments
   lines.push('# 项目上下文（可选）');
   lines.push('# 在创建工件时向 AI 显示此信息。');

@@ -728,8 +728,7 @@ export class InitCommand {
       }
     }
 
-    // The "plugin" array contains specifier strings (npm names or file:// URLs),
-    // or [specifier, options] tuples for parameterized plugins.
+    // The "plugin" array contains specifier strings (npm names or file:// URLs).
     // We use a file:// URL pointing to the codespec package root to avoid
     // collision with an unrelated "codespec" package on the npm registry.
     const packageName = 'codespec';
@@ -737,17 +736,17 @@ export class InitCommand {
     const thisFileDir = path.dirname(fileURLToPath(import.meta.url));
     const codespecRoot = path.resolve(thisFileDir, '..', '..');
     const fileUrl = pathToFileURL(codespecRoot).href;
-    const defaultOptions = { keepRecentTasks: 1 };
-    const plugins = normalizePluginArray(config.plugin);
-
-    // Check if codespec is already in the plugin list (by name, versioned name, or file URL)
-    const existingIndex = plugins.findIndex(
-      ([spec]) => spec === packageName || spec.startsWith(`${packageName}@`) || spec === fileUrl
+    const plugins = ((config.plugin as string[]) ?? []).filter(
+      (p) => typeof p === 'string'
     );
 
-    if (existingIndex === -1) {
-      // New install: write as [fileUrl, { keepRecentTasks: 1 }] tuple
-      plugins.push([fileUrl, { ...defaultOptions }]);
+    // Check if codespec is already in the plugin list (by name, versioned name, or file URL)
+    const alreadyConfigured = plugins.some(
+      (p) => p === packageName || p.startsWith(`${packageName}@`) || p === fileUrl
+    );
+
+    if (!alreadyConfigured) {
+      plugins.push(fileUrl);
     }
 
     config.plugin = plugins;
@@ -768,22 +767,4 @@ export class InitCommand {
 
     await FileSystemUtils.writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
   }
-}
-
-/**
- * Normalize the plugin array from opencode.json into [specifier, options] tuples.
- * - Plain strings become [specifier, undefined]
- * - Existing tuples are kept as-is
- */
-function normalizePluginArray(raw: unknown): Array<[string, Record<string, unknown> | undefined]> {
-  if (!Array.isArray(raw)) return [];
-  return raw.map((entry): [string, Record<string, unknown> | undefined] => {
-    if (Array.isArray(entry) && typeof entry[0] === 'string') {
-      return [entry[0], entry[1] as Record<string, unknown> | undefined];
-    }
-    if (typeof entry === 'string') {
-      return [entry, undefined];
-    }
-    return ['__invalid__', undefined];
-  }).filter(([spec]) => spec !== '__invalid__');
 }
