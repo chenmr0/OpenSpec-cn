@@ -7,6 +7,7 @@
 import path from 'path';
 import * as fs from 'fs';
 import { AI_TOOLS } from '../config.js';
+import { getOpenCodeUserConfigDir } from '../global-config.js';
 
 /**
  * Names of skill directories created by codespec init.
@@ -90,7 +91,9 @@ export function getToolSkillStatus(projectRoot: string, toolId: string): ToolSki
     return { configured: false, fullyConfigured: false, skillCount: 0 };
   }
 
-  const skillsDir = path.join(projectRoot, tool.skillsDir, 'skills');
+  const skillsDir = tool.value === 'opencode'
+    ? path.join(getOpenCodeUserConfigDir(), 'skills')
+    : path.join(projectRoot, tool.skillsDir, 'skills');
   let skillCount = 0;
 
   for (const skillName of SKILL_NAMES) {
@@ -173,7 +176,9 @@ export function getToolVersionStatus(
     };
   }
 
-  const skillsDir = path.join(projectRoot, tool.skillsDir, 'skills');
+  const skillsDir = tool.value === 'opencode'
+    ? path.join(getOpenCodeUserConfigDir(), 'skills')
+    : path.join(projectRoot, tool.skillsDir, 'skills');
   let generatedByVersion: string | null = null;
 
   // Find the first skill file that exists and read its version

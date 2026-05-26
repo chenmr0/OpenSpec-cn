@@ -487,8 +487,10 @@ export class InitCommand {
 
       try {
         {
-          // Use tool-specific skillsDir
-          const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
+          // Use tool-specific skillsDir (OpenCode writes to user-level directory)
+          const skillsDir = tool.value === 'opencode'
+            ? path.join(getOpenCodeUserConfigDir(), 'skills')
+            : path.join(projectPath, tool.skillsDir, 'skills');
 
           // Always create external skills (writing-plans, test-driven-development, etc.)
           for (const { template, dirName, extraFiles } of externalSkillTemplates) {
@@ -711,7 +713,7 @@ export class InitCommand {
    * OpenCode will import the package and call its default export as Plugin().
    */
   private async configureOpenCodePlugin(projectPath: string): Promise<void> {
-    const opencodeDir = path.join(projectPath, '.opencode');
+    const opencodeDir = getOpenCodeUserConfigDir();
     const configPath = path.join(opencodeDir, 'opencode.json');
 
     await FileSystemUtils.createDirectory(opencodeDir);

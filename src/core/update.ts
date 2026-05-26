@@ -35,7 +35,7 @@ import {
   type LegacyDetectionResult,
 } from './legacy-cleanup.js';
 import { isInteractive } from '../utils/interactive.js';
-import { getGlobalConfig, type Delivery } from './global-config.js';
+import { getGlobalConfig, getOpenCodeUserConfigDir, type Delivery } from './global-config.js';
 import { getProfileWorkflows, ALL_WORKFLOWS } from './profiles.js';
 import { getAvailableTools } from './available-tools.js';
 import {
@@ -187,7 +187,9 @@ export class UpdateCommand {
       const spinner = ora(`正在更新 ${tool.name}...`).start();
 
       try {
-        const skillsDir = path.join(resolvedProjectPath, tool.skillsDir, 'skills');
+        const skillsDir = tool.value === 'opencode'
+          ? path.join(getOpenCodeUserConfigDir(), 'skills')
+          : path.join(resolvedProjectPath, tool.skillsDir, 'skills');
 
         // Generate skill files if delivery includes skills
         if (shouldGenerateSkills) {
@@ -366,7 +368,7 @@ export class UpdateCommand {
    * Ensures "codespec" exists in the plugin array in .opencode/opencode.json.
    */
   private async refreshOpenCodePluginConfig(projectPath: string): Promise<void> {
-    const opencodeDir = path.join(projectPath, '.opencode');
+    const opencodeDir = getOpenCodeUserConfigDir();
     const configPath = path.join(opencodeDir, 'opencode.json');
 
     if (!fs.existsSync(configPath)) {
@@ -707,7 +709,9 @@ export class UpdateCommand {
       const spinner = ora(`正在设置 ${tool.name}...`).start();
 
       try {
-        const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
+        const skillsDir = tool.value === 'opencode'
+          ? path.join(getOpenCodeUserConfigDir(), 'skills')
+          : path.join(projectPath, tool.skillsDir, 'skills');
 
         // Create skill files when delivery includes skills
         if (shouldGenerateSkills) {

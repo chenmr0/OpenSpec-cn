@@ -9,6 +9,7 @@
 import path from 'path';
 import type { CommandContent, ToolCommandAdapter } from '../types.js';
 import { transformToOpenCodeCommands, OPENCODE_COMMAND_MAP } from '../../../utils/command-references.js';
+import { getOpenCodeUserConfigDir } from '../../global-config.js';
 
 /**
  * OpenCode adapter for command generation.
@@ -20,7 +21,7 @@ export const opencodeAdapter: ToolCommandAdapter = {
 
   getFilePath(commandId: string): string {
     const slug = OPENCODE_COMMAND_MAP[commandId] ?? commandId;
-    return path.join('.opencode', 'commands', 'codespec', `${slug}.md`);
+    return path.join(getOpenCodeUserConfigDir(), 'commands', 'codespec', `${slug}.md`);
   },
 
   formatFile(content: CommandContent): string {

@@ -6,7 +6,7 @@
  */
 
 import type { AIToolOption } from './config.js';
-import { getGlobalConfig, getGlobalConfigPath, saveGlobalConfig, type Delivery } from './global-config.js';
+import { getGlobalConfig, getGlobalConfigPath, getOpenCodeUserConfigDir, saveGlobalConfig, type Delivery } from './global-config.js';
 import { CommandAdapterRegistry } from './command-generation/index.js';
 import { WORKFLOW_TO_SKILL_DIR } from './profile-sync-drift.js';
 import { ALL_WORKFLOWS } from './profiles.js';
@@ -29,7 +29,9 @@ function scanInstalledWorkflowArtifacts(
 
   for (const tool of tools) {
     if (!tool.skillsDir) continue;
-    const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
+    const skillsDir = tool.value === 'opencode'
+      ? path.join(getOpenCodeUserConfigDir(), 'skills')
+      : path.join(projectPath, tool.skillsDir, 'skills');
 
     for (const workflowId of ALL_WORKFLOWS) {
       const skillDirName = WORKFLOW_TO_SKILL_DIR[workflowId];

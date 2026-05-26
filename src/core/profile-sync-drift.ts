@@ -1,7 +1,7 @@
 import path from 'path';
 import * as fs from 'fs';
 import { AI_TOOLS } from './config.js';
-import type { Delivery } from './global-config.js';
+import { type Delivery, getOpenCodeUserConfigDir } from './global-config.js';
 import { ALL_WORKFLOWS } from './profiles.js';
 import { CommandAdapterRegistry } from './command-generation/index.js';
 import { COMMAND_IDS, getConfiguredTools } from './shared/index.js';
@@ -96,7 +96,9 @@ export function hasToolProfileOrDeliveryDrift(
 
   const knownDesiredWorkflows = toKnownWorkflows(desiredWorkflows);
   const desiredWorkflowSet = new Set<WorkflowId>(knownDesiredWorkflows);
-  const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
+  const skillsDir = tool.value === 'opencode'
+    ? path.join(getOpenCodeUserConfigDir(), 'skills')
+    : path.join(projectPath, tool.skillsDir, 'skills');
   const adapter = CommandAdapterRegistry.get(toolId);
   const shouldGenerateSkills = delivery !== 'commands';
   const shouldGenerateCommands = delivery !== 'skills';
@@ -184,7 +186,9 @@ function getInstalledWorkflowsForTool(
   if (!tool?.skillsDir) return [];
 
   const installed = new Set<WorkflowId>();
-  const skillsDir = path.join(projectPath, tool.skillsDir, 'skills');
+  const skillsDir = tool.value === 'opencode'
+    ? path.join(getOpenCodeUserConfigDir(), 'skills')
+    : path.join(projectPath, tool.skillsDir, 'skills');
 
   if (options.includeSkills) {
     for (const workflow of ALL_WORKFLOWS) {
