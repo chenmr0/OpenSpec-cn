@@ -33,6 +33,7 @@ export function injectNudge(
   messages: WithParts[],
 ): void {
   if (compressionState.nudgeInjectedForTask) return;
+  if (allTodosCompleted(compressionState)) return;
 
   const candidate = getCompressibleTask(compressionState);
   if (!candidate) return;
@@ -57,6 +58,11 @@ export function injectNudge(
 
   messages.push(nudgeMsg);
   compressionState.nudgeInjectedForTask = candidate.taskId;
+}
+
+function allTodosCompleted(state: CompressionState): boolean {
+  if (state.lastTodoSnapshot.size === 0) return false;
+  return Array.from(state.lastTodoSnapshot.values()).every(s => s === "completed");
 }
 
 function getCompressibleTask(state: CompressionState): TaskBoundary | null {
