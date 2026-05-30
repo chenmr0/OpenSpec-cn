@@ -17,6 +17,7 @@ import { createMessagesTransformHandler } from "./opencode-plugin/context-compre
 import { createSystemTransformHandler } from "./opencode-plugin/context-compression/system-transform.js";
 import { createTaskCompressTool } from "./opencode-plugin/context-compression/task-compress-tool.js";
 import { createReadProtectionHandler } from "./opencode-plugin/read-protection/index.js";
+import { createGitAddGuardHandler } from "./opencode-plugin/git-add-guard.js";
 import { readProjectConfig } from "./core/project-config.js";
 
 function createEventHandler(
@@ -55,10 +56,19 @@ const CodeSpecPlugin: Plugin = async (ctx) => {
   const sessionStateStore = createSessionStateStore();
   const compressionStateStore = createCompressionStateStore({ keepRecentTasks });
 
+  const readProtection = createReadProtectionHandler();
+  const gitAddGuard = createGitAddGuardHandler();
+
   return {
     event: createEventHandler(ctx, sessionStateStore),
 
-    "tool.execute.before": createReadProtectionHandler(),
+    "tool.execute.before": async (
+      input: { tool: string; sessionID: string; callID: string },
+      output: { args: Record<string, unknown> },
+    ) => {
+      await readProtection(input, output);
+      await gitAddGuard(input, output);
+    },
 
     "experimental.chat.messages.transform":
       createMessagesTransformHandler(compressionStateStore) as any,
