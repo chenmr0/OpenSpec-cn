@@ -4,20 +4,20 @@ description: 默认 CodeSpec 工作流 - 头脑风暴 → 规范 → 设计 → 
 artifacts:
   - id: specs
     generates: spec.md
-    description: 包含业务规则、交互流程、异常场景和数据约束的需求规范
+    description: WHAT：业务规则、验收条件、异常场景和领域约束
     template: spec.md
     requires: []
 
   - id: design
     generates: design.md
-    description: 包含架构和决策的技术设计文档
+    description: HOW：技术目标、设计决策、模块/数据/接口变更、风险与验证
     template: design.md
     requires:
       - specs
 
   - id: task
     generates: task.md
-    description: 包含文件结构和详细任务的实现计划
+    description: DO：文件结构、可执行任务、验证命令和进度复选框
     template: task.md
     requires:
       - specs
