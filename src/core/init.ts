@@ -45,6 +45,7 @@ import {
 import { getAvailableTools } from './available-tools.js';
 import { migrateIfNeeded } from './migration.js';
 import { getOpenCodeUserConfigDir } from './global-config.js';
+import { CORE_WORKFLOWS } from './profiles.js';
 
 const require = createRequire(import.meta.url);
 const { version: OPENSPEC_VERSION } = require('../../package.json');
@@ -475,11 +476,11 @@ export class InitCommand {
     let removedCommandCount = 0;
     let removedSkillCount = 0;
 
-    // Only generate external skills (4), agents (3), and 3 core commands.
+    // Only generate external skills, agents, and core commands.
     // Internal skillTemplates are workflow-specific (new/continue/ff/sync etc.)
-    // and never matched the core propose/apply/archive workflows, so skip them.
+    // and never matched the core workflows, so skip them.
     const externalSkillTemplates = getExternalSkillTemplates();
-    const commandContents = getCommandContents(['propose', 'apply', 'archive']);
+    const commandContents = getCommandContents(CORE_WORKFLOWS);
 
     // Process each tool
     for (const tool of tools) {
@@ -632,7 +633,7 @@ export class InitCommand {
     if (successfulTools.length > 0) {
       const toolDirs = [...new Set(successfulTools.map((t) => t.skillsDir))].join(', ');
       const skillCount = getExternalSkillTemplates().length;
-      const commandCount = getCommandContents(['propose', 'apply', 'archive']).length;
+      const commandCount = getCommandContents(CORE_WORKFLOWS).length;
       if (skillCount > 0 && commandCount > 0) {
         console.log(`${skillCount} 个技能和 ${commandCount} 个命令在 ${toolDirs}/ 中`);
       } else if (skillCount > 0) {

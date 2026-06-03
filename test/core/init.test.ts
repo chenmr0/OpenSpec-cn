@@ -121,11 +121,11 @@ describe('InitCommand', () => {
 
       await initCommand.execute(testDir);
 
-      // Core profile: propose, explore, apply, archive
+      // Core profile: propose, apply, apply-quick, archive
       const coreCommandNames = [
         'opsx/propose.md',
-        'opsx/explore.md',
         'opsx/apply.md',
+        'opsx/apply-quick.md',
         'opsx/archive.md',
       ];
 
@@ -136,6 +136,7 @@ describe('InitCommand', () => {
 
       // Non-core commands should NOT be created
       const nonCoreCommandNames = [
+        'opsx/explore.md',
         'opsx/new.md',
         'opsx/continue.md',
         'opsx/ff.md',

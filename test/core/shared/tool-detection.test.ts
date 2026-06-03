@@ -28,11 +28,12 @@ describe('tool-detection', () => {
 
   describe('SKILL_NAMES', () => {
     it('should contain all skill names matching COMMAND_IDS', () => {
-      expect(SKILL_NAMES).toHaveLength(11);
+      expect(SKILL_NAMES).toHaveLength(12);
   expect(SKILL_NAMES).toContain('codespec-explore');
       expect(SKILL_NAMES).toContain('codespec-new-change');
       expect(SKILL_NAMES).toContain('codespec-continue-change');
       expect(SKILL_NAMES).toContain('codespec-apply-change');
+      expect(SKILL_NAMES).toContain('codespec-apply-quick');
       expect(SKILL_NAMES).toContain('codespec-ff-change');
       expect(SKILL_NAMES).toContain('codespec-sync-specs');
       expect(SKILL_NAMES).toContain('codespec-archive-change');
