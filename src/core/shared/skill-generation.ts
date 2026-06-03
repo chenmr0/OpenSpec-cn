@@ -5,17 +5,23 @@
  */
 
 import {
+  getExploreSkillTemplate,
   getNewChangeSkillTemplate,
   getContinueChangeSkillTemplate,
+  getApplyChangeSkillTemplate,
+  getApplyQuickSkillTemplate,
   getFfChangeSkillTemplate,
   getSyncSpecsSkillTemplate,
+  getArchiveChangeSkillTemplate,
   getBulkArchiveChangeSkillTemplate,
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
+  getOpsxProposeSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
   getOpsxContinueCommandTemplate,
   getOpsxApplyCommandTemplate,
+  getOpsxApplyQuickCommandTemplate,
   getOpsxFfCommandTemplate,
   getOpsxSyncCommandTemplate,
   getOpsxArchiveCommandTemplate,
@@ -28,6 +34,7 @@ import {
 import { getWritingPlansSkillTemplate } from '../templates/external/writing-plans.js';
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
+import { getQuickDrivenDevelopmentSkillTemplate } from '../templates/external/quick-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
 import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
@@ -65,12 +72,16 @@ export interface CommandTemplateEntry {
  * @param workflowFilter - If provided, only return templates whose workflowId is in this array
  */
 export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemplateEntry[] {
-  // Core workflows (explore, apply, archive, propose) only generate commands, not skills.
   const all: SkillTemplateEntry[] = [
+    { template: getOpsxProposeSkillTemplate(), dirName: 'codespec-propose', workflowId: 'propose' },
+    { template: getExploreSkillTemplate(), dirName: 'codespec-explore', workflowId: 'explore' },
     { template: getNewChangeSkillTemplate(), dirName: 'codespec-new-change', workflowId: 'new' },
     { template: getContinueChangeSkillTemplate(), dirName: 'codespec-continue-change', workflowId: 'continue' },
+    { template: getApplyChangeSkillTemplate(), dirName: 'codespec-apply-change', workflowId: 'apply' },
+    { template: getApplyQuickSkillTemplate(), dirName: 'codespec-apply-quick', workflowId: 'apply-quick' },
     { template: getFfChangeSkillTemplate(), dirName: 'codespec-ff-change', workflowId: 'ff' },
     { template: getSyncSpecsSkillTemplate(), dirName: 'codespec-sync-specs', workflowId: 'sync' },
+    { template: getArchiveChangeSkillTemplate(), dirName: 'codespec-archive-change', workflowId: 'archive' },
     { template: getBulkArchiveChangeSkillTemplate(), dirName: 'codespec-bulk-archive-change', workflowId: 'bulk-archive' },
     { template: getVerifyChangeSkillTemplate(), dirName: 'codespec-verify-change', workflowId: 'verify' },
     { template: getOnboardSkillTemplate(), dirName: 'codespec-onboard', workflowId: 'onboard' },
@@ -93,6 +104,7 @@ export function getCommandTemplates(workflowFilter?: readonly string[]): Command
     { template: getOpsxNewCommandTemplate(), id: 'new' },
     { template: getOpsxContinueCommandTemplate(), id: 'continue' },
     { template: getOpsxApplyCommandTemplate(), id: 'apply' },
+    { template: getOpsxApplyQuickCommandTemplate(), id: 'apply-quick' },
     { template: getOpsxFfCommandTemplate(), id: 'ff' },
     { template: getOpsxSyncCommandTemplate(), id: 'sync' },
     { template: getOpsxArchiveCommandTemplate(), id: 'archive' },
@@ -174,6 +186,11 @@ export function getExternalSkillTemplates(): SkillTemplateEntry[] {
     {
       template: getSubagentDrivenDevelopmentSkillTemplate(),
       dirName: 'subagent-driven-development',
+      workflowId: '_external',
+    },
+    {
+      template: getQuickDrivenDevelopmentSkillTemplate(),
+      dirName: 'quick-driven-development',
       workflowId: '_external',
     },
     {

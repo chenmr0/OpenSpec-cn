@@ -11,3 +11,4 @@ export * from './skill-templates.js';
 // External skills (always installed, not workflow-bound)
 export { getWritingPlansSkillTemplate } from './external/writing-plans.js';
 export { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from './external/test-driven-development.js';
+export { getQuickDrivenDevelopmentSkillTemplate } from './external/quick-driven-development.js';

@@ -5,12 +5,16 @@
 ## 工作流一览
 
 ```text
-/codesepc/plan ──→ /codesepc/apply ──→ /codesepc/archive
-  头脑风暴          子代理实现            归档变更
+/codesepc/plan ──→ /codesepc/apply ───────→ /codesepc/archive
+  头脑风暴          严格子代理实现          归档变更
   spec.md          两阶段审查           
   design.md        上下文主动回收         
   task.md          无人值守强制完成
                    变更级验证
+
+              └──→ /codesepc/apply-quick ─→ /codesepc/archive
+                   主上下文快速实现
+                   跳过每任务子代理审查
 ```
 
 ### 看看效果
@@ -71,6 +75,10 @@ codespec init
 全部完成 → 变更级验证子代理（change-verifier）→ 整体验证通过
 ```
 
+### 快速实现（/codesepc/apply-quick）
+
+`/codesepc/apply-quick` 是独立于 `/codesepc/apply` 的轻量路径：在主上下文中顺序实现任务、运行验证并更新 `task.md`，跳过每个任务的实现子代理和两阶段审查。适合小修、小型功能或低风险变更；高风险和跨模块变更仍建议使用 `/codesepc/apply`。
+
 **内置代理**：
 
 | 代理 | 职责 |
@@ -89,6 +97,7 @@ codespec init
 | **writing-plans** | 将设计拆解为可执行的小任务，不允许占位符代码 |
 | **test-driven-development** | 红灯-绿灯-重构循环，无失败测试不写产品代码 |
 | **subagent-driven-development** | 子代理执行 + spec/质量双审查 + 状态管理 |
+| **quick-driven-development** | 主上下文顺序实现 + 自审 + 验证，跳过每任务子代理审查 |
 | **verification-before-completion** | 必须提供新鲜的验证证据才能声明完成 |
 
 ### 上下文压缩

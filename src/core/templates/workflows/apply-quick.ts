@@ -1,0 +1,172 @@
+/**
+ * Apply Quick Workflow Template
+ *
+ * Lightweight implementation command that keeps apply-change untouched.
+ */
+import type { SkillTemplate, CommandTemplate } from '../types.js';
+
+const applyQuickInstructions = `# 快速实现变更中的任务
+
+**输入**：可选择指定变更名称（例如，\`/codespec/apply-quick "<name>"\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
+
+## 流程详述
+### 实施修改前
+
+**选择变更**
+
+   如果提供了名称，使用它。否则：
+   - 如果用户提到了某个变更，从对话上下文中推断
+   - 如果只存在一个活动变更，自动选择
+   - 如果不明确，运行 \`codespec list --json\` 获取可用变更，并使用 **AskUserQuestion tool** 让用户选择
+
+   始终宣布："正在使用变更：<name>"以及如何覆盖（例如，\`/codespec/apply <other>\`）。
+
+**检查状态以了解 Schema**
+   \`\`\`bash
+   codespec status --change "<name>" --json
+   \`\`\`
+   解析 JSON 以了解：
+   - \`schemaName\`：正在使用的工作流 Schema（例如："spec-driven"）
+   - 检查产出物状态（应为"status": "done"）
+
+**阅读上下文文件**
+   \`\`\`bash
+   codespec instructions apply --change "<name>" --json
+   \`\`\`
+   阅读 apply instructions 输出中 \`contextFiles\` 列出的每个文件路径。
+   文件取决于正在使用的 Schema：
+   - **spec-driven**: specs, design, plan
+   - 其他模式：遵循 CLI 输出中的 contextFiles
+
+**显示当前进度**
+
+   显示：
+   - 正在使用的 Schema
+   - 进度："N/M 任务已完成"
+
+### 任务实施（调用子智能体驱动开发技能）
+
+   **无人值守原则：** 一旦进入实现阶段，自主推进所有任务直到全部完成。遇到问题时自行解决，不暂停等待用户介入。**continuation enforcer 会在你试图提前停止时自动注入 prompt 强制你继续，所以不要停下来等待用户确认——直接执行。**
+
+   **加载 \`quick-driven-development\` 技能，严格按照该技能的流程执行所有未完成任务。**
+
+   **TodoWrite 纪律（关键）：**
+   - 在开始实现前，**必须**用 Todo 为所有任务创建条目(**只跟踪任务，不要跟踪子步骤**)
+   - 每完成一个任务后，**立即**将其标记为 completed
+   - 不要批量标记——完成一个标记一个
+   - TodoWrite 是 continuation enforcer 判断进度的基础，不遵守 = 系统误判
+
+   该技能会自动执行：为每个任务分派隔离的实现子智能体 → 标记完成 → 继续下一个任务。你只需确保传递正确的上下文（完整任务文本 + 场景铺设 + 工作目录），其余流程由技能驱动。
+
+
+### 任务完成（委派变更级验证）
+
+   **获取应用指令**
+
+   \`\`\`bash
+   codespec instructions apply --change "<name>" --json
+   \`\`\`
+
+   这返回：
+   - \`contextFiles\`：产出物 ID -> 具体文件路径数组（因 Schema 而异）
+   - 进度（总计、完成、剩余）
+   - 带有状态的任务列表
+   - 基于当前状态的动态指令
+
+   **处理状态：**
+   - 如果 \`state: "blocked"\`（缺少产出物）：显示消息
+   - 如果 \`state: "all_done"\`：祝贺，建议归档
+   - 否则：继续实现
+
+   **委派验证给专用验证子智能体（change-verifier）**
+
+   所有任务完成后，**不要在主上下文中执行验证**。必须委派给专用的 \`change-verifier\` 子智能体：
+
+   使用 Agent tool（subagent_type: "change-verifier"）：
+
+   \`\`\`
+   description: "变更级验证：<change-name>"
+   prompt: |
+     你正在执行变更级验证门控。
+
+     ## 工作目录
+     <当前项目的工作目录>
+
+     严格按照你的验证流程执行：确定命令 → 运行构建 → 运行测试 → 判定结果。
+   \`\`\`
+
+   失败时执行修复循环（最多 3 次）。
+
+**完成时的输出**
+
+\`\`\`
+## 实现完成
+
+**变更：** <change-name>
+**Schema：** <schema-name>
+**进度：** 7/7 任务已完成 ✓
+
+### 变更级验证
+- **构建：** \`npm run build\` → exit 0 ✅
+- **测试：** \`npm test\` → 34/34 pass ✅
+
+### 本次会话已完成
+- [x] 任务 3：<description>
+- [x] 任务 4：<description>
+...
+
+所有任务已完成并通过验证！可以使用 \`/codespec/archive\` 归档此变更。
+\`\`\`
+
+**暂停时的输出（仅在反复自主修复仍无法通过时）**
+
+\`\`\`
+## 实现暂停——需要人工介入
+
+**变更：** <change-name>
+**Schema：** <schema-name>
+**进度：** 4/7 任务已完成
+
+### 已自主尝试的解决措施
+1. <尝试 1：例如，换更强模型重新分派>
+2. <尝试 2：例如，拆分任务后重新分派>
+
+### 仍无法解决的问题
+任务 5：<具体阻塞原因>
+
+**已完成任务：**
+- [x] 任务 1-4
+\`\`\`
+
+**护栏**
+
+- 开始前始终阅读上下文文件（来自 apply instructions 输出）
+- 使用 CLI 输出中的 contextFiles，不要假设特定文件名
+- 保持代码更改最小化并限定在每个任务范围内
+- 实施阶段的子智能体纪律由 \`quick-driven-development\` 技能定义，严格遵循该技能的红线和要求
+- 变更级验证必须委派给独立子智能体执行，不在主上下文中直接验证，防止上下文压缩导致验证指令丢失
+- **不要试图提前结束**：continuation enforcer 机制会在你停下来时自动注入续行 prompt。如果你想停下来"等待确认"或"询问用户"，系统会强制你继续。只有所有任务真正完成并通过验证时才停下来
+- **不得将任务合并执行**：反例：我可以将任务5-7合并委派给subagent实现。合并将导致任务完成质量不可控
+
+<!-- command: codespec-apply-quick -->`;
+
+export function getApplyQuickSkillTemplate(): SkillTemplate {
+  return {
+    name: 'codespec-apply-quick',
+    description: '轻量实现 CodeSpec 变更中的任务，跳过每任务子代理实现和两阶段子代理审查。',
+    instructions: applyQuickInstructions,
+    license: 'MIT',
+    compatibility: '需要 codespec CLI。',
+    metadata: { author: 'codespec', version: '1.0' },
+  };
+}
+
+export function getOpsxApplyQuickCommandTemplate(): CommandTemplate {
+  return {
+    name: 'OPSX: Apply Quick',
+    description: '快速实现变更中的任务（跳过每任务子代理审查）',
+    category: 'Workflow',
+    tags: ['workflow', 'artifacts', 'quick'],
+    content: applyQuickInstructions,
+  };
+}

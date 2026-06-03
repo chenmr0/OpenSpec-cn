@@ -29,6 +29,7 @@ export const OPENCODE_COMMAND_MAP: Record<string, string> = {
   'new': 'new',
   'continue': 'continue',
   'apply': 'apply',
+  'apply-quick': 'apply-quick',
   'ff': 'ff',
   'sync': 'sync',
   'archive': 'archive',

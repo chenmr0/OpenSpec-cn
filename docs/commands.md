@@ -11,14 +11,15 @@
 | 命令 | 用途 |
 |---------|---------|
 | `/opsx:propose` | 一步创建变更并生成规划制品 |
-| `/opsx:explore` | 在提交变更前进行思路探索 |
-| `/opsx:apply` | 实施变更中的任务 |
+| `/opsx:apply` | 严格实施变更中的任务（子代理 + 两阶段审查） |
+| `/opsx:apply-quick` | 快速实施变更中的任务（跳过每任务子代理审查） |
 | `/opsx:archive` | 归档已完成的变更 |
 
 ### 扩展工作流命令（自定义工作流选择）
 
 | 命令 | 用途 |
 |---------|---------|
+| `/opsx:explore` | 在提交变更前进行思路探索 |
 | `/opsx:new` | 创建新的变更骨架 |
 | `/opsx:continue` | 根据依赖关系创建下一个制品 |
 | `/opsx:ff` | 快速前进：一次性创建所有规划制品 |
@@ -271,7 +272,7 @@ AI：正在快速前进 add-dark-mode...
 
 ### `/opsx:apply`
 
-实施变更中的任务。逐项处理任务列表，编写代码并勾选完成项。
+严格实施变更中的任务。每个任务由实现子代理开发，并经过 spec 合规审查和代码质量审查两个子代理门禁。
 
 **语法：**
 ```
@@ -286,9 +287,11 @@ AI：正在快速前进 add-dark-mode...
 
 **功能：**
 - 读取 `tasks.md` 并识别未完成的任务
-- 逐项处理任务
-- 根据需要编写代码、创建文件、运行测试
+- 为每个任务分派实现子代理
+- 分派 spec 合规审查和代码质量审查子代理
+- 根据审查结果修复并重新审查
 - 使用复选框 `[x]` 标记任务完成
+- 完成后执行变更级验证
 
 **示例：**
 ```
@@ -317,6 +320,36 @@ AI：正在实施 add-dark-mode...
 - 如果被中断，可以从上次停止的地方继续
 - 通过指定变更名称来处理并行变更
 - 完成状态通过 `tasks.md` 中的复选框跟踪
+- 更重但质量门禁更强，适合高风险或跨模块变更
+
+---
+
+### `/opsx:apply-quick`
+
+快速实施变更中的任务。它复用 `/opsx:apply` 的变更选择、上下文读取和任务进度机制，但在主上下文中顺序实现任务，跳过每任务子代理实现和两阶段子代理审查。
+
+**语法：**
+```
+/opsx:apply-quick [change-name]
+```
+
+**参数：**
+
+| 参数 | 必填 | 说明 |
+|----------|----------|-------------|
+| `change-name` | 否 | 要实施的变更（未提供时从上下文推断） |
+
+**功能：**
+- 读取 apply instructions 和 `contextFiles`
+- 在主上下文中按 `task.md` 顺序实现未完成任务
+- 每个任务完成后运行可用验证、自审并勾选 `[x]`
+- 跳过 `code-generator`、`spec-reviewer`、`code-quality-reviewer` 的 per-task 子代理流程
+- 全部完成后在主上下文中运行变更级验证
+
+**提示：**
+- 适合小修、小型功能、低风险变更
+- 更快但质量保证较轻
+- 如果任务复杂、跨模块或需要独立审查证明，使用 `/opsx:apply`
 
 ---
 
@@ -623,11 +656,11 @@ AI：欢迎使用 CodeSpec！
 
 | 工具 | 语法示例 |
 |------|----------------|
-| Claude Code | `/opsx:propose`, `/opsx:apply` |
-| Cursor | `/opsx-propose`, `/opsx-apply` |
-| Windsurf | `/opsx-propose`, `/opsx-apply` |
-| Copilot (IDE) | `/opsx-propose`, `/opsx-apply` |
-| Trae | 基于技能的调用，如 `/codespec-propose`、`/codespec-apply-change`（不生成 `opsx-*` 命令文件） |
+| Claude Code | `/opsx:propose`, `/opsx:apply`, `/opsx:apply-quick` |
+| Cursor | `/opsx-propose`, `/opsx-apply`, `/opsx-apply-quick` |
+| Windsurf | `/opsx-propose`, `/opsx-apply`, `/opsx-apply-quick` |
+| Copilot (IDE) | `/opsx-propose`, `/opsx-apply`, `/opsx-apply-quick` |
+| Trae | 基于技能的调用，如 `/codespec-propose`、`/codespec-apply-change`、`/codespec-apply-quick`（不生成 `opsx-*` 命令文件） |
 
 各工具的意图相同，但命令的呈现方式可能因集成方式而异。
 
@@ -643,6 +676,7 @@ AI：欢迎使用 CodeSpec！
 |---------|--------------|
 | `/opsx:proposal` | 一次性创建所有制品（proposal、specs、design、tasks） |
 | `/opsx:apply` | 实施变更 |
+| `/opsx:apply-quick` | 快速实施变更 |
 | `/opsx:archive` | 归档变更 |
 
 **何时使用旧版命令：**
