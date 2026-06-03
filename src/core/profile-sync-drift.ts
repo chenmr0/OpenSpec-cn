@@ -16,6 +16,7 @@ export const WORKFLOW_TO_SKILL_DIR: Record<WorkflowId, string> = {
   'new': 'codespec-new-change',
   'continue': 'codespec-continue-change',
   'apply': 'codespec-apply-change',
+  'apply-quick': 'codespec-apply-quick',
   'ff': 'codespec-ff-change',
   'sync': 'codespec-sync-specs',
   'archive': 'codespec-archive-change',
