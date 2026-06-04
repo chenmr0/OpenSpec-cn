@@ -1,7 +1,6 @@
 import type { ApplyCommand, CompressionState, WithParts } from "./types.js";
-
-export const APPLY_MARKER = "codespec-apply-change";
-export const APPLY_QUICK_MARKER = "codespec-apply-quick";
+export { APPLY_MARKER, APPLY_QUICK_MARKER } from "../workflow-session.js";
+import { APPLY_MARKER, APPLY_QUICK_MARKER } from "../workflow-session.js";
 
 const COMMAND_MARKERS: Array<{ command: ApplyCommand; marker: string }> = [
   { command: "apply", marker: APPLY_MARKER },

@@ -13,16 +13,23 @@ import { handleSessionIdle } from "./opencode-plugin/continuation/idle-event.js"
 import { handleNonIdleEvent } from "./opencode-plugin/continuation/handler.js";
 import { createSessionStateStore, type SessionStateStore } from "./opencode-plugin/continuation/session-state.js";
 import { createCompressionStateStore, type CompressionStateStore } from "./opencode-plugin/context-compression/compression-state-store.js";
+import type { WithParts } from "./opencode-plugin/context-compression/types.js";
 import { createMessagesTransformHandler } from "./opencode-plugin/context-compression/message-transform.js";
 import { createSystemTransformHandler } from "./opencode-plugin/context-compression/system-transform.js";
 import { createTaskCompressTool } from "./opencode-plugin/context-compression/task-compress-tool.js";
 import { createReadProtectionHandler } from "./opencode-plugin/read-protection/index.js";
 import { createGitAddGuardHandler } from "./opencode-plugin/git-add-guard.js";
+import {
+  createWorkflowSessionStore,
+  recordProtectedWorkflowSessionFromMessages,
+  type WorkflowSessionStore,
+} from "./opencode-plugin/workflow-session.js";
 import { readProjectConfig } from "./core/project-config.js";
 
 function createEventHandler(
   ctx: PluginInput,
   sessionStateStore: SessionStateStore,
+  workflowSessionStore: WorkflowSessionStore,
 ) {
   return async ({ event }: { event: { type: string; properties?: unknown } }): Promise<void> => {
     const props = event.properties as Record<string, unknown> | undefined;
@@ -42,6 +49,13 @@ function createEventHandler(
       return;
     }
 
+    if (event.type === "session.deleted") {
+      const sessionInfo = props?.info as { id?: string } | undefined;
+      if (sessionInfo?.id) {
+        workflowSessionStore.cleanup(sessionInfo.id);
+      }
+    }
+
     handleNonIdleEvent({
       eventType: event.type,
       properties: props,
@@ -54,12 +68,16 @@ const CodeSpecPlugin: Plugin = async (ctx) => {
   const projectConfig = readProjectConfig(ctx.directory);
   const sessionStateStore = createSessionStateStore();
   const compressionStateStore = createCompressionStateStore(projectConfig?.compression);
+  const workflowSessionStore = createWorkflowSessionStore();
 
-  const readProtection = createReadProtectionHandler();
+  const readProtection = createReadProtectionHandler({
+    isEnabledForSession: (sessionID) => workflowSessionStore.isProtectedSession(sessionID),
+  });
   const gitAddGuard = createGitAddGuardHandler();
+  const messagesTransform = createMessagesTransformHandler(compressionStateStore);
 
   return {
-    event: createEventHandler(ctx, sessionStateStore),
+    event: createEventHandler(ctx, sessionStateStore, workflowSessionStore),
 
     "tool.execute.before": async (
       input: { tool: string; sessionID: string; callID: string },
@@ -69,8 +87,15 @@ const CodeSpecPlugin: Plugin = async (ctx) => {
       await gitAddGuard(input, output);
     },
 
-    "experimental.chat.messages.transform":
-      createMessagesTransformHandler(compressionStateStore) as any,
+    "experimental.chat.messages.transform": (async (
+      input: unknown,
+      output: { messages: WithParts[] },
+    ) => {
+      if (Array.isArray(output.messages)) {
+        recordProtectedWorkflowSessionFromMessages(workflowSessionStore, output.messages);
+      }
+      await messagesTransform(input, output);
+    }) as any,
     "experimental.chat.system.transform":
       createSystemTransformHandler(compressionStateStore) as any,
 

@@ -11,12 +11,19 @@ const SKIP_EXTENSIONS = new Set([
   ".wasm", ".mp4", ".mp3", ".wav", ".avi", ".mov",
 ]);
 
-export function createReadProtectionHandler() {
+export interface ReadProtectionOptions {
+  isEnabledForSession?: (sessionID: string) => boolean;
+}
+
+export function createReadProtectionHandler(options: ReadProtectionOptions = {}) {
+  const isEnabledForSession = options.isEnabledForSession ?? (() => true);
+
   return async (
     input: { tool: string; sessionID: string; callID: string },
     output: { args: Record<string, unknown> },
   ): Promise<void> => {
     if (input.tool !== "read") return;
+    if (!isEnabledForSession(input.sessionID)) return;
 
     const filePath = output.args.filePath as string | undefined;
     if (!filePath) return;

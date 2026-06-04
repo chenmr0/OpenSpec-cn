@@ -205,7 +205,9 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 - **优先选择题** — 在可能的情况下比开放式问题更容易回答，使用 **AskUserQuestion tool** 询问用户
 - **严格遵循 YAGNI** — 从所有设计中移除不必要的功能
 - **探索替代方案** — 在做决定之前始终提出 2-3 种方案
-- **保持灵活** — 有不明确的地方就回头澄清`;
+- **保持灵活** — 有不明确的地方就回头澄清
+
+<!-- command: codespec-propose -->`;
 
 export function getOpsxProposeSkillTemplate(): SkillTemplate {
   return {

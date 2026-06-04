@@ -29,7 +29,7 @@ function debugLog(msg: string): void {
 export function createMessagesTransformHandler(
   compressionStateStore: CompressionStateStore,
 ) {
-  return async (input: {}, output: { messages: WithParts[] }) => {
+  return async (input: unknown, output: { messages: WithParts[] }) => {
     try {
       debugLog(`=== messages.transform called ===`);
       const messages = output.messages;
