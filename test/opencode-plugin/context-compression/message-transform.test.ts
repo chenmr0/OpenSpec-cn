@@ -4,15 +4,17 @@ import { createCompressionStateStore } from '../../../dist/opencode-plugin/conte
 import type { WithParts } from '../../../dist/opencode-plugin/context-compression/types.js';
 
 const APPLY_MARKER = 'codespec-apply-change';
+const APPLY_QUICK_MARKER = 'codespec-apply-quick';
 
 function makeMessagesWithTodoWrite(
   sessionId: string,
   todos: Array<{ content: string; status: string; priority?: string }>,
   toolStatus = 'completed',
   includeMarker = true,
+  marker = APPLY_MARKER,
 ): WithParts[] {
   const userText = includeMarker
-    ? `do the tasks\n<!-- command: ${APPLY_MARKER} -->`
+    ? `do the tasks\n<!-- command: ${marker} -->`
     : 'do the tasks';
   return [
     {
@@ -71,6 +73,40 @@ describe('createMessagesTransformHandler', () => {
     await handler({}, { messages });
 
     expect(state.completedOrder.length).toBe(2);
+  });
+
+  it('keeps the latest 3 completed tasks uncompressed in apply-quick sessions', async () => {
+    const store = createCompressionStateStore();
+    const handler = createMessagesTransformHandler(store);
+    const state = store.getState('ses-quick');
+
+    const messages1 = makeMessagesWithTodoWrite('ses-quick', [
+      { content: 'Task 1', status: 'completed', priority: 'high' },
+      { content: 'Task 2', status: 'completed', priority: 'high' },
+      { content: 'Task 3', status: 'completed', priority: 'high' },
+      { content: 'Task 4', status: 'pending', priority: 'high' },
+    ], 'completed', true, APPLY_QUICK_MARKER);
+
+    await handler({}, { messages: messages1 });
+
+    expect(state.applyCommand).toBe('apply-quick');
+    expect(state.keepRecentTasks).toBe(3);
+    expect(state.completedOrder.length).toBe(3);
+    expect(messages1.some(m => m.parts.some(p => p.text?.includes('task-compress')))).toBe(false);
+
+    const messages2 = makeMessagesWithTodoWrite('ses-quick', [
+      { content: 'Task 1', status: 'completed', priority: 'high' },
+      { content: 'Task 2', status: 'completed', priority: 'high' },
+      { content: 'Task 3', status: 'completed', priority: 'high' },
+      { content: 'Task 4', status: 'completed', priority: 'high' },
+      { content: 'Task 5', status: 'pending', priority: 'high' },
+    ], 'completed', true, APPLY_QUICK_MARKER);
+
+    await handler({}, { messages: messages2 });
+
+    expect(state.completedOrder.length).toBe(4);
+    const firstTaskId = state.completedOrder[0];
+    expect(messages2.some(m => m.parts.some(p => p.text?.includes(`task_id="${firstTaskId}"`)))).toBe(true);
   });
 
   it('does not re-record already completed tasks on subsequent calls', async () => {

@@ -75,6 +75,11 @@ describe('InitCommand', () => {
 
       const content = await fs.readFile(configPath, 'utf-8');
       expect(content).toContain('schema: spec-driven');
+      expect(content).toContain('compression:');
+      expect(content).toContain('  apply:');
+      expect(content).toContain('    keepRecentTasks: 1');
+      expect(content).toContain('  apply-quick:');
+      expect(content).toContain('    keepRecentTasks: 3');
     });
 
     it('should create core profile skills for Claude Code by default', async () => {

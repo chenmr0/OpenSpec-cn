@@ -3,6 +3,23 @@ import path from 'path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 
+const KeepRecentTasksSchema = z
+  .number()
+  .int()
+  .min(0)
+  .describe('Number of recently completed tasks to keep uncompressed');
+
+const CompressionCommandConfigSchema = z.object({
+  keepRecentTasks: KeepRecentTasksSchema.optional(),
+});
+
+const CompressionConfigSchema = z.object({
+  // Legacy: existing projects may still use compression.keepRecentTasks.
+  keepRecentTasks: KeepRecentTasksSchema.optional(),
+  apply: CompressionCommandConfigSchema.optional(),
+  'apply-quick': CompressionCommandConfigSchema.optional(),
+});
+
 /**
  * Zod schema for project configuration.
  *
@@ -40,15 +57,7 @@ export const ProjectConfigSchema = z.object({
     .describe('Per-artifact rules, keyed by artifact ID'),
 
   // Optional: compression settings for completed task context
-  compression: z
-    .object({
-      keepRecentTasks: z
-        .number()
-        .int()
-        .min(0)
-        .default(1)
-        .describe('Number of recently completed tasks to keep uncompressed'),
-    })
+  compression: CompressionConfigSchema
     .optional()
     .describe('Compression settings for completed task context'),
 });
@@ -167,10 +176,7 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
 
     // Parse compression field using Zod
     if (raw.compression !== undefined) {
-      const compressionSchema = z.object({
-        keepRecentTasks: z.number().int().min(0).default(1),
-      });
-      const compressionResult = compressionSchema.safeParse(raw.compression);
+      const compressionResult = CompressionConfigSchema.safeParse(raw.compression);
       if (compressionResult.success) {
         config.compression = compressionResult.data;
       } else {

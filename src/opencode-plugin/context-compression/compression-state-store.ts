@@ -1,4 +1,4 @@
-import type { CompressionState } from './types.js';
+import type { ApplyCommand, CompressionState } from './types.js';
 
 export interface CompressionStateStore {
   getState: (sessionID: string) => CompressionState;
@@ -6,10 +6,38 @@ export interface CompressionStateStore {
   cleanup: (sessionID: string) => void;
 }
 
-const DEFAULT_KEEP_RECENT_TASKS = 1;
+export interface CompressionCommandSettings {
+  keepRecentTasks?: number;
+}
 
-export function createCompressionStateStore(options?: { keepRecentTasks?: number }): CompressionStateStore {
-  const keepRecentTasks = options?.keepRecentTasks ?? DEFAULT_KEEP_RECENT_TASKS;
+export interface CompressionStateStoreOptions {
+  /** Legacy setting used by existing projects; applies to /apply only. */
+  keepRecentTasks?: number;
+  apply?: CompressionCommandSettings;
+  "apply-quick"?: CompressionCommandSettings;
+}
+
+const DEFAULT_KEEP_RECENT_TASKS_BY_COMMAND: Record<ApplyCommand, number> = {
+  apply: 1,
+  "apply-quick": 3,
+};
+
+function getKeepRecentTasksByCommand(
+  options?: CompressionStateStoreOptions,
+): Record<ApplyCommand, number> {
+  return {
+    apply:
+      options?.apply?.keepRecentTasks
+      ?? options?.keepRecentTasks
+      ?? DEFAULT_KEEP_RECENT_TASKS_BY_COMMAND.apply,
+    "apply-quick":
+      options?.["apply-quick"]?.keepRecentTasks
+      ?? DEFAULT_KEEP_RECENT_TASKS_BY_COMMAND["apply-quick"],
+  };
+}
+
+export function createCompressionStateStore(options?: CompressionStateStoreOptions): CompressionStateStore {
+  const keepRecentTasksByCommand = getKeepRecentTasksByCommand(options);
   const sessions = new Map<string, CompressionState>();
 
   return {
@@ -24,7 +52,9 @@ export function createCompressionStateStore(options?: { keepRecentTasks?: number
           inProgressStart: new Map(),
           nudgeInjectedForTask: null,
           isApplySession: false,
-          keepRecentTasks,
+          applyCommand: null,
+          keepRecentTasks: keepRecentTasksByCommand.apply,
+          keepRecentTasksByCommand: { ...keepRecentTasksByCommand },
         };
         sessions.set(sessionID, state);
       }

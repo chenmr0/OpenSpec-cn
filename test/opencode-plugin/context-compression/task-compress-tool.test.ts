@@ -10,28 +10,28 @@ function makeState(): CompressionState {
     lastTodoSnapshot: new Map(),
     nudgeInjectedForTask: null,
     isApplySession: false,
+    applyCommand: null,
     keepRecentTasks: 1,
+    keepRecentTasksByCommand: { apply: 1, 'apply-quick': 3 },
   };
 }
 
 describe('handleTaskCompress', () => {
-  it('throws if task boundary not found', () => {
+  it('returns an error when task boundary is not found', () => {
     const state = makeState();
-    expect(() => handleTaskCompress(state, 'unknown', 'summary', [])).toThrow('不存在');
-    try {
-      handleTaskCompress(state, 'unknown', 'summary', []);
-    } catch (e: any) {
-      expect(e.message).toContain('当前可用的任务 ID');
-    }
+    const result = handleTaskCompress(state, 'unknown', 'summary', []);
+    expect(result).toContain('不存在');
+    expect(result).toContain('当前可用的任务 ID');
   });
 
-  it('throws if task already compressed', () => {
+  it('returns an error when task is already compressed', () => {
     const state = makeState();
     state.taskBoundaries.set('1', {
       taskId: '1', description: 'T1', startMessageId: 'm1', endMessageId: 'm2',
       completedAt: 1, compressed: true,
     });
-    expect(() => handleTaskCompress(state, '1', 'summary', [])).toThrow('已被压缩');
+    const result = handleTaskCompress(state, '1', 'summary', []);
+    expect(result).toContain('已被压缩');
   });
 
   it('stores compression block and marks boundary as compressed', () => {

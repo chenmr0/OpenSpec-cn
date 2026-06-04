@@ -52,9 +52,8 @@ function createEventHandler(
 
 const CodeSpecPlugin: Plugin = async (ctx) => {
   const projectConfig = readProjectConfig(ctx.directory);
-  const keepRecentTasks = projectConfig?.compression?.keepRecentTasks;
   const sessionStateStore = createSessionStateStore();
-  const compressionStateStore = createCompressionStateStore({ keepRecentTasks });
+  const compressionStateStore = createCompressionStateStore(projectConfig?.compression);
 
   const readProtection = createReadProtectionHandler();
   const gitAddGuard = createGitAddGuardHandler();

@@ -9,7 +9,9 @@ describe('context-compression types', () => {
       lastTodoSnapshot: new Map() as Map<string, string>,
       nudgeInjectedForTask: null as string | null,
       isApplySession: false as boolean,
+      applyCommand: null as 'apply' | 'apply-quick' | null,
       keepRecentTasks: 1 as number,
+      keepRecentTasksByCommand: { apply: 1, 'apply-quick': 3 },
     };
     expect(state.taskBoundaries.size).toBe(0);
     expect(state.compressionBlocks.size).toBe(0);

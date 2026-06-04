@@ -9,6 +9,9 @@ describe('CompressionStateStore', () => {
     expect(state.compressionBlocks.size).toBe(0);
     expect(state.completedOrder).toEqual([]);
     expect(state.nudgeInjectedForTask).toBeNull();
+    expect(state.applyCommand).toBeNull();
+    expect(state.keepRecentTasks).toBe(1);
+    expect(state.keepRecentTasksByCommand).toEqual({ apply: 1, 'apply-quick': 3 });
   });
 
   it('getState returns same state for same session', () => {
@@ -37,5 +40,22 @@ describe('CompressionStateStore', () => {
     expect(store.getExistingState('session-1')).toBeUndefined();
     const newState = store.getState('session-1');
     expect(newState.completedOrder).toEqual([]);
+  });
+
+  it('uses legacy keepRecentTasks for apply only', () => {
+    const store = createCompressionStateStore({ keepRecentTasks: 2 });
+    const state = store.getState('session-1');
+    expect(state.keepRecentTasks).toBe(2);
+    expect(state.keepRecentTasksByCommand).toEqual({ apply: 2, 'apply-quick': 3 });
+  });
+
+  it('uses per-command keepRecentTasks when configured', () => {
+    const store = createCompressionStateStore({
+      apply: { keepRecentTasks: 4 },
+      'apply-quick': { keepRecentTasks: 5 },
+    });
+    const state = store.getState('session-1');
+    expect(state.keepRecentTasks).toBe(4);
+    expect(state.keepRecentTasksByCommand).toEqual({ apply: 4, 'apply-quick': 5 });
   });
 });

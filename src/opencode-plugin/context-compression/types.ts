@@ -19,6 +19,8 @@ export interface TaskCompressionBlock {
   messageIds: string[];
 }
 
+export type ApplyCommand = "apply" | "apply-quick";
+
 /** 压缩状态（per-session） */
 export interface CompressionState {
   taskBoundaries: Map<string, TaskBoundary>;
@@ -31,8 +33,12 @@ export interface CompressionState {
   nudgeInjectedForTask: string | null;
   /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
   isApplySession: boolean;
+  /** Apply command detected for this session, if any */
+  applyCommand: ApplyCommand | null;
   /** Number of recently completed tasks to keep uncompressed (default: 1) */
   keepRecentTasks: number;
+  /** Per-command keepRecentTasks settings captured when the session state is created */
+  keepRecentTasksByCommand: Record<ApplyCommand, number>;
 }
 
 /** WithParts — 消息结构，与 OpenCode SDK 对齐 */

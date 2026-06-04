@@ -68,6 +68,54 @@ rules:
         expect(consoleWarnSpy).not.toHaveBeenCalled();
       });
 
+      it('should parse per-command compression config', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+compression:
+  apply:
+    keepRecentTasks: 1
+  apply-quick:
+    keepRecentTasks: 3
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          compression: {
+            apply: { keepRecentTasks: 1 },
+            'apply-quick': { keepRecentTasks: 3 },
+          },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should parse legacy compression keepRecentTasks config', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+compression:
+  keepRecentTasks: 2
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          compression: {
+            keepRecentTasks: 2,
+          },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
       it('should return partial config when schema is invalid', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });

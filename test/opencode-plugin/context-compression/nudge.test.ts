@@ -10,7 +10,9 @@ function makeState(): CompressionState {
     lastTodoSnapshot: new Map(),
     nudgeInjectedForTask: null,
     isApplySession: false,
+    applyCommand: null,
     keepRecentTasks: 1,
+    keepRecentTasksByCommand: { apply: 1, 'apply-quick': 3 },
   };
 }
 

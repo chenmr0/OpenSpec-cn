@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectApplySession, APPLY_MARKER } from '../../../dist/opencode-plugin/context-compression/session-detection.js';
+import { detectApplySession, APPLY_MARKER, APPLY_QUICK_MARKER } from '../../../dist/opencode-plugin/context-compression/session-detection.js';
 import type { CompressionState, WithParts } from '../../../dist/opencode-plugin/context-compression/types.js';
 
 function makeState(): CompressionState {
@@ -10,7 +10,9 @@ function makeState(): CompressionState {
     lastTodoSnapshot: new Map(),
     nudgeInjectedForTask: null,
     isApplySession: false,
+    applyCommand: null,
     keepRecentTasks: 1,
+    keepRecentTasksByCommand: { apply: 1, 'apply-quick': 3 },
   };
 }
 
@@ -54,6 +56,31 @@ describe('detectApplySession', () => {
     ];
     expect(detectApplySession(state, messages)).toBe(true);
     expect(state.isApplySession).toBe(true);
+    expect(state.applyCommand).toBe('apply');
+    expect(state.keepRecentTasks).toBe(1);
+  });
+
+  it('returns true when a user message contains the apply-quick marker', () => {
+    const state = makeState();
+    const messages = [
+      makeUserMessage('starting work'),
+      makeUserMessage(`some template content\n<!-- command: ${APPLY_QUICK_MARKER} -->\nmore content`),
+    ];
+    expect(detectApplySession(state, messages)).toBe(true);
+    expect(state.isApplySession).toBe(true);
+    expect(state.applyCommand).toBe('apply-quick');
+    expect(state.keepRecentTasks).toBe(3);
+  });
+
+  it('uses configured keepRecentTasks for apply-quick sessions', () => {
+    const state = makeState();
+    state.keepRecentTasksByCommand['apply-quick'] = 5;
+    const messages = [
+      makeUserMessage(`<!-- command: ${APPLY_QUICK_MARKER} -->`),
+    ];
+
+    expect(detectApplySession(state, messages)).toBe(true);
+    expect(state.keepRecentTasks).toBe(5);
   });
 
   it('caches result — returns true on subsequent calls without scanning', () => {

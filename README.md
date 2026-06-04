@@ -106,7 +106,10 @@ codespec init
 
 ```yaml
 compression:
-  keepRecentTasks: 1  # 保留最近 1 个任务的完整上下文（默认值）
+  apply:
+    keepRecentTasks: 1  # /apply 保留最近 1 个任务的完整上下文
+  apply-quick:
+    keepRecentTasks: 3  # /apply-quick 保留最近 3 个任务的完整上下文
 ```
 
 ## 为什么选择 CodeSpec？

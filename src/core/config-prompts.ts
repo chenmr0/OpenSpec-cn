@@ -18,7 +18,10 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('# 已完成任务的对话上下文会被压缩为摘要以节省 token。');
   lines.push('# keepRecentTasks: 保留最近几个已完成任务不压缩');
   lines.push('compression:');
-  lines.push('  keepRecentTasks: 1');
+  lines.push('  apply:');
+  lines.push('    keepRecentTasks: 1');
+  lines.push('  apply-quick:');
+  lines.push('    keepRecentTasks: 3');
   lines.push('');
 
   // Context section with comments
