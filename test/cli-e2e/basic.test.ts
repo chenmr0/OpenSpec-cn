@@ -218,4 +218,48 @@ describe('codespec CLI e2e basics', () => {
       expect(result.stderr).toContain('不能同时使用保留值 "all" 或 "none" 与具体工具 ID');
     });
   });
+
+  describe('uninit command', () => {
+    it('shows help output', async () => {
+      const result = await runCLI(['uninit', '--help']);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Usage: codespec uninit');
+      expect(result.stderr).toBe('');
+    });
+
+    it('removes OpenCode artifacts created by init', async () => {
+      const projectDir = await prepareFixture('tmp-init');
+      const emptyProjectDir = path.join(projectDir, '..', 'empty-project');
+      await fs.mkdir(emptyProjectDir, { recursive: true });
+
+      const env = await createTempGlobalConfig(emptyProjectDir);
+      const opencodeDir = path.join(env.XDG_CONFIG_HOME, 'opencode');
+      const commandFile = path.join(opencodeDir, 'commands', 'codespec', 'plan.md');
+      const skillFile = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+
+      const initResult = await runCLI(['init', '--tools', 'opencode'], {
+        cwd: emptyProjectDir,
+        env,
+      });
+      expect(initResult.exitCode).toBe(0);
+      expect(await fileExists(commandFile)).toBe(true);
+      expect(await fileExists(skillFile)).toBe(true);
+
+      const uninitResult = await runCLI(['uninit'], {
+        cwd: emptyProjectDir,
+        env,
+      });
+      expect(uninitResult.exitCode).toBe(0);
+      expect(uninitResult.stdout).toContain('CodeSpec OpenCode uninit complete');
+      expect(await fileExists(commandFile)).toBe(false);
+      expect(await fileExists(skillFile)).toBe(false);
+
+      const config = JSON.parse(
+        await fs.readFile(path.join(opencodeDir, 'opencode.json'), 'utf-8')
+      ) as Record<string, unknown>;
+      expect(config.plugin).toEqual([]);
+      expect(config.permission).toBeDefined();
+    });
+  });
 });

@@ -1,0 +1,164 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { promises as fs } from 'fs';
+import path from 'path';
+import os from 'os';
+import { pathToFileURL } from 'url';
+import { InitCommand } from '../../src/core/init.js';
+import { UninitCommand } from '../../src/core/uninit.js';
+import { getOpenCodeUserConfigDir } from '../../src/core/global-config.js';
+
+describe('UninitCommand', () => {
+  let projectDir: string;
+  let configTempDir: string;
+  let originalEnv: NodeJS.ProcessEnv;
+
+  beforeEach(async () => {
+    projectDir = path.join(os.tmpdir(), `codespec-uninit-project-${Date.now()}`);
+    configTempDir = path.join(os.tmpdir(), `codespec-uninit-config-${Date.now()}`);
+    await fs.mkdir(projectDir, { recursive: true });
+    await fs.mkdir(configTempDir, { recursive: true });
+
+    originalEnv = { ...process.env };
+    process.env.XDG_CONFIG_HOME = configTempDir;
+
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+  });
+
+  afterEach(async () => {
+    process.env = originalEnv;
+    vi.restoreAllMocks();
+    await fs.rm(projectDir, { recursive: true, force: true });
+    await fs.rm(configTempDir, { recursive: true, force: true });
+  });
+
+  it('removes artifacts created by opencode init and preserves permission config', async () => {
+    const initCommand = new InitCommand({ tools: 'opencode', force: true });
+    await initCommand.execute(projectDir);
+
+    const opencodeDir = getOpenCodeUserConfigDir();
+    const skillFile = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+    const commandFile = path.join(opencodeDir, 'commands', 'codespec', 'plan.md');
+    const agentFile = path.join(opencodeDir, 'agents', 'code-generator.md');
+    const configPath = path.join(opencodeDir, 'opencode.json');
+    const beforeConfig = JSON.parse(await fs.readFile(configPath, 'utf-8')) as Record<string, unknown>;
+
+    expect(await fileExists(skillFile)).toBe(true);
+    expect(await fileExists(commandFile)).toBe(true);
+    expect(await fileExists(agentFile)).toBe(true);
+    expect(Array.isArray(beforeConfig.plugin)).toBe(true);
+
+    const result = await new UninitCommand().execute(projectDir);
+
+    expect(result.removedSkills.length).toBeGreaterThan(0);
+    expect(result.removedCommands.length).toBeGreaterThan(0);
+    expect(result.removedAgents.length).toBeGreaterThan(0);
+    expect(result.removedPluginEntries.length).toBeGreaterThan(0);
+    expect(await fileExists(skillFile)).toBe(false);
+    expect(await fileExists(commandFile)).toBe(false);
+    expect(await fileExists(agentFile)).toBe(false);
+
+    const afterConfig = JSON.parse(await fs.readFile(configPath, 'utf-8')) as Record<string, unknown>;
+    expect(afterConfig.plugin).toEqual([]);
+    expect(afterConfig.permission).toEqual(beforeConfig.permission);
+  });
+
+  it('removes older generated workflow skill directories', async () => {
+    const opencodeDir = getOpenCodeUserConfigDir();
+    const skillDir = path.join(opencodeDir, 'skills', 'codespec-propose');
+    const skillFile = path.join(skillDir, 'SKILL.md');
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(skillFile, [
+      '---',
+      'name: codespec-propose',
+      'metadata:',
+      '  generatedBy: "1.0.0"',
+      '---',
+      '',
+      'Generated skill',
+      '',
+    ].join('\n'));
+
+    const result = await new UninitCommand().execute(projectDir);
+
+    expect(result.removedSkills).toContain(skillDir);
+    expect(await fileExists(skillDir)).toBe(false);
+  });
+
+  it('preserves unrelated and user-modified OpenCode artifacts', async () => {
+    const opencodeDir = getOpenCodeUserConfigDir();
+    const unmarkedSkill = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+    const customCommand = path.join(opencodeDir, 'commands', 'codespec', 'custom.md');
+    const otherCommand = path.join(opencodeDir, 'commands', 'other.md');
+    const modifiedAgent = path.join(opencodeDir, 'agents', 'code-generator.md');
+    const fakePackageDir = path.join(configTempDir, 'node_modules', 'codespec');
+    const fakePackageUrl = pathToFileURL(fakePackageDir).href;
+
+    await fs.mkdir(path.dirname(unmarkedSkill), { recursive: true });
+    await fs.writeFile(unmarkedSkill, '---\nname: writing-plans\n---\nuser skill\n');
+    await fs.mkdir(path.dirname(customCommand), { recursive: true });
+    await fs.writeFile(customCommand, 'custom command\n');
+    await fs.writeFile(otherCommand, 'other command\n');
+    await fs.mkdir(path.dirname(modifiedAgent), { recursive: true });
+    await fs.writeFile(modifiedAgent, 'modified agent\n');
+    await fs.mkdir(fakePackageDir, { recursive: true });
+    await fs.writeFile(path.join(fakePackageDir, 'package.json'), '{"name":"codespec"}\n');
+    await fs.writeFile(
+      path.join(opencodeDir, 'opencode.json'),
+      JSON.stringify({
+        plugin: ['other-plugin', 'codespec', 'codespec@1.2.3', fakePackageUrl, { keep: true }],
+        permission: { bash: 'ask' },
+        theme: 'dark',
+      }, null, 2) + '\n'
+    );
+
+    const result = await new UninitCommand().execute(projectDir);
+
+    expect(result.skippedSkills).toContain(path.dirname(unmarkedSkill));
+    expect(result.skippedAgents).toContain(modifiedAgent);
+    expect(await fileExists(unmarkedSkill)).toBe(true);
+    expect(await fileExists(customCommand)).toBe(true);
+    expect(await fileExists(otherCommand)).toBe(true);
+    expect(await fileExists(modifiedAgent)).toBe(true);
+
+    const config = JSON.parse(
+      await fs.readFile(path.join(opencodeDir, 'opencode.json'), 'utf-8')
+    ) as Record<string, unknown>;
+    expect(config.plugin).toEqual(['other-plugin', { keep: true }]);
+    expect(config.permission).toEqual({ bash: 'ask' });
+    expect(config.theme).toBe('dark');
+  });
+
+  it('skips invalid opencode.json while still removing file artifacts', async () => {
+    const opencodeDir = getOpenCodeUserConfigDir();
+    const commandFile = path.join(opencodeDir, 'commands', 'codespec', 'plan.md');
+    const configPath = path.join(opencodeDir, 'opencode.json');
+    await fs.mkdir(path.dirname(commandFile), { recursive: true });
+    await fs.writeFile(commandFile, 'generated command\n');
+    await fs.writeFile(configPath, '{ invalid json');
+
+    const result = await new UninitCommand().execute(projectDir);
+
+    expect(result.configSkippedReason).toBe('invalid-json');
+    expect(await fileExists(commandFile)).toBe(false);
+    expect(await fs.readFile(configPath, 'utf-8')).toBe('{ invalid json');
+  });
+
+  it('is a no-op when OpenCode config does not exist', async () => {
+    const result = await new UninitCommand().execute(projectDir);
+
+    expect(result.configSkippedReason).toBe('missing');
+    expect(result.removedSkills).toEqual([]);
+    expect(result.removedCommands).toEqual([]);
+    expect(result.removedAgents).toEqual([]);
+    expect(result.removedPluginEntries).toEqual([]);
+  });
+});
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}

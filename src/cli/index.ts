@@ -96,6 +96,21 @@ program
     }
   });
 
+program
+  .command('uninit')
+  .description('Remove CodeSpec-managed OpenCode user config artifacts')
+  .action(async () => {
+    try {
+      const { UninitCommand } = await import('../core/uninit.js');
+      const uninitCommand = new UninitCommand();
+      await uninitCommand.execute('.');
+    } catch (error) {
+      console.log();
+      ora().fail(`Error: ${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
 // Hidden alias: 'experimental' -> 'init' for backwards compatibility
 program
   .command('experimental', { hidden: true })
