@@ -55,6 +55,11 @@ export function createCompressionStateStore(options?: CompressionStateStoreOptio
           applyCommand: null,
           keepRecentTasks: keepRecentTasksByCommand.apply,
           keepRecentTasksByCommand: { ...keepRecentTasksByCommand },
+          // plan pruning fields
+          isPlanSession: false,
+          toolCache: new Map(),
+          prunedToolCallIds: new Set(),
+          messageTurnIndex: 0,
         };
         sessions.set(sessionID, state);
       }

@@ -39,6 +39,14 @@ export interface CompressionState {
   keepRecentTasks: number;
   /** Per-command keepRecentTasks settings captured when the session state is created */
   keepRecentTasksByCommand: Record<ApplyCommand, number>;
+  /** Whether this session is a /codespec/plan session (detected via PLAN_MARKER) */
+  isPlanSession: boolean;
+  /** Cache of all tool call metadata keyed by callID */
+  toolCache: Map<string, ToolCallEntry>;
+  /** Set of callIDs that have been pruned (dedup or age) */
+  prunedToolCallIds: Set<string>;
+  /** Current message turn index (incremented per user-assistant exchange) */
+  messageTurnIndex: number;
 }
 
 /** WithParts — 消息结构，与 OpenCode SDK 对齐 */
@@ -70,4 +78,16 @@ export interface ParsedTodo {
   id: string;
   content: string;
   status: string;
+}
+
+/** 单个工具调用的元数据，以 callID 为 key */
+export interface ToolCallEntry {
+  callID: string;
+  toolName: string;
+  parameters: Record<string, unknown>;
+  status: string;
+  messageIndex: number;
+  turnIndex: number;
+  signature: string;
+  outputTokenEstimate: number;
 }

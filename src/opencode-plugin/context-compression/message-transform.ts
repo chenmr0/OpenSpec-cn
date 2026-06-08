@@ -2,7 +2,10 @@ import type { WithParts, CompressionState } from "./types.js";
 import type { CompressionStateStore } from "./compression-state-store.js";
 import { injectNudge, removePreviousNudgeMessages, NUDGE_MSG_ID_PREFIX } from "./nudge.js";
 import { createSyntheticUserMessage } from "./message-utils.js";
-import { detectApplySession } from "./session-detection.js";
+import { detectApplySession, detectPlanSession } from "./session-detection.js";
+import { syncToolCache } from "./tool-cache.js";
+import { applyAutoDedup } from "./auto-dedup.js";
+import { applyAgePrune } from "./age-prune.js";
 import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -57,6 +60,19 @@ export function createMessagesTransformHandler(
             }
           }
         }
+      }
+
+      // ---- Sync tool cache (needed for both plan and apply paths) ----
+      syncToolCache(state, messages);
+
+      // ---- Plan session: passive pruning (dedup + age) ----
+      if (detectPlanSession(state, messages)) {
+        debugLog(`plan session detected — applying passive pruning`);
+        applyAutoDedup(state, messages);
+        debugLog(`dedup done: prunedToolCallIds.size=${state.prunedToolCallIds.size}`);
+        applyAgePrune(state, messages);
+        debugLog(`age prune done: prunedToolCallIds.size=${state.prunedToolCallIds.size}`);
+        return;
       }
 
       // Only run compression logic in /codespec/apply sessions
