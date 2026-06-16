@@ -33,7 +33,7 @@ digraph process {
         "分派代码质量审查子智能体 (code-quality-reviewer)" [shape=box];
         "代码质量审查子智能体通过?" [shape=diamond];
         "实现子智能体修复质量问题" [shape=box];
-        "在 TodoWrite 中标记任务完成" [shape=box];
+        "在 TodoWrite 中标记任务完成，更新 task.md 复选框 [ ] → [x]" [shape=box];
     }
 
     "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite" [shape=box];
@@ -54,8 +54,8 @@ digraph process {
     "分派代码质量审查子智能体 (code-quality-reviewer)" -> "代码质量审查子智能体通过?";
     "代码质量审查子智能体通过?" -> "实现子智能体修复质量问题" [label="否"];
     "实现子智能体修复质量问题" -> "分派代码质量审查子智能体 (code-quality-reviewer)" [label="重新审查"];
-    "代码质量审查子智能体通过?" -> "在 TodoWrite 中标记任务完成" [label="是"];
-    "在 TodoWrite 中标记任务完成" -> "还有剩余任务?";
+    "代码质量审查子智能体通过?" -> "在 TodoWrite 中标记任务完成，更新 task.md 复选框 [ ] → [x]" [label="是"];
+    "在 TodoWrite 中标记任务完成，更新 task.md 复选框 [ ] → [x]" -> "还有剩余任务?";
     "还有剩余任务?" -> "分派实现子智能体 (code-generator)" [label="是"];
     "还有剩余任务?" -> "分派最终代码审查子智能体审查整体实现" [label="否"];
     "分派最终代码审查子智能体审查整体实现" -> "报告完成，验证测试通过，等待用户指示";
@@ -111,7 +111,7 @@ digraph process {
 [获取 git SHA，分派代码质量审查]
 代码审查者：优点：测试覆盖好，代码整洁。问题：无。通过。
 
-[标记任务 1 完成]
+[标记任务 1 完成，更新 task.md 中 ### [ ] → ### [x]]
 
 任务 2：恢复模式
 
@@ -145,7 +145,7 @@ digraph process {
 [代码审查者再次审查]
 代码审查者：✅ 通过
 
-[标记任务 2 完成]
+[标记任务 2 完成，更新 task.md 中 ### [ ] → ### [x]]
 
 ...
 

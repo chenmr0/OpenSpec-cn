@@ -56,6 +56,12 @@ const applyQuickInstructions = `# 快速实现变更中的任务
    - 不要批量标记——完成一个标记一个
    - TodoWrite 是 continuation enforcer 判断进度的基础，不遵守 = 系统误判
 
+   **task.md 复选框同步（关键）：**
+   - 每完成一个任务后，**同时**用 Edit 工具更新 \`task.md\` 文件中的任务复选框
+   - 将对应任务的 \`### [ ]\` 改为 \`### [x]\`
+   - task.md 路径：\`codespec/changes/<change-name>/task.md\`
+   - 确保 task.md 中的复选框状态与 TodoWrite 完成进度保持一致
+
    该技能会自动执行：为每个任务分派隔离的实现子智能体 → 标记完成 → 继续下一个任务。你只需确保传递正确的上下文（完整任务文本 + 场景铺设 + 工作目录），其余流程由技能驱动。
 
 
