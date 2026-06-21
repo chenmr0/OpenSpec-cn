@@ -142,7 +142,9 @@ digraph process {
 ...
 
 所有任务已完成并通过验证！可以使用 \`/codespec/archive\` 归档此变更。
-\`\`\``;
+\`\`\`
+
+<!-- main-agent-development -->`;
 
 export function getMainAgentDevelopmentSkillTemplate(): SkillTemplate {
   return {

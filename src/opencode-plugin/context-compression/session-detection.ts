@@ -1,10 +1,12 @@
 import type { ApplyCommand, CompressionState, WithParts } from "./types.js";
-export { APPLY_MARKER, APPLY_QUICK_MARKER, PLAN_MARKER } from "../workflow-session.js";
-import { APPLY_MARKER, APPLY_QUICK_MARKER, PLAN_MARKER } from "../workflow-session.js";
+export { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
+import { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
+
+/** Marker used to detect when the compression system is running in main-agent mode. */
+export const MAIN_AGENT_DEV_MARKER = "main-agent-development";
 
 const COMMAND_MARKERS: Array<{ command: ApplyCommand; marker: string }> = [
   { command: "apply", marker: APPLY_MARKER },
-  { command: "apply-quick", marker: APPLY_QUICK_MARKER },
 ];
 
 function setApplySessionCommand(
@@ -13,9 +15,14 @@ function setApplySessionCommand(
 ): void {
   state.isApplySession = true;
   state.applyCommand = command;
-  state.keepRecentTasks =
-    state.keepRecentTasksByCommand?.[command]
-    ?? (command === "apply-quick" ? 3 : state.keepRecentTasks);
+  if (state.isMainAgentMode) {
+    // main mode: hardcoded 0 — compress after every task
+    state.keepRecentTasks = 0;
+  } else {
+    // subagent mode: use user config, default 1
+    state.keepRecentTasks =
+      state.keepRecentTasksByCommand?.[command] ?? 1;
+  }
 }
 
 /**
@@ -61,6 +68,10 @@ export function detectApplySession(
     if (msg.info.role !== "user") continue;
     for (const part of msg.parts) {
       if (part.type !== "text" || !part.text) continue;
+      // Detect main-agent mode (cached, only scans user text parts)
+      if (!state.isMainAgentMode && part.text.includes(MAIN_AGENT_DEV_MARKER)) {
+        state.isMainAgentMode = true;
+      }
       for (const { command, marker } of COMMAND_MARKERS) {
         if (part.text.includes(marker)) {
           setApplySessionCommand(state, command);

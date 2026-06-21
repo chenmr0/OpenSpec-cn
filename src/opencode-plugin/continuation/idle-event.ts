@@ -18,7 +18,7 @@ import { getIncompleteCount } from "./todo.js";
 import type { SessionState, Todo } from "./types.js";
 import type { SessionStateStore } from "./session-state.js";
 import { startCountdown } from "./countdown.js";
-import { APPLY_MARKER, APPLY_QUICK_MARKER } from "../context-compression/session-detection.js";
+import { APPLY_MARKER } from "../context-compression/session-detection.js";
 
 /**
  * Check if the last assistant message in a list has an abort error.
@@ -63,7 +63,7 @@ function detectApplySessionFromMessages(
     const parts = (msg as { parts?: Array<{ type?: string; text?: string }> }).parts;
     if (!parts) continue;
     for (const part of parts) {
-      if (part.type === "text" && (part.text?.includes(APPLY_MARKER) || part.text?.includes(APPLY_QUICK_MARKER))) {
+      if (part.type === "text" && part.text?.includes(APPLY_MARKER)) {
         state.isApplySession = true;
         return true;
       }

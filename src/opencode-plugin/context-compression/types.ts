@@ -19,7 +19,7 @@ export interface TaskCompressionBlock {
   messageIds: string[];
 }
 
-export type ApplyCommand = "apply" | "apply-quick";
+export type ApplyCommand = "apply";
 
 /** 压缩状态（per-session） */
 export interface CompressionState {
@@ -33,6 +33,8 @@ export interface CompressionState {
   nudgeInjectedForTask: string | null;
   /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
   isApplySession: boolean;
+  /** Whether this apply session uses main-agent-development (speed-first mode) */
+  isMainAgentMode: boolean;
   /** Apply command detected for this session, if any */
   applyCommand: ApplyCommand | null;
   /** Number of recently completed tasks to keep uncompressed (default: 1) */
