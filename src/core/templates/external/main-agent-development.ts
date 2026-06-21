@@ -11,9 +11,9 @@ const mainAgentDevInstructions = `# 主 Agent 直接开发
 
 主 Agent 逐个执行所有任务，不委派子代理。全部任务完成后统一做规格审查和代码质量审查。
 
-**为什么用主 Agent 直接执行：** 主 Agent 拥有完整对话上下文和项目理解，无子代理上下文重建开销。适合简单到中等复杂度的变更，速度更快、token 更省。
+**为什么用主 Agent 直接执行：** 主 Agent 拥有完整对话上下文和项目理解，无子代理上下文重建开销。
 
-**核心原则：** 主 Agent 逐任务执行 + 全部完成后统一审查 = 速度快、上下文完整
+**核心原则：** 主 Agent 逐任务执行 + 全部完成后统一审查（先规格后质量）= 高质量、快速迭代
 
 ## 流程
 
@@ -25,9 +25,7 @@ digraph process {
         label="每个任务（主 Agent 直接执行）";
         "读取任务目标和涉及文件" [shape=box];
         "读取关联 spec/design 章节" [shape=box];
-        "实现代码" [shape=box];
-        "验证（构建 + 测试）" [shape=box];
-        "提交（git add + git commit）" [shape=box];
+        "实现代码、编译、测试、自审" [shape=box];
         "标记完成（TodoWrite + task.md 复选框）" [shape=box];
     }
 
@@ -39,18 +37,11 @@ digraph process {
     "分派 code-quality-reviewer 子代理审查代码质量" [shape=box];
     "code-quality-reviewer 通过?" [shape=diamond];
     "主 Agent 修复质量问题" [shape=box];
-    "委派 change-verifier 变更级验证" [shape=box];
-    "验证通过?" [shape=diamond];
-    "修复循环（最多3次）" [shape=box];
-    "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
-    "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
 
     "读取 task.md，提取所有任务，创建 TodoWrite" -> "读取任务目标和涉及文件";
     "读取任务目标和涉及文件" -> "读取关联 spec/design 章节";
-    "读取关联 spec/design 章节" -> "实现代码";
-    "实现代码" -> "验证（构建 + 测试）";
-    "验证（构建 + 测试）" -> "提交（git add + git commit）";
-    "提交（git add + git commit）" -> "标记完成（TodoWrite + task.md 复选框）";
+    "读取关联 spec/design 章节" -> "实现代码、编译、测试、自审";
+    "实现代码、编译、测试、自审" -> "标记完成（TodoWrite + task.md 复选框）";
     "标记完成（TodoWrite + task.md 复选框）" -> "还有剩余任务?";
     "还有剩余任务?" -> "读取任务目标和涉及文件" [label="是"];
     "还有剩余任务?" -> "分派 spec-reviewer 子代理审查规格合规性" [label="否"];
@@ -61,12 +52,6 @@ digraph process {
     "分派 code-quality-reviewer 子代理审查代码质量" -> "code-quality-reviewer 通过?";
     "code-quality-reviewer 通过?" -> "主 Agent 修复质量问题" [label="否"];
     "主 Agent 修复质量问题" -> "分派 code-quality-reviewer 子代理审查代码质量" [label="重新审查"];
-    "code-quality-reviewer 通过?" -> "委派 change-verifier 变更级验证" [label="是"];
-    "委派 change-verifier 变更级验证" -> "验证通过?";
-    "验证通过?" -> "修复循环（最多3次）" [label="否"];
-    "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
-    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
-    "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
 }
 \`\`\`
 
@@ -78,8 +63,7 @@ digraph process {
 2. **读取关联上下文**：阅读 spec.md / design.md 中与本任务相关的章节
 3. **实现代码**：直接修改涉及文件，遵循现有代码风格和职责边界
 4. **验证**：运行项目构建和测试命令确认变更正确
-5. **提交**：对修改文件执行 git add + git commit
-6. **标记完成**：在 TodoWrite 中标记任务完成，更新 task.md 复选框
+5. **标记完成**：在 TodoWrite 中标记任务完成，更新 task.md 复选框
 
 ## 全部任务完成后的统一审查
 
@@ -113,7 +97,6 @@ digraph process {
 **与子代理模式相比：**
 - 无子代理上下文重建开销
 - 主 Agent 拥有完整对话上下文和项目理解
-- 适合简单到中等复杂度的变更
 - 子代理审查仍保障最终质量
 
 **质量关卡：**
@@ -131,10 +114,6 @@ digraph process {
 **Schema：** <schema-name>
 **执行模式：** main
 **进度：** 7/7 任务已完成 ✓
-
-### 变更级验证
-- **构建：** \`npm run build\` → exit 0 ✅
-- **测试：** \`npm test\` → 34/34 pass ✅
 
 ### 本次会话已完成
 - [x] 任务 3：<description>
