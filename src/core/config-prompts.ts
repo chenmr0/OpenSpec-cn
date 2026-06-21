@@ -20,8 +20,6 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('compression:');
   lines.push('  apply:');
   lines.push('    keepRecentTasks: 1');
-  lines.push('  apply-quick:');
-  lines.push('    keepRecentTasks: 3');
   lines.push('');
 
   // Context section with comments

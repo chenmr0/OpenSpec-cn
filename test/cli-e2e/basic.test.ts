@@ -236,7 +236,7 @@ describe('codespec CLI e2e basics', () => {
       const env = await createTempGlobalConfig(emptyProjectDir);
       const opencodeDir = path.join(env.XDG_CONFIG_HOME, 'opencode');
       const commandFile = path.join(opencodeDir, 'commands', 'codespec', 'plan.md');
-      const skillFile = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+      const skillFile = path.join(opencodeDir, 'skills', 'writing-plans-subagent', 'SKILL.md');
 
       const initResult = await runCLI(['init', '--tools', 'opencode'], {
         cwd: emptyProjectDir,

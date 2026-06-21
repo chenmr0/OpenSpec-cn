@@ -9,7 +9,6 @@ import {
   getNewChangeSkillTemplate,
   getContinueChangeSkillTemplate,
   getApplyChangeSkillTemplate,
-  getApplyQuickSkillTemplate,
   getFfChangeSkillTemplate,
   getSyncSpecsSkillTemplate,
   getArchiveChangeSkillTemplate,
@@ -21,7 +20,6 @@ import {
   getOpsxNewCommandTemplate,
   getOpsxContinueCommandTemplate,
   getOpsxApplyCommandTemplate,
-  getOpsxApplyQuickCommandTemplate,
   getOpsxFfCommandTemplate,
   getOpsxSyncCommandTemplate,
   getOpsxArchiveCommandTemplate,
@@ -31,10 +29,11 @@ import {
   getOpsxProposeCommandTemplate,
   type SkillTemplate,
 } from '../templates/skill-templates.js';
-import { getWritingPlansSkillTemplate } from '../templates/external/writing-plans.js';
+import { getWritingPlansSubagentSkillTemplate } from '../templates/external/writing-plans-subagent.js';
+import { getWritingPlansMainSkillTemplate } from '../templates/external/writing-plans-main.js';
+import { getMainAgentDevelopmentSkillTemplate } from '../templates/external/main-agent-development.js';
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
-import { getQuickDrivenDevelopmentSkillTemplate } from '../templates/external/quick-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
 import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
@@ -78,7 +77,6 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
     { template: getNewChangeSkillTemplate(), dirName: 'codespec-new-change', workflowId: 'new' },
     { template: getContinueChangeSkillTemplate(), dirName: 'codespec-continue-change', workflowId: 'continue' },
     { template: getApplyChangeSkillTemplate(), dirName: 'codespec-apply-change', workflowId: 'apply' },
-    { template: getApplyQuickSkillTemplate(), dirName: 'codespec-apply-quick', workflowId: 'apply-quick' },
     { template: getFfChangeSkillTemplate(), dirName: 'codespec-ff-change', workflowId: 'ff' },
     { template: getSyncSpecsSkillTemplate(), dirName: 'codespec-sync-specs', workflowId: 'sync' },
     { template: getArchiveChangeSkillTemplate(), dirName: 'codespec-archive-change', workflowId: 'archive' },
@@ -104,7 +102,6 @@ export function getCommandTemplates(workflowFilter?: readonly string[]): Command
     { template: getOpsxNewCommandTemplate(), id: 'new' },
     { template: getOpsxContinueCommandTemplate(), id: 'continue' },
     { template: getOpsxApplyCommandTemplate(), id: 'apply' },
-    { template: getOpsxApplyQuickCommandTemplate(), id: 'apply-quick' },
     { template: getOpsxFfCommandTemplate(), id: 'ff' },
     { template: getOpsxSyncCommandTemplate(), id: 'sync' },
     { template: getOpsxArchiveCommandTemplate(), id: 'archive' },
@@ -174,7 +171,9 @@ ${instructions}
  */
 export function getExternalSkillTemplates(): SkillTemplateEntry[] {
   return [
-    { template: getWritingPlansSkillTemplate(), dirName: 'writing-plans', workflowId: '_external' },
+    { template: getWritingPlansSubagentSkillTemplate(), dirName: 'writing-plans-subagent', workflowId: '_external' },
+    { template: getWritingPlansMainSkillTemplate(), dirName: 'writing-plans-main', workflowId: '_external' },
+    { template: getMainAgentDevelopmentSkillTemplate(), dirName: 'main-agent-development', workflowId: '_external' },
     {
       template: getTestDrivenDevelopmentSkillTemplate(),
       dirName: 'test-driven-development',
@@ -186,11 +185,6 @@ export function getExternalSkillTemplates(): SkillTemplateEntry[] {
     {
       template: getSubagentDrivenDevelopmentSkillTemplate(),
       dirName: 'subagent-driven-development',
-      workflowId: '_external',
-    },
-    {
-      template: getQuickDrivenDevelopmentSkillTemplate(),
-      dirName: 'quick-driven-development',
       workflowId: '_external',
     },
     {

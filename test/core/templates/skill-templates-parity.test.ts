@@ -40,7 +40,7 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getOpsxExploreCommandTemplate: '7314e78fe42cbcb6e86c7746f12fdd9c1fd254cc1d43a3b5620850ea97ffcc76',
   getOpsxNewCommandTemplate: '9849dc9a6fb7e678672f1baef4377302b86c3181663cfdce9af81119c4861e26',
   getOpsxContinueCommandTemplate: 'a9f23050acab52c9aed6f3defbe1e254d0e82cb0c6574f941d4f800ff9fb111c',
-  getOpsxApplyCommandTemplate: 'f70f43b6652757698a0832d5fc5dcf645e47e6cd41841ab38c17b650f40fe436',
+  getOpsxApplyCommandTemplate: 'e025797ee58515430d86cf5cb1d0aa33e4936d83e472774df38d97c86dfe4c79',
   getOpsxFfCommandTemplate: 'b68c64b6aabae225ba9eb01d83aebb1a0e9ded5f62e48d643e1f19d577a88e73',
   getArchiveChangeSkillTemplate: '58fd91ba35e953faaa7f60bb6320bd4488b0474f1ebc82b0b1dbbf288aac8205',
   getBulkArchiveChangeSkillTemplate: '4037c88f6f16fd65d0ba284185500105e8cf322824ece8122c660d08de8c0a9b',
@@ -50,8 +50,8 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getOpsxOnboardCommandTemplate: 'ea6491d56b5e5aa5747e2b2368b0badbf152397b193b5627df1ce037f1e45e34',
   getOpsxBulkArchiveCommandTemplate: '6e633296d1388b901611b8c2abb70baf323ddc31d48571cc6f33688498b0032e',
   getOpsxVerifyCommandTemplate: 'da84a351871074f2ee4fd2a71dbda388e32d33feea8b9dcbbdcd64fafaceee86',
-  getOpsxProposeSkillTemplate: '41dd9ca813c342a40d29a4c16d6cc83fc3e8f81fa98b0d57f5ace5685292734f',
-  getOpsxProposeCommandTemplate: 'fa1713181b0370488f37ee0b069ff62cfbdd5f01cf0659f6a71efd351f8b7218',
+  getOpsxProposeSkillTemplate: '8393a6739af39dd08bc925a3520e0239fb6376d4e30cb07923455aa5f7b9cc09',
+  getOpsxProposeCommandTemplate: '835f8840eb3c13d2bcc6776c2716fb16969633c04f2c5eb61e80e13786c1e0a8',
   getFeedbackSkillTemplate: '14e3a17f55fdd22caeee85c9f4245ed31867f49d131ef96908cddb30da78c775',
 };
 
@@ -66,7 +66,7 @@ const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
   'codespec-bulk-archive-change': '5e32574489e46d65ac34961934c06455d22e45f48145904c82063b7250cf09a4',
   'codespec-verify-change': '96c402cf38c6fad78d63e94872f6b323f646c239c19ba26f080a798b96a0bf46',
   'codespec-onboard': '7a9acacd05d525a68ffdc8481a5538c77405a4cf15004549d7b2b2686e88a0c6',
-  'codespec-propose': 'e386c70b48a100471a9c46a1da9c1135d59bdd1f620228646b6bcf2efbfeee13',
+  'codespec-propose': 'cfc8584a0819597e713bdc4ceca950798ce1f8b0b2de39a4fa45d16add074f84',
 };
 
 function stableStringify(value: unknown): string {

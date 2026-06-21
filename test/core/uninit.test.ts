@@ -36,7 +36,7 @@ describe('UninitCommand', () => {
     await initCommand.execute(projectDir);
 
     const opencodeDir = getOpenCodeUserConfigDir();
-    const skillFile = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+    const skillFile = path.join(opencodeDir, 'skills', 'writing-plans-subagent', 'SKILL.md');
     const commandFile = path.join(opencodeDir, 'commands', 'codespec', 'plan.md');
     const agentFile = path.join(opencodeDir, 'agents', 'code-generator.md');
     const configPath = path.join(opencodeDir, 'opencode.json');
@@ -86,7 +86,7 @@ describe('UninitCommand', () => {
 
   it('preserves unrelated and user-modified OpenCode artifacts', async () => {
     const opencodeDir = getOpenCodeUserConfigDir();
-    const unmarkedSkill = path.join(opencodeDir, 'skills', 'writing-plans', 'SKILL.md');
+    const unmarkedSkill = path.join(opencodeDir, 'skills', 'writing-plans-subagent', 'SKILL.md');
     const customCommand = path.join(opencodeDir, 'commands', 'codespec', 'custom.md');
     const otherCommand = path.join(opencodeDir, 'commands', 'other.md');
     const modifiedAgent = path.join(opencodeDir, 'agents', 'code-generator.md');
@@ -94,7 +94,7 @@ describe('UninitCommand', () => {
     const fakePackageUrl = pathToFileURL(fakePackageDir).href;
 
     await fs.mkdir(path.dirname(unmarkedSkill), { recursive: true });
-    await fs.writeFile(unmarkedSkill, '---\nname: writing-plans\n---\nuser skill\n');
+    await fs.writeFile(unmarkedSkill, '---\nname: writing-plans-subagent\n---\nuser skill\n');
     await fs.mkdir(path.dirname(customCommand), { recursive: true });
     await fs.writeFile(customCommand, 'custom command\n');
     await fs.writeFile(otherCommand, 'other command\n');

@@ -29,7 +29,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 6. **用户审查规格文档** — 在继续之前请用户审查 spec.md
 7. **编写设计文档（design.md）** — 提取技术决策、架构、风险，保存到 \`design.md\`
 8. **用户审查设计文档** — 在继续之前请用户审查 \`design.md\`
-9. **过渡到 writing-plans（task.md）**
+9. **过渡到编写实现计划（task.md）**
 
 ## 流程详述
 
@@ -170,7 +170,19 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
        **第一步：使用 **AskUserQuestion tool** 询问用户，是否启用测试驱动开发（TDD）。** 如果用户选择启用，每个任务必须先写失败测试，再写最少实现**。
 
-       **第二步：加载 \`writing-plans\` 技能创建详细的实现计划。
+       **第二步：使用 **AskUserQuestion tool** 询问用户选择执行模式。**
+
+       选项 A) **质量优先**：耗时显著增加。每个 task 委派给独立子代理，并做严格质量审查。
+       选项 B) **速度优先**：平衡速度和质量。所有 task 由主 Agent 实施，全部 task 完成后统一质量审查。
+
+       用户选择后，在 task.md 头部写入执行模式标记：
+       - 选 A → 在 task.md 头部写入 \`> **执行模式**: \`subagent\`\`
+       - 选 B → 在 task.md 头部写入 \`> **执行模式**: \`main\`\`
+
+       **第三步：加载对应的计划编写技能。**
+
+       - 如果选择了质量优先（subagent），加载 \`writing-plans-subagent\` 技能
+       - 如果选择了速度优先（main），加载 \`writing-plans-main\` 技能
 
        **任务保存位置：** \`codespec/changes/<name>/task.md\`
 
@@ -188,7 +200,7 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 完成所有产出物后，总结：
 - 准备就绪："所有产出物已创建！准备好实现。"
-- 提示："运行 \`/new\` 清空上下文后再 \`/codespec/apply\` 或 \`/codespec/apply-quick\` 实现。(推荐)"
+- 提示："运行 \`/new\` 清空上下文后再 \`/codespec/apply\` 实现。(推荐)"
 
 **产出物创建指南**
 

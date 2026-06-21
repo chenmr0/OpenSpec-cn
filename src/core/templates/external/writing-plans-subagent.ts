@@ -1,12 +1,12 @@
 /**
- * Writing Plans External Skill Template
+ * Writing Plans (Subagent) External Skill Template
  *
- * Copied from superpowers-cn/skills/writing-plans.
- * This skill is always installed during init alongside command-only workflows.
+ * Quality-first planning skill for subagent-driven execution.
+ * Creates detailed implementation plans with per-task steps and commands.
  */
 import type { SkillTemplate } from '../types.js';
 
-const writingPlansInstructions = `# 编写计划
+const writingPlansSubagentInstructions = `# 编写计划
 
 ## 概述
 
@@ -16,7 +16,7 @@ const writingPlansInstructions = `# 编写计划
 
 假设执行者是有经验的开发者，但不熟悉本项目的工具链和问题领域。
 
-**开始时宣布：** "我正在使用 writing-plans 技能创建实现计划。"
+**开始时宣布：** "我正在使用 writing-plans-subagent 技能创建实现计划。"
 
 **计划保存位置：** \`codespec/changes/<name>/task.md\`
 - （用户对计划位置的偏好优先于此默认值）
@@ -33,7 +33,7 @@ const writingPlansInstructions = `# 编写计划
 - 任务内部可以包含多个文件变更，但必须形成一个可测试、可审查的完整交付单元
 
 **第二步：确认任务粒度**
-- 使用 **AskUserQuestion tool** 向用户展示任务清单（仅任务名称，如"任务 1：用户认证模块开发，任务2：..."）
+- 向用户展示任务清单（仅任务名称，如"任务 1：用户认证模块开发，任务2：..."）
 - 使用 **AskUserQuestion tool** 询问用户：> "任务拆分是否合理？"
 - 根据用户反馈调整，直到用户确认合理
 
@@ -63,6 +63,8 @@ const writingPlansInstructions = `# 编写计划
 \`\`\`markdown
 # [功能名称] 实现计划
 
+> **执行模式**: \`subagent\`
+
 > 任务标题使用复选框（\`### [ ]\`）语法来跟踪进度。完成任务后，更新任务文件中的任务状态，将未完成标记\`[ ]\` 改为已完成标记\`[x]\`
 
 **目标：** [一句话说明本次变更要达成的业务/技术结果]
@@ -83,7 +85,7 @@ const writingPlansInstructions = `# 编写计划
 > **注意：** 以下模板展示了 TDD 格式的任务步骤。如果用户选择了 TDD，每个任务必须严格遵循此模板（先写失败测试，再写实现）。如果未选择 TDD，则跳过测试步骤。
 
 \`\`\`\`markdown
-### [ ] 任务 N：[任务名称：建议使用“业务能力 + 技术动作”命名]
+### [ ] 任务 N：[任务名称：建议使用"业务能力 + 技术动作"命名]
 
 **任务目标：**
 [说明本任务要完成的完整能力。不要写实现代码。重点说明输入、处理责任、输出结果、状态变化或错误行为。]
@@ -113,7 +115,7 @@ const writingPlansInstructions = `# 编写计划
 
 - **步骤 4：按实现约束完成最小实现**：
    - 这是实现阶段的执行动作，不在 task.md 中展开实现代码或完整伪代码。
-   - 默认以“涉及文件”作为修改边界。
+   - 默认以"涉及文件"作为修改边界。
    - 按实现约束完成行为，不做无关重构。
    - 不得新增 task/spec/design 中没有依据的新能力。
 
@@ -161,11 +163,11 @@ const writingPlansInstructions = `# 编写计划
 保存计划后，提供简短交接：
 "计划已完成并保存到 \`codespec/changes/<name>/task.md\`。"`;
 
-export function getWritingPlansSkillTemplate(): SkillTemplate {
+export function getWritingPlansSubagentSkillTemplate(): SkillTemplate {
   return {
-    name: 'writing-plans',
-    description: 'writing-plans',
-    instructions: writingPlansInstructions,
+    name: 'writing-plans-subagent',
+    description: 'writing-plans (quality-first / subagent mode)',
+    instructions: writingPlansSubagentInstructions,
     license: 'MIT',
     compatibility: '无特殊依赖。',
     metadata: { author: 'superpowers', version: '1.0' },

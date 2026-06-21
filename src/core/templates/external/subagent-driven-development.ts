@@ -39,7 +39,11 @@ digraph process {
     "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite" [shape=box];
     "还有剩余任务?" [shape=diamond];
     "分派最终代码审查子智能体审查整体实现" [shape=box];
-    "报告完成，验证测试通过，等待用户指示" [shape=box style=filled fillcolor=lightgreen];
+    "委派 change-verifier 变更级验证" [shape=box];
+    "验证通过?" [shape=diamond];
+    "修复循环（最多3次）" [shape=box];
+    "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
+    "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
 
     "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite" -> "分派实现子智能体 (code-generator)";
     "分派实现子智能体 (code-generator)" -> "实现子智能体有疑问?";
@@ -58,7 +62,12 @@ digraph process {
     "在 TodoWrite 中标记任务完成，更新 task.md 复选框 [ ] → [x]" -> "还有剩余任务?";
     "还有剩余任务?" -> "分派实现子智能体 (code-generator)" [label="是"];
     "还有剩余任务?" -> "分派最终代码审查子智能体审查整体实现" [label="否"];
-    "分派最终代码审查子智能体审查整体实现" -> "报告完成，验证测试通过，等待用户指示";
+    "分派最终代码审查子智能体审查整体实现" -> "委派 change-verifier 变更级验证";
+    "委派 change-verifier 变更级验证" -> "验证通过?";
+    "验证通过?" -> "修复循环（最多3次）" [label="否"];
+    "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
+    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
+    "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
 }
 \`\`\`
 
@@ -216,7 +225,88 @@ digraph process {
 
 **子智能体步骤执行纪律：**
 - **严格按步骤顺序** - 实现者子智能体必须严格按计划中的步骤顺序执行，不合并、不跳过、不重排
-- **TDD 由计划驱动** - 如果计划中某个任务的步骤要求先写测试再写实现，子智能体必须遵循该顺序。TDD 的可靠性取决于计划中是否包含完整的 TDD 步骤`;
+- **TDD 由计划驱动** - 如果计划中某个任务的步骤要求先写测试再写实现，子智能体必须遵循该顺序。TDD 的可靠性取决于计划中是否包含完整的 TDD 步骤
+
+## 变更级验证
+
+所有任务完成后，必须执行变更级验证：
+
+**获取应用指令**
+   \`\`\`bash
+   codespec instructions apply --change "<name>" --json
+   \`\`\`
+   这返回：
+   - \`contextFiles\`：产出物 ID -> 具体文件路径数组（因 Schema 而异）
+   - 进度（总计、完成、剩余）
+   - 带有状态的任务列表
+   - 基于当前状态的动态指令
+
+**处理状态：**
+   - 如果 \`state: "blocked"\`（缺少产出物）：显示消息
+   - 如果 \`state: "all_done"\`：祝贺，建议归档
+   - 否则：继续实现
+
+**委派验证给专用验证子智能体（change-verifier）**
+
+   所有任务完成后，**不要在主上下文中执行验证**。必须委派给专用的 \`change-verifier\` 子智能体：
+
+   使用 Agent tool（subagent_type: "change-verifier"）：
+
+   \`\`\`
+   description: "变更级验证：<change-name>"
+   prompt: |
+     你正在执行变更级验证门控。
+
+     ## 工作目录
+     <当前项目的工作目录>
+
+     严格按照你的验证流程执行：确定命令 → 运行构建 → 运行测试 → 判定结果。
+   \`\`\`
+
+   失败时执行修复循环（最多 3 次）。
+
+## 完成时的输出
+
+\`\`\`
+## 实现完成
+
+**变更：** <change-name>
+**Schema：** <schema-name>
+**执行模式：** subagent
+**进度：** 7/7 任务已完成 ✓
+
+### 变更级验证
+- **构建：** \`npm run build\` → exit 0 ✅
+- **测试：** \`npm test\` → 34/34 pass ✅
+
+### 本次会话已完成
+- [x] 任务 3：<description>
+- [x] 任务 4：<description>
+...
+
+所有任务已完成并通过验证！可以使用 \`/codespec/archive\` 归档此变更。
+\`\`\`
+
+## 暂停时的输出（仅在反复自主修复仍无法通过时）
+
+\`\`\`
+## 实现暂停——需要人工介入
+
+**变更：** <change-name>
+**Schema：** <schema-name>
+**执行模式：** subagent
+**进度：** 4/7 任务已完成
+
+### 已自主尝试的解决措施
+1. <尝试 1：例如，换更强模型重新分派>
+2. <尝试 2：例如，拆分任务后重新分派>
+
+### 仍无法解决的问题
+任务 5：<具体阻塞原因>
+
+**已完成任务：**
+- [x] 任务 1-4
+\`\`\``;
 
 export const implementerPromptContent = `# 实现子智能体提示词模板
 
