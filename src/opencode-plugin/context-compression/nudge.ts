@@ -9,6 +9,11 @@ const TASK_COMPRESS_NUDGE = `<codespec-system-reminder>
 
 需要压缩的任务 ID：{taskList}
 
+summary 要求（保留必要上下文给后续任务）：
+- 修改/实现了什么功能，包含具体文件名
+- 测试结果或审查结论
+- 遗留问题（如果有）
+
 重要：
 - 以上 task_id 是系统自动生成的，直接使用即可，无需验证
 - 每个 task_id 必须单独调用一次 task-compress

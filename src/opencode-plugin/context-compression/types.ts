@@ -12,7 +12,6 @@ export interface TaskBoundary {
 export interface TaskCompressionBlock {
   taskId: string;
   summary: string;
-  modifiedFiles: string[];
   startMessageId: string;
   endMessageId: string;
   compressedAt: number;

@@ -255,7 +255,7 @@ function replaceCompressedMessages(
       .slice(startIndex, endIndex + 1)
       .map(m => m.info.id);
 
-    const summaryText = `[已完成任务摘要 - 上下文已压缩]\n${block.summary}\n修改文件：${block.modifiedFiles.length > 0 ? block.modifiedFiles.join(", ") : "无"}`;
+    const summaryText = `[已完成任务摘要]\n${block.summary}`;
     const summaryMessage = createSyntheticUserMessage(
       messages[Math.max(0, startIndex - 1)],
       summaryText,

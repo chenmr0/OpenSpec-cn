@@ -6,7 +6,6 @@ export function handleTaskCompress(
   state: CompressionState,
   taskId: string,
   summary: string,
-  modifiedFiles: string[],
 ): string {
   const boundary = state.taskBoundaries.get(taskId);
   if (!boundary) {
@@ -27,7 +26,6 @@ export function handleTaskCompress(
   state.compressionBlocks.set(taskId, {
     taskId,
     summary,
-    modifiedFiles,
     startMessageId: boundary.startMessageId,
     endMessageId: boundary.endMessageId,
     compressedAt: Date.now(),
@@ -48,12 +46,16 @@ export function createTaskCompressTool(compressionStateStore: CompressionStateSt
       "taskId 参数必须原样使用提示中 task_id=\"...\" 的值，不要使用其他 ID（如 session ID）。",
     args: {
       taskId: z.string().describe("要压缩的任务 ID，必须与 <codespec-system-reminder> 提示中的 task_id 值完全一致"),
-      summary: z.string().describe("任务的简洁摘要，包含：做了什么、修改了哪些文件、审查结论"),
-      modifiedFiles: z.array(z.string()).describe("该任务修改或创建的文件路径列表"),
+      summary: z.string().describe(
+        "任务的摘要，便于后续任务理解已完成的工作。必须包含：" +
+        "1) 修改/实现了什么功能，包含具体文件名" +
+        "2) 测试结果或审查结论" +
+        "3) 遗留问题（如果有）"
+      ),
     },
-    async execute(args: { taskId: string; summary: string; modifiedFiles: string[] }, context: { sessionID: string }) {
+    async execute(args: { taskId: string; summary: string }, context: { sessionID: string }) {
       const state = compressionStateStore.getState(context.sessionID);
-      return handleTaskCompress(state, args.taskId, args.summary, args.modifiedFiles);
+      return handleTaskCompress(state, args.taskId, args.summary);
     },
   };
 }
