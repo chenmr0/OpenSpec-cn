@@ -47,10 +47,11 @@ export function createTaskCompressTool(compressionStateStore: CompressionStateSt
     args: {
       taskId: z.string().describe("要压缩的任务 ID，必须与 <codespec-system-reminder> 提示中的 task_id 值完全一致"),
       summary: z.string().describe(
-        "任务的摘要，便于后续任务理解已完成的工作。必须包含：" +
-        "1) 修改/实现了什么功能，包含具体文件名" +
-        "2) 测试结果或审查结论" +
-        "3) 遗留问题（如果有）"
+        "任务的摘要，为后续任务保留充必要上下文。必须包含：" +
+        "1) 修改内容：所有修改的文件路径及具体变更，关键代码逻辑" +
+        "2) 测试/审查：测试结果或审查结论" +
+        "3) 遗留问题（如果有）：未完成部分、已知限制、后续注意事项" +
+        "4) 关键发现（如果有）：调试过程中发现的重要信息、需要注意的细节"
       ),
     },
     async execute(args: { taskId: string; summary: string }, context: { sessionID: string }) {

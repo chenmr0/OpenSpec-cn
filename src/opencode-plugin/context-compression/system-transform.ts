@@ -38,7 +38,13 @@ export function createSystemTransformHandler(
       const prompt = `[CodeSpec 上下文管理]
 部分已完成任务的对话上下文会被压缩为摘要以节省 token 空间。
 当看到 <codespec-system-reminder> 标签中的压缩提示时，必须立即调用 task-compress 工具。
-摘要要求：一句话描述任务、列出修改的文件、包含审查结论。保持简洁。
+
+摘要要求（请提供摘要，为后续任务保留必要上下文）：
+- 修改内容：所有修改的文件路径及具体变更，关键代码逻辑
+- 测试/审查：测试结果或审查结论
+- 遗留问题（如果有）：未完成部分、已知限制、后续注意事项
+- 关键发现（如果有）：调试过程中发现的重要信息、需要注意的细节
+
 task-compress 的 taskId 参数必须原样使用提示中给出的 task_id 值，不要修改或猜测。`;
 
       if (output.system.length > 0) {
