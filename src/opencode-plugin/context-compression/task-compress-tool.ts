@@ -50,8 +50,10 @@ export function createTaskCompressTool(compressionStateStore: CompressionStateSt
         "任务的摘要，为后续任务保留充必要上下文。必须包含：" +
         "1) 修改内容：所有修改的文件路径及具体变更，关键代码逻辑" +
         "2) 测试/审查：测试结果或审查结论" +
-        "3) 遗留问题（如果有）：未完成部分、已知限制、后续注意事项" +
-        "4) 关键发现（如果有）：调试过程中发现的重要信息、需要注意的细节"
+        "3) 架构定位：该任务在整体需求中的角色、为后续任务暴露的接口或契约" +
+        "4) 设计决策：实现中做出的关键选择及其原因（如为什么选择某种模式/结构）" +
+        "5) 遗留问题（如果有）：未完成部分、已知限制" +
+        "6) 后续注意事项（如果有）：下游任务实现时需要关注的关键信息"
       ),
     },
     async execute(args: { taskId: string; summary: string }, context: { sessionID: string }) {

@@ -29,7 +29,7 @@ digraph process {
         "标记完成（TodoWrite + task.md 复选框）" [shape=box];
     }
 
-    "读取 task.md，提取所有任务，创建 TodoWrite" [shape=box];
+    "读取 spec.md, design.md 和 task.md。建立全局需求理解，提取所有任务，创建 TodoWrite" [shape=box];
     "还有剩余任务?" [shape=diamond];
     "分派 spec-reviewer 子代理审查规格合规性" [shape=box];
     "spec-reviewer 通过?" [shape=diamond];
@@ -37,10 +37,15 @@ digraph process {
     "分派 code-quality-reviewer 子代理审查代码质量" [shape=box];
     "code-quality-reviewer 通过?" [shape=diamond];
     "主 Agent 修复质量问题" [shape=box];
+    "委派 change-verifier 变更级验证" [shape=box];
+    "验证通过?" [shape=diamond];
+    "修复循环（最多3次）" [shape=box];
+    "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
+    "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
 
-    "读取 task.md，提取所有任务，创建 TodoWrite" -> "读取任务目标和涉及文件";
-    "读取任务目标和涉及文件" -> "读取关联 spec/design 章节";
-    "读取关联 spec/design 章节" -> "实现代码、编译、测试、自审";
+    "读取 spec.md, design.md 和 task.md。建立全局需求理解，提取所有任务，创建 TodoWrite" -> "读取任务目标和涉及文件";
+    "读取任务目标和涉及文件" -> "精读关联 spec/design 章节";
+    "精读关联 spec/design 章节" -> "实现代码、编译、测试、自审";
     "实现代码、编译、测试、自审" -> "标记完成（TodoWrite + task.md 复选框）";
     "标记完成（TodoWrite + task.md 复选框）" -> "还有剩余任务?";
     "还有剩余任务?" -> "读取任务目标和涉及文件" [label="是"];
@@ -52,8 +57,18 @@ digraph process {
     "分派 code-quality-reviewer 子代理审查代码质量" -> "code-quality-reviewer 通过?";
     "code-quality-reviewer 通过?" -> "主 Agent 修复质量问题" [label="否"];
     "主 Agent 修复质量问题" -> "分派 code-quality-reviewer 子代理审查代码质量" [label="重新审查"];
+    "分派 code-quality-reviewer 子代理审查代码质量" -> "委派 change-verifier 变更级验证";
+    "委派 change-verifier 变更级验证" -> "验证通过?";
+    "验证通过?" -> "修复循环（最多3次）" [label="否"];
+    "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
+    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
+    "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
 }
 \`\`\`
+
+## 需求理解阶段
+
+在开始执行任何任务之前，读取 spec.md, design.md 和 task.md。建立全局需求理解。
 
 ## 逐任务执行
 
@@ -70,8 +85,9 @@ digraph process {
 所有任务完成后，委派子代理审查：
 
 1. **spec-reviewer**：分派 spec-reviewer 子代理审查整体实现的规格合规性
-2. **code-quality-reviewer**：分派 code-quality-reviewer 子代理审查代码质量（编译 + 测试）
-3. 如审查发现问题，修复后重新审查直到通过
+2. **code-quality-reviewer**：分派 code-quality-reviewer 子代理审查代码质量
+3. **change-verifier**：分派 change-verifier 子代理审查编译 + 测试通过
+4. 如审查发现问题，修复后重新审查直到通过
 
 ## 红线
 
@@ -103,7 +119,7 @@ digraph process {
 - 全部任务完成后的统一审查确保整体一致性
 - 审查循环确保修复确实有效
 - 规格合规防止过度/不足构建
-- 代码质量确保编译通过、测试通过
+- 变更级验证确保编译通过、测试通过
 
 ## 完成时的输出
 
