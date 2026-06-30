@@ -25,6 +25,7 @@ import {
   type WorkflowSessionStore,
 } from "./opencode-plugin/workflow-session.js";
 import { readProjectConfig } from "./core/project-config.js";
+import { autoCleanupStaleWorkflows } from "./opencode-plugin/auto-cleanup.js";
 
 function createEventHandler(
   ctx: PluginInput,
@@ -65,6 +66,19 @@ function createEventHandler(
 }
 
 const CodeSpecPlugin: Plugin = async (ctx) => {
+  // Auto-cleanup stale artifacts from older versions (/apply-quick, quick-driven-development)
+  const cleanupResult = autoCleanupStaleWorkflows();
+  if (cleanupResult.removedCommands.length > 0 || cleanupResult.removedSkills.length > 0) {
+    const parts: string[] = [];
+    if (cleanupResult.removedCommands.length > 0) {
+      parts.push(`commands: ${cleanupResult.removedCommands.join(', ')}`);
+    }
+    if (cleanupResult.removedSkills.length > 0) {
+      parts.push(`skills: ${cleanupResult.removedSkills.join(', ')}`);
+    }
+    console.log(`[codespec] Cleaned up stale artifacts (${parts.join('; ')})`);
+  }
+
   const projectConfig = readProjectConfig(ctx.directory);
   const sessionStateStore = createSessionStateStore();
   const compressionStateStore = createCompressionStateStore(projectConfig?.compression);
