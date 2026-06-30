@@ -13,6 +13,7 @@ import { getOpenCodeUserConfigDir } from '../global-config.js';
  * Names of skill directories created by codespec init.
  */
 export const SKILL_NAMES = [
+  'design',
   'codespec-explore',
   'codespec-new-change',
   'codespec-continue-change',
@@ -33,6 +34,7 @@ export type SkillName = (typeof SKILL_NAMES)[number];
  * IDs of command templates created by codespec init.
  */
 export const COMMAND_IDS = [
+  'design',
   'explore',
   'new',
   'continue',

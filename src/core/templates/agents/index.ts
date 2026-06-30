@@ -10,3 +10,4 @@ export { codeGeneratorContent } from './code-generator.js';
 export { specReviewerContent } from './spec-reviewer.js';
 export { codeQualityReviewerContent } from './code-quality-reviewer.js';
 export { changeVerifierContent } from './change-verifier.js';
+export { designExpandContent } from './design-expand.js';

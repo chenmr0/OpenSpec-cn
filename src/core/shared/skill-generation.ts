@@ -16,6 +16,7 @@ import {
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
   getOpsxProposeSkillTemplate,
+  getOpsxDesignSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
   getOpsxContinueCommandTemplate,
@@ -27,6 +28,10 @@ import {
   getOpsxVerifyCommandTemplate,
   getOpsxOnboardCommandTemplate,
   getOpsxProposeCommandTemplate,
+  getOpsxDesignCommandTemplate,
+  arTemplateContent,
+  expandSubagentContent,
+  clarifyPromptContent,
   type SkillTemplate,
 } from '../templates/skill-templates.js';
 import { getWritingPlansSubagentSkillTemplate } from '../templates/external/writing-plans-subagent.js';
@@ -35,7 +40,7 @@ import { getMainAgentDevelopmentSkillTemplate } from '../templates/external/main
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
-import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent } from '../templates/agents/index.js';
+import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent, designExpandContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -72,6 +77,16 @@ export interface CommandTemplateEntry {
  */
 export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemplateEntry[] {
   const all: SkillTemplateEntry[] = [
+    {
+      template: getOpsxDesignSkillTemplate(),
+      dirName: 'design',
+      workflowId: 'design',
+      extraFiles: [
+        { filename: 'ar-template.md', content: arTemplateContent },
+        { filename: 'expand-subagent.md', content: expandSubagentContent },
+        { filename: 'clarify-prompt.md', content: clarifyPromptContent },
+      ],
+    },
     { template: getOpsxProposeSkillTemplate(), dirName: 'codespec-propose', workflowId: 'propose' },
     { template: getExploreSkillTemplate(), dirName: 'codespec-explore', workflowId: 'explore' },
     { template: getNewChangeSkillTemplate(), dirName: 'codespec-new-change', workflowId: 'new' },
@@ -98,6 +113,7 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
  */
 export function getCommandTemplates(workflowFilter?: readonly string[]): CommandTemplateEntry[] {
   const all: CommandTemplateEntry[] = [
+    { template: getOpsxDesignCommandTemplate(), id: 'design' },
     { template: getOpsxExploreCommandTemplate(), id: 'explore' },
     { template: getOpsxNewCommandTemplate(), id: 'new' },
     { template: getOpsxContinueCommandTemplate(), id: 'continue' },
@@ -213,5 +229,6 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
     { filename: 'spec-reviewer.md', content: specReviewerContent },
     { filename: 'code-quality-reviewer.md', content: codeQualityReviewerContent },
     { filename: 'change-verifier.md', content: changeVerifierContent },
+    { filename: 'design-expand.md', content: designExpandContent },
   ];
 }

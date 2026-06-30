@@ -36,6 +36,7 @@ import {
   getToolsWithSkillsDir,
   getToolSkillStatus,
   getToolStates,
+  getSkillTemplates,
   getExternalSkillTemplates,
   getExternalAgentTemplates,
   getCommandContents,
@@ -476,9 +477,9 @@ export class InitCommand {
     let removedCommandCount = 0;
     let removedSkillCount = 0;
 
-    // Only generate external skills, agents, and core commands.
-    // Internal skillTemplates are workflow-specific (new/continue/ff/sync etc.)
-    // and never matched the core workflows, so skip them.
+    // Generate core workflow skills (filtered by CORE_WORKFLOWS profile),
+    // external skills (always installed), agents, and core commands.
+    const coreSkillTemplates = getSkillTemplates(CORE_WORKFLOWS);
     const externalSkillTemplates = getExternalSkillTemplates();
     const commandContents = getCommandContents(CORE_WORKFLOWS);
 
@@ -504,6 +505,25 @@ export class InitCommand {
             await FileSystemUtils.writeFile(skillFile, skillContent);
 
             // Write extra files (e.g. testing-anti-patterns.md)
+            if (extraFiles) {
+              for (const extra of extraFiles) {
+                const extraFile = path.join(skillDir, extra.filename);
+                await FileSystemUtils.writeFile(extraFile, extra.content);
+              }
+            }
+          }
+
+          // Create core workflow skills (e.g. design, propose, apply, archive)
+          for (const { template, dirName, extraFiles } of coreSkillTemplates) {
+            const skillDir = path.join(skillsDir, dirName);
+            const skillFile = path.join(skillDir, 'SKILL.md');
+
+            const transformer = (tool.value === 'opencode' || tool.value === 'pi') ? transformToHyphenCommands : undefined;
+            const skillContent = generateSkillContent(template, OPENSPEC_VERSION, transformer);
+
+            await FileSystemUtils.writeFile(skillFile, skillContent);
+
+            // Write extra files (e.g. ar-template.md, clarify-prompt.md for design)
             if (extraFiles) {
               for (const extra of extraFiles) {
                 const extraFile = path.join(skillDir, extra.filename);
@@ -632,7 +652,7 @@ export class InitCommand {
     const successfulTools = [...results.createdTools, ...results.refreshedTools];
     if (successfulTools.length > 0) {
       const toolDirs = [...new Set(successfulTools.map((t) => t.skillsDir))].join(', ');
-      const skillCount = getExternalSkillTemplates().length;
+      const skillCount = getExternalSkillTemplates().length + getSkillTemplates(CORE_WORKFLOWS).length;
       const commandCount = getCommandContents(CORE_WORKFLOWS).length;
       if (skillCount > 0 && commandCount > 0) {
         console.log(`${skillCount} 个技能和 ${commandCount} 个命令在 ${toolDirs}/ 中`);
