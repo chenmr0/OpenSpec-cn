@@ -53,15 +53,18 @@ digraph process {
     "分派 spec-reviewer 子代理审查规格合规性" -> "spec-reviewer 通过?";
     "spec-reviewer 通过?" -> "主 Agent 修复规格差距" [label="否"];
     "主 Agent 修复规格差距" -> "分派 spec-reviewer 子代理审查规格合规性" [label="重新审查"];
-    "spec-reviewer 通过?" -> "分派 code-quality-reviewer 子代理审查代码质量" [label="是"];
+    "spec-reviewer 通过?" -> "TodoWrite：标记 spec-reviewer 审查完成" [label="是"];
+    "TodoWrite：标记 spec-reviewer 审查完成" -> "分派 code-quality-reviewer 子代理审查代码质量";
     "分派 code-quality-reviewer 子代理审查代码质量" -> "code-quality-reviewer 通过?";
     "code-quality-reviewer 通过?" -> "主 Agent 修复质量问题" [label="否"];
     "主 Agent 修复质量问题" -> "分派 code-quality-reviewer 子代理审查代码质量" [label="重新审查"];
-    "分派 code-quality-reviewer 子代理审查代码质量" -> "委派 change-verifier 变更级验证";
+    "code-quality-reviewer 通过?" -> "TodoWrite：标记 code-quality-reviewer 审查完成" [label="是"];
+    "TodoWrite：标记 code-quality-reviewer 审查完成" -> "委派 change-verifier 变更级验证";
     "委派 change-verifier 变更级验证" -> "验证通过?";
     "验证通过?" -> "修复循环（最多3次）" [label="否"];
     "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
-    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
+    "验证通过?" -> "TodoWrite：标记 change-verifier 审查完成" [label="是"];
+    "TodoWrite：标记 change-verifier 审查完成" -> "报告完成，验证测试通过";
     "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
 }
 \`\`\`
@@ -84,9 +87,9 @@ digraph process {
 
 所有任务完成后，委派子代理审查：
 
-1. **spec-reviewer**：分派 spec-reviewer 子代理审查整体实现的规格合规性
-2. **code-quality-reviewer**：分派 code-quality-reviewer 子代理审查代码质量
-3. **change-verifier**：分派 change-verifier 子代理审查编译 + 测试通过
+1. **spec-reviewer**：分派 spec-reviewer 子代理审查整体实现的规格合规性。通过后在 TodoWrite 中标记完成。
+2. **code-quality-reviewer**：分派 code-quality-reviewer 子代理审查代码质量（TodoWrite）。通过后在 TodoWrite 中标记完成。
+3. **change-verifier**：分派 change-verifier 子代理审查编译 + 测试通过。通过后在 TodoWrite 中标记完成。
 4. 如审查发现问题，修复后重新审查直到通过
 
 ## 红线
@@ -100,7 +103,12 @@ digraph process {
 
 **TodoWrite 纪律（关键）：**
 - 在开始实现前，**必须**用 Todo 为所有未完成任务创建条目（只跟踪任务，不跟踪子步骤）
+- **同时**为三个审查步骤创建条目：
+  - "spec-reviewer 审查规格合规性"
+  - "code-quality-reviewer 审查代码质量"
+  - "change-verifier 变更级验证"
 - 每完成一个任务后，**立即**将其标记为 completed
+- 每个审查步骤通过后，**立即**在 TodoWrite 中标记完成
 - 不要批量标记——完成一个标记一个
 
 **task.md 复选框同步（关键）：**
