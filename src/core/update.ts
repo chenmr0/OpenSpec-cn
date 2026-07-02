@@ -9,6 +9,7 @@ import path from 'path';
 import chalk from 'chalk';
 import ora from 'ora';
 import * as fs from 'fs';
+import { parse as parseJsonc } from 'jsonc-parser';
 import { createRequire } from 'module';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { FileSystemUtils } from '../utils/file-system.js';
@@ -379,7 +380,7 @@ export class UpdateCommand {
     let config: Record<string, unknown>;
     try {
       const raw = await fs.promises.readFile(configPath, 'utf-8');
-      config = JSON.parse(raw);
+      config = parseJsonc(raw) as Record<string, unknown>;
     } catch {
       return;
     }

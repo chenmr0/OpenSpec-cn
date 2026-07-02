@@ -7,6 +7,7 @@
 import * as fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import { parse as parseJsonc } from 'jsonc-parser';
 import { fileURLToPath, pathToFileURL } from 'url';
 import {
   getOpenCodeUserConfigDir,
@@ -64,7 +65,7 @@ function isPathInside(parentPath: string, candidatePath: string): boolean {
 
 async function readJsonFile(filePath: string): Promise<unknown> {
   const raw = await fs.promises.readFile(filePath, 'utf-8');
-  return JSON.parse(raw) as unknown;
+  return parseJsonc(raw) as unknown;
 }
 
 export class UninitCommand {
