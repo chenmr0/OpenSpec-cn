@@ -401,6 +401,7 @@ export class UpdateCommand {
     if (!alreadyConfigured) {
       plugins.push(fileUrl);
       config.plugin = plugins;
+      await FileSystemUtils.backupFile(configPath);
       await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
     }
   }

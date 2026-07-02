@@ -12,6 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import {
   getOpenCodeUserConfigDir,
 } from './global-config.js';
+import { FileSystemUtils } from '../utils/file-system.js';
 import {
   COMMAND_IDS,
   getExternalAgentTemplates,
@@ -232,6 +233,7 @@ export class UninitCommand {
     config.plugin = remainingPlugins;
 
     try {
+      await FileSystemUtils.backupFile(configPath);
       await fs.promises.writeFile(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
       result.configUpdated = true;
       result.removedPluginEntries.push(...removedPlugins);

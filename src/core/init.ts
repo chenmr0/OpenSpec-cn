@@ -769,6 +769,7 @@ export class InitCommand {
       };
     }
 
+    await FileSystemUtils.backupFile(configPath);
     await FileSystemUtils.writeFile(configPath, JSON.stringify(config, null, 2) + '\n');
   }
 }

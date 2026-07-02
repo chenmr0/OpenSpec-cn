@@ -201,6 +201,38 @@ export class FileSystemUtils {
     }
   }
 
+  /**
+   * 备份文件为 <原路径>.<随机3位数>（如 opencode.json.837）。
+   * 如果文件不存在则跳过，返回 null。
+   */
+  static async backupFile(filePath: string): Promise<string | null> {
+    try {
+      await fs.access(filePath);
+    } catch {
+      return null; // 文件不存在，无需备份
+    }
+
+    const maxAttempts = 10;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const suffix = Math.floor(Math.random() * 900) + 100; // 100-999
+      const backupPath = `${filePath}.${suffix}`;
+      try {
+        // 使用 COPYFILE_EXCL 确保不覆盖已有备份
+        await fs.copyFile(filePath, backupPath, nodeFs.constants.COPYFILE_EXCL);
+        return backupPath;
+      } catch (error: any) {
+        if (error.code === 'EEXIST') {
+          continue; // 备份文件已存在，换一个随机数
+        }
+        throw error;
+      }
+    }
+    // 10 次都冲突（极端情况），最后尝试不带 EXCL 的覆盖
+    const fallbackPath = `${filePath}.${Math.floor(Math.random() * 900) + 100}`;
+    await fs.copyFile(filePath, fallbackPath);
+    return fallbackPath;
+  }
+
   static async writeFile(filePath: string, content: string): Promise<void> {
     const dir = path.dirname(filePath);
     await this.createDirectory(dir);
