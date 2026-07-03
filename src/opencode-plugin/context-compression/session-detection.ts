@@ -3,7 +3,7 @@ export { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
 import { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
 
 /** Marker used to detect when the compression system is running in main-agent mode. */
-export const MAIN_AGENT_DEV_MARKER = "main-agent-development";
+export const MAIN_AGENT_DEV_MARKER = "main-agent-driven";
 
 const COMMAND_MARKERS: Array<{ command: ApplyCommand; marker: string }> = [
   { command: "apply", marker: APPLY_MARKER },
