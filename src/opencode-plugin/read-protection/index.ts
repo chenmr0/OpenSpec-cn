@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-const SIZE_THRESHOLD = 20 * 1024; // 20KB
+const SIZE_THRESHOLD = 50 * 1024; // 50KB
 const LINE_THRESHOLD = 1000;
 const LINE_CHECK_BYTES = 64 * 1024; // read up to 64KB to count newlines
 

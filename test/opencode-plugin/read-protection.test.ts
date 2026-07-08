@@ -30,7 +30,7 @@ describe("read-protection", () => {
 
   it("does not block large reads when the session is not protected", async () => {
     const filePath = path.join(makeTempDir(), "large.ts");
-    writeFileSync(filePath, "a".repeat(21 * 1024));
+    writeFileSync(filePath, "a".repeat(51 * 1024));
 
     const handler = createReadProtectionHandler({
       isEnabledForSession: () => false,
@@ -41,7 +41,7 @@ describe("read-protection", () => {
 
   it("blocks large reads when the session is protected", async () => {
     const filePath = path.join(makeTempDir(), "large.ts");
-    writeFileSync(filePath, "a".repeat(21 * 1024));
+    writeFileSync(filePath, "a".repeat(51 * 1024));
 
     const handler = createReadProtectionHandler({
       isEnabledForSession: () => true,
@@ -52,7 +52,7 @@ describe("read-protection", () => {
 
   it("allows bounded reads when the session is protected", async () => {
     const filePath = path.join(makeTempDir(), "large.ts");
-    writeFileSync(filePath, "a".repeat(21 * 1024));
+    writeFileSync(filePath, "a".repeat(51 * 1024));
 
     const handler = createReadProtectionHandler({
       isEnabledForSession: () => true,
