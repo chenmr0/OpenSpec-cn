@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   APPLY_MARKER,
-  APPLY_QUICK_MARKER,
+  DESIGN_MARKER,
   PLAN_MARKER,
   createWorkflowSessionStore,
   detectProtectedWorkflowFromMessages,
@@ -30,12 +30,12 @@ describe("workflow-session", () => {
     ])).toBe("plan");
 
     expect(detectProtectedWorkflowFromMessages([
-      userMessage(`start\n<!-- command: ${APPLY_MARKER} -->`),
-    ])).toBe("apply");
+      userMessage(`start\n<!-- command: ${DESIGN_MARKER} -->`),
+    ])).toBe("design");
 
     expect(detectProtectedWorkflowFromMessages([
-      userMessage(`start\n<!-- command: ${APPLY_QUICK_MARKER} -->`),
-    ])).toBe("apply-quick");
+      userMessage(`start\n<!-- command: ${APPLY_MARKER} -->`),
+    ])).toBe("apply");
   });
 
   it("ignores markers outside user text messages", () => {
@@ -44,9 +44,13 @@ describe("workflow-session", () => {
     ])).toBeNull();
 
     expect(detectProtectedWorkflowFromMessages([
+      assistantMessage(`<!-- command: ${DESIGN_MARKER} -->`),
+    ])).toBeNull();
+
+    expect(detectProtectedWorkflowFromMessages([
       {
         info: { role: "user", sessionID: "test-session" },
-        parts: [{ type: "tool", text: `<!-- command: ${APPLY_MARKER} -->` }],
+        parts: [{ type: "tool", text: `<!-- command: ${DESIGN_MARKER} -->` }],
       },
     ])).toBeNull();
   });

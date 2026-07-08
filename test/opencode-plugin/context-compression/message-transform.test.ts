@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { createMessagesTransformHandler } from '../../../dist/opencode-plugin/context-compression/message-transform.js';
-import { createCompressionStateStore } from '../../../dist/opencode-plugin/context-compression/compression-state-store.js';
-import type { WithParts } from '../../../dist/opencode-plugin/context-compression/types.js';
+import { createMessagesTransformHandler } from '../../../src/opencode-plugin/context-compression/message-transform.js';
+import { createCompressionStateStore } from '../../../src/opencode-plugin/context-compression/compression-state-store.js';
+import type { WithParts } from '../../../src/opencode-plugin/context-compression/types.js';
 
 const APPLY_MARKER = 'codespec-apply-change';
-const APPLY_QUICK_MARKER = 'codespec-apply-quick';
+const DESIGN_MARKER = 'codespec-design';
 
 function makeMessagesWithTodoWrite(
   sessionId: string,
@@ -75,40 +75,6 @@ describe('createMessagesTransformHandler', () => {
     expect(state.completedOrder.length).toBe(2);
   });
 
-  it('keeps the latest 3 completed tasks uncompressed in apply-quick sessions', async () => {
-    const store = createCompressionStateStore();
-    const handler = createMessagesTransformHandler(store);
-    const state = store.getState('ses-quick');
-
-    const messages1 = makeMessagesWithTodoWrite('ses-quick', [
-      { content: 'Task 1', status: 'completed', priority: 'high' },
-      { content: 'Task 2', status: 'completed', priority: 'high' },
-      { content: 'Task 3', status: 'completed', priority: 'high' },
-      { content: 'Task 4', status: 'pending', priority: 'high' },
-    ], 'completed', true, APPLY_QUICK_MARKER);
-
-    await handler({}, { messages: messages1 });
-
-    expect(state.applyCommand).toBe('apply-quick');
-    expect(state.keepRecentTasks).toBe(3);
-    expect(state.completedOrder.length).toBe(3);
-    expect(messages1.some(m => m.parts.some(p => p.text?.includes('task-compress')))).toBe(false);
-
-    const messages2 = makeMessagesWithTodoWrite('ses-quick', [
-      { content: 'Task 1', status: 'completed', priority: 'high' },
-      { content: 'Task 2', status: 'completed', priority: 'high' },
-      { content: 'Task 3', status: 'completed', priority: 'high' },
-      { content: 'Task 4', status: 'completed', priority: 'high' },
-      { content: 'Task 5', status: 'pending', priority: 'high' },
-    ], 'completed', true, APPLY_QUICK_MARKER);
-
-    await handler({}, { messages: messages2 });
-
-    expect(state.completedOrder.length).toBe(4);
-    const firstTaskId = state.completedOrder[0];
-    expect(messages2.some(m => m.parts.some(p => p.text?.includes(`task_id="${firstTaskId}"`)))).toBe(true);
-  });
-
   it('does not re-record already completed tasks on subsequent calls', async () => {
     const store = createCompressionStateStore();
     const handler = createMessagesTransformHandler(store);
@@ -175,7 +141,7 @@ describe('createMessagesTransformHandler', () => {
     boundary.compressed = true;
     state.compressionBlocks.set(taskId, {
       taskId,
-      summary: '实现了用户登录功能',
+      summary: 'implemented user login',
       modifiedFiles: ['src/auth.ts'],
       startMessageId: boundary.startMessageId,
       endMessageId: boundary.endMessageId,
@@ -216,7 +182,7 @@ describe('createMessagesTransformHandler', () => {
 
     await handler({}, { messages: messages2 });
     // The compressed range (msg-user-1 .. msg-assistant-1) should be replaced
-    expect(messages2.some(m => m.parts.some(p => p.text?.includes('实现了用户登录功能')))).toBe(true);
+    expect(messages2.some(m => m.parts.some(p => p.text?.includes('implemented user login')))).toBe(true);
   });
 
   it('uses first todowrite message as start for the first completed task', async () => {
@@ -297,5 +263,65 @@ describe('createMessagesTransformHandler', () => {
     expect(state.completedOrder.length).toBe(0);
     expect(state.taskBoundaries.size).toBe(0);
     expect(state.isApplySession).toBe(false);
+  });
+
+  it('applies passive pruning in design sessions without active task compression', async () => {
+    const store = createCompressionStateStore();
+    const handler = createMessagesTransformHandler(store);
+    const state = store.getState('ses-design');
+
+    const messages: WithParts[] = [
+      {
+        info: { id: 'msg-user-design', sessionID: 'ses-design', role: 'user', time: { created: 1 } },
+        parts: [{ type: 'text', text: `refine ar\n<!-- command: ${DESIGN_MARKER} -->` }],
+      },
+      {
+        info: { id: 'msg-assistant-1', sessionID: 'ses-design', role: 'assistant', time: { created: 2 } },
+        parts: [
+          {
+            type: 'tool',
+            tool: 'todowrite',
+            callID: 'todo-old',
+            state: {
+              status: 'completed',
+              input: { todos: [{ content: 'Clarify AR', status: 'completed', priority: 'high' }] },
+            },
+          } as any,
+        ],
+      },
+      {
+        info: { id: 'msg-assistant-2', sessionID: 'ses-design', role: 'assistant', time: { created: 3 } },
+        parts: [
+          {
+            type: 'tool',
+            tool: 'bash',
+            callID: 'bash-old',
+            state: {
+              status: 'completed',
+              input: { command: 'npm test' },
+              output: 'long old command output',
+            },
+          } as any,
+        ],
+      },
+    ];
+
+    for (let idx = 3; idx <= 11; idx++) {
+      messages.push({
+        info: { id: `msg-assistant-${idx}`, sessionID: 'ses-design', role: 'assistant', time: { created: idx + 1 } },
+        parts: [{ type: 'text', text: `turn ${idx}` }],
+      });
+    }
+
+    await handler({}, { messages });
+
+    expect(state.isPlanSession).toBe(true);
+    expect(state.isApplySession).toBe(false);
+    expect(state.completedOrder.length).toBe(0);
+    expect(state.taskBoundaries.size).toBe(0);
+    expect(messages.some(m => m.parts.some(p => p.text?.includes('task-compress')))).toBe(false);
+    expect(
+      messages.some(m => m.parts.some(p => p.type === 'tool' && p.state?.output?.includes('output pruned'))),
+    ).toBe(true);
   });
 });

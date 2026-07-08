@@ -1,6 +1,6 @@
 import type { ApplyCommand, CompressionState, WithParts } from "./types.js";
-export { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
-import { APPLY_MARKER, PLAN_MARKER } from "../workflow-session.js";
+export { APPLY_MARKER, DESIGN_MARKER, PLAN_MARKER } from "../workflow-session.js";
+import { APPLY_MARKER, DESIGN_MARKER, PLAN_MARKER } from "../workflow-session.js";
 
 /** Marker used to detect when the compression system is running in main-agent mode. */
 export const MAIN_AGENT_DEV_MARKER = "main-agent-driven";
@@ -33,9 +33,9 @@ function setApplySessionCommand(
  *   - Not found: returns false (no caching, will scan again next call)
  */
 /**
- * Detect whether the current session is a /codespec/plan session.
+ * Detect whether the current session is a /codespec/plan or /codespec/design session.
  * - Already detected (isPlanSession=true): returns true immediately
- * - Not yet detected: scans user message text parts for the PLAN_MARKER
+ * - Not yet detected: scans user message text parts for the passive pruning markers
  *   - Found: sets state.isPlanSession = true and returns true
  *   - Not found: returns false
  */
@@ -49,7 +49,10 @@ export function detectPlanSession(
     if (msg.info.role !== "user") continue;
     for (const part of msg.parts) {
       if (part.type !== "text" || !part.text) continue;
-      if (part.text.includes(PLAN_MARKER)) {
+      if (
+        part.text.includes(PLAN_MARKER) ||
+        part.text.includes(DESIGN_MARKER)
+      ) {
         state.isPlanSession = true;
         return true;
       }

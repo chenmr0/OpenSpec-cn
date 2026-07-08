@@ -40,7 +40,7 @@ export interface CompressionState {
   keepRecentTasks: number;
   /** Per-command keepRecentTasks settings captured when the session state is created */
   keepRecentTasksByCommand: Record<ApplyCommand, number>;
-  /** Whether this session is a /codespec/plan session (detected via PLAN_MARKER) */
+  /** Whether this session uses passive pruning (/codespec/plan or /codespec/design) */
   isPlanSession: boolean;
   /** Cache of all tool call metadata keyed by callID */
   toolCache: Map<string, ToolCallEntry>;

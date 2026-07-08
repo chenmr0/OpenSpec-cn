@@ -1,13 +1,15 @@
 export const PLAN_MARKER = "codespec-propose";
+export const DESIGN_MARKER = "codespec-design";
 export const APPLY_MARKER = "codespec-apply-change";
 
-export type ProtectedWorkflow = "plan" | "apply";
+export type ProtectedWorkflow = "plan" | "design" | "apply";
 
 const PROTECTED_COMMAND_MARKERS: Array<{
   workflow: ProtectedWorkflow;
   marker: string;
 }> = [
   { workflow: "apply", marker: APPLY_MARKER },
+  { workflow: "design", marker: DESIGN_MARKER },
   { workflow: "plan", marker: PLAN_MARKER },
 ];
 

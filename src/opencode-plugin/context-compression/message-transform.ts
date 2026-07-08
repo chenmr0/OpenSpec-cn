@@ -65,7 +65,7 @@ export function createMessagesTransformHandler(
       // ---- Sync tool cache (needed for both plan and apply paths) ----
       syncToolCache(state, messages);
 
-      // ---- Plan session: passive pruning (dedup + age) ----
+      // ---- Passive pruning sessions: /plan and /design (dedup + age) ----
       if (detectPlanSession(state, messages)) {
         debugLog(`plan session detected — applying passive pruning`);
         applyAutoDedup(state, messages);

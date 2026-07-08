@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { detectApplySession, APPLY_MARKER, APPLY_QUICK_MARKER } from '../../../dist/opencode-plugin/context-compression/session-detection.js';
-import type { CompressionState, WithParts } from '../../../dist/opencode-plugin/context-compression/types.js';
+import {
+  detectApplySession,
+  detectPlanSession,
+  APPLY_MARKER,
+  DESIGN_MARKER,
+  PLAN_MARKER,
+} from '../../../src/opencode-plugin/context-compression/session-detection.js';
+import type { CompressionState, WithParts } from '../../../src/opencode-plugin/context-compression/types.js';
 
 function makeState(): CompressionState {
   return {
@@ -8,11 +14,17 @@ function makeState(): CompressionState {
     compressionBlocks: new Map(),
     completedOrder: [],
     lastTodoSnapshot: new Map(),
+    inProgressStart: new Map(),
     nudgeInjectedForTask: null,
     isApplySession: false,
+    isMainAgentMode: false,
     applyCommand: null,
     keepRecentTasks: 1,
-    keepRecentTasksByCommand: { apply: 1, 'apply-quick': 3 },
+    keepRecentTasksByCommand: { apply: 1 },
+    isPlanSession: false,
+    toolCache: new Map(),
+    prunedToolCallIds: new Set(),
+    messageTurnIndex: 0,
   };
 }
 
@@ -60,30 +72,7 @@ describe('detectApplySession', () => {
     expect(state.keepRecentTasks).toBe(1);
   });
 
-  it('returns true when a user message contains the apply-quick marker', () => {
-    const state = makeState();
-    const messages = [
-      makeUserMessage('starting work'),
-      makeUserMessage(`some template content\n<!-- command: ${APPLY_QUICK_MARKER} -->\nmore content`),
-    ];
-    expect(detectApplySession(state, messages)).toBe(true);
-    expect(state.isApplySession).toBe(true);
-    expect(state.applyCommand).toBe('apply-quick');
-    expect(state.keepRecentTasks).toBe(3);
-  });
-
-  it('uses configured keepRecentTasks for apply-quick sessions', () => {
-    const state = makeState();
-    state.keepRecentTasksByCommand['apply-quick'] = 5;
-    const messages = [
-      makeUserMessage(`<!-- command: ${APPLY_QUICK_MARKER} -->`),
-    ];
-
-    expect(detectApplySession(state, messages)).toBe(true);
-    expect(state.keepRecentTasks).toBe(5);
-  });
-
-  it('caches result — returns true on subsequent calls without scanning', () => {
+  it('caches result and returns true on subsequent calls without scanning', () => {
     const state = makeState();
     state.isApplySession = true;
 
@@ -111,5 +100,45 @@ describe('detectApplySession', () => {
     ];
     expect(detectApplySession(state, messages)).toBe(false);
     expect(state.isApplySession).toBe(false);
+  });
+});
+
+describe('detectPlanSession', () => {
+  it('returns true when a user message contains the plan marker', () => {
+    const state = makeState();
+    const messages = [
+      makeUserMessage(`some template content\n<!-- command: ${PLAN_MARKER} -->\nmore content`),
+    ];
+
+    expect(detectPlanSession(state, messages)).toBe(true);
+    expect(state.isPlanSession).toBe(true);
+  });
+
+  it('returns true when a user message contains the design marker', () => {
+    const state = makeState();
+    const messages = [
+      makeUserMessage(`some template content\n<!-- command: ${DESIGN_MARKER} -->\nmore content`),
+    ];
+
+    expect(detectPlanSession(state, messages)).toBe(true);
+    expect(state.isPlanSession).toBe(true);
+  });
+
+  it('caches result and returns true on subsequent calls without scanning', () => {
+    const state = makeState();
+    state.isPlanSession = true;
+
+    const messages: WithParts[] = [];
+    expect(detectPlanSession(state, messages)).toBe(true);
+  });
+
+  it('ignores design marker in assistant messages', () => {
+    const state = makeState();
+    const messages = [
+      makeAssistantMessage(`<!-- command: ${DESIGN_MARKER} -->`),
+    ];
+
+    expect(detectPlanSession(state, messages)).toBe(false);
+    expect(state.isPlanSession).toBe(false);
   });
 });
