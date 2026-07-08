@@ -15,6 +15,7 @@ import {
   getBulkArchiveChangeSkillTemplate,
   getVerifyChangeSkillTemplate,
   getOnboardSkillTemplate,
+  getOpsxDesignSkillTemplate,
   getOpsxProposeSkillTemplate,
   getOpsxExploreCommandTemplate,
   getOpsxNewCommandTemplate,
@@ -26,6 +27,7 @@ import {
   getOpsxBulkArchiveCommandTemplate,
   getOpsxVerifyCommandTemplate,
   getOpsxOnboardCommandTemplate,
+  getOpsxDesignCommandTemplate,
   getOpsxProposeCommandTemplate,
   type SkillTemplate,
 } from '../templates/skill-templates.js';
@@ -35,7 +37,7 @@ import { getMainAgentDevelopmentSkillTemplate } from '../templates/external/main
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
-import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent } from '../templates/agents/index.js';
+import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent, conceptClarifierContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -83,6 +85,7 @@ export function getSkillTemplates(workflowFilter?: readonly string[]): SkillTemp
     { template: getBulkArchiveChangeSkillTemplate(), dirName: 'codespec-bulk-archive-change', workflowId: 'bulk-archive' },
     { template: getVerifyChangeSkillTemplate(), dirName: 'codespec-verify-change', workflowId: 'verify' },
     { template: getOnboardSkillTemplate(), dirName: 'codespec-onboard', workflowId: 'onboard' },
+    { template: getOpsxDesignSkillTemplate(), dirName: 'codespec-design', workflowId: 'design' },
   ];
 
   if (!workflowFilter) return all;
@@ -108,6 +111,7 @@ export function getCommandTemplates(workflowFilter?: readonly string[]): Command
     { template: getOpsxBulkArchiveCommandTemplate(), id: 'bulk-archive' },
     { template: getOpsxVerifyCommandTemplate(), id: 'verify' },
     { template: getOpsxOnboardCommandTemplate(), id: 'onboard' },
+    { template: getOpsxDesignCommandTemplate(), id: 'design' },
     { template: getOpsxProposeCommandTemplate(), id: 'propose' },
   ];
 
@@ -213,5 +217,6 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
     { filename: 'spec-reviewer.md', content: specReviewerContent },
     { filename: 'code-quality-reviewer.md', content: codeQualityReviewerContent },
     { filename: 'change-verifier.md', content: changeVerifierContent },
+    { filename: 'concept-clarify.md', content: conceptClarifierContent },
   ];
 }

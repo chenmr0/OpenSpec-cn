@@ -46,6 +46,10 @@ const WORKFLOW_PROMPT_META: Record<string, WorkflowPromptMeta> = {
     name: '提议变更',
     description: '根据请求创建提议、设计和任务',
   },
+  design: {
+    name: '完善 AR',
+    description: '将 AR 初稿完善为结构化 ar.md',
+  },
   explore: {
     name: '探索想法',
     description: '在实现前调查问题',

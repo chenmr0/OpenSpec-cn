@@ -24,6 +24,7 @@ export const SKILL_NAMES = [
   'codespec-bulk-archive-change',
   'codespec-verify-change',
   'codespec-onboard',
+  'codespec-design',
   'codespec-propose',
 ] as const;
 
@@ -44,6 +45,7 @@ export const COMMAND_IDS = [
   'bulk-archive',
   'verify',
   'onboard',
+  'design',
   'propose',
 ] as const;
 

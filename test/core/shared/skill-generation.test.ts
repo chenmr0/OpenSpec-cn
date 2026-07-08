@@ -28,7 +28,7 @@ describe('skill-generation', () => {
       expect(dirNames).toContain('codespec-new-change');
       expect(dirNames).toContain('codespec-continue-change');
       expect(dirNames).toContain('codespec-apply-change');
-      expect(dirNames).toContain('codespec-apply-quick');
+      expect(dirNames).toContain('codespec-design');
       expect(dirNames).toContain('codespec-ff-change');
       expect(dirNames).toContain('codespec-sync-specs');
       expect(dirNames).toContain('codespec-archive-change');
@@ -109,7 +109,7 @@ describe('skill-generation', () => {
       expect(ids).toContain('new');
       expect(ids).toContain('continue');
       expect(ids).toContain('apply');
-      expect(ids).toContain('apply-quick');
+      expect(ids).toContain('design');
       expect(ids).toContain('ff');
       expect(ids).toContain('sync');
       expect(ids).toContain('archive');

@@ -23,12 +23,14 @@ import {
   templatesCommand,
   schemasCommand,
   newChangeCommand,
+  createArCommand,
   DEFAULT_SCHEMA,
   type StatusOptions,
   type InstructionsOptions,
   type TemplatesOptions,
   type SchemasOptions,
   type NewChangeOptions,
+  type CreateArOptions,
 } from '../commands/workflow/index.js';
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -448,6 +450,24 @@ newCmd
   .action(async (name: string, options: NewChangeOptions) => {
     try {
       await newChangeCommand(name, options);
+    } catch (error) {
+      console.log();
+      ora().fail(`错误：${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// Create command group for workflow artifacts
+const createCmd = program.command('create').description('创建工作流产出物');
+
+createCmd
+  .command('ar')
+  .description('在已有变更目录下创建 AR 模板文件')
+  .requiredOption('--change <id>', '变更名称')
+  .option('--json', '以 JSON 格式输出')
+  .action(async (options: CreateArOptions) => {
+    try {
+      await createArCommand(options);
     } catch (error) {
       console.log();
       ora().fail(`错误：${(error as Error).message}`);

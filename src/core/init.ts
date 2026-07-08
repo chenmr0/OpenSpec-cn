@@ -676,7 +676,8 @@ export class InitCommand {
     // Getting started
     console.log();
     console.log(chalk.bold('开始使用：'));
-    console.log('  开始您的第一个变更：/codespec/plan "您的想法"');
+    console.log('  完善 AR 初稿：/codespec/design "您的想法"');
+    console.log('  生成实现计划：/codespec/plan <change-name>');
 
     // Links
     console.log();

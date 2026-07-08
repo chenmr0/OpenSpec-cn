@@ -23,6 +23,7 @@ export const WORKFLOW_TO_SKILL_DIR: Record<WorkflowId, string> = {
   'bulk-archive': 'codespec-bulk-archive-change',
   'verify': 'codespec-verify-change',
   'onboard': 'codespec-onboard',
+  'design': 'codespec-design',
   'propose': 'codespec-propose',
 };
 
