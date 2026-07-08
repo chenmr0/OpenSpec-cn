@@ -33,9 +33,11 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
 ## 流程详述
 
-**输入**：用户的请求应包含变更名称（kebab-case）或对他们想要构建内容的描述。
+**输入与续接模式判定**：用户的请求应包含变更名称（kebab-case）或对他们想要构建内容的描述。
 
-**如果没有提供明确的输入，询问他们想要构建什么**
+   先判断输入是否是 kebab-case 变更名称，并检查 \`codespec/changes/<name>/\` 是否已经存在。
+
+   **如果没有提供明确的输入，询问他们想要构建什么**
 
    使用 **AskUserQuestion tool**（开放式，无预设选项）询问：
    > "您想要处理什么变更？请描述您想要构建或修复的内容。"
@@ -44,7 +46,15 @@ const proposeInstructions = `# 头脑风暴：将想法转化为设计
 
    **重要提示**：在不了解用户想要构建什么的情况下，请勿继续。
 
-**创建变更目录**
+**已有变更续接模式（/codespec/plan <name>）**
+
+   如果 \`codespec/changes/<name>/\` 已存在，进入已有变更续接模式。已有变更目录存在时禁止创建同名新变更，不要重新运行 \`codespec new change "<name>"\`。
+
+   如果 \`codespec/changes/<name>/ar.md\` 存在，必须先读取 \`ar.md\`，并把它作为上游需求来源；不要要求用户重复描述需求。
+   
+**新变更创建模式**
+
+   如果 \`codespec/changes/<name>/\` 不存在，则创建变更目录：
    \`\`\`bash
    codespec new change "<name>"
    \`\`\`
