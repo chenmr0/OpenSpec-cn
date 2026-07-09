@@ -118,6 +118,23 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 - **可以随时调用**：在所有产出物完成之前（如果存在任务），部分实现之后，与其他操作交错
 - **允许产出物更新**：如果实现揭示了设计问题，建议更新产出物 - 不是阶段锁定的，流畅地工作
 
+**最终自动提交（关键）**
+
+所有任务完成并通过变更级验证后，必须自动提交本次 SDD 实现改动：
+
+1. 收集本次实现实际修改/新增/删除的明确路径，包括代码、测试、配置以及 \`codespec/changes/<change-name>/task.md\`。
+2. 只暂存这些明确路径，严禁使用 \`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`。
+3. 提交命令必须使用 pathspec 限定范围，避免提交与本需求无关的已暂存文件：
+
+   \`\`\`bash
+   git add -- <explicit-file-or-dir>...
+   git commit -m "<类型>[codespec-wx]: <简短描述>" -- <explicit-file-or-dir>...
+   \`\`\`
+
+4. commit 类型从 \`feat | fix | docs | style | refactor | perf | test | chore | revert\` 中选择；无法判断时默认 \`feat\`。
+5. 简短描述使用中文或英文，不超过 50 个字符，结尾不加句号。
+6. 如果没有 Git 仓库、没有变更或 commit 失败，报告原因和可手动执行的明确路径命令；不要因此撤销已完成实现。
+
 <!-- command: codespec-apply-change -->`
   };
 }

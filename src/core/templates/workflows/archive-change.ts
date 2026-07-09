@@ -83,7 +83,22 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
    mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
    \`\`\`
 
-6. **显示摘要**
+6. **自动提交归档结果**
+
+   归档移动完成后，自动提交本次变更的过程件归档和同步过的主规范文件：
+
+   - 必须只暂存明确路径：旧变更目录、归档后的新目录，以及本次同步写入的 \`codespec/specs/**/spec.md\`
+   - 严禁使用 \`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`
+   - 提交命令必须使用 pathspec 限定范围，避免提交无关文件
+
+   \`\`\`bash
+   git add -- codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name> <synced-spec-files...>
+   git commit -m "docs[codespec-wx]: 归档 <name>" -- codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name> <synced-spec-files...>
+   \`\`\`
+
+   如果没有 Git 仓库、没有变更或 commit 失败，显示原因和可手动执行的明确路径命令；不要因此撤销已完成归档。
+
+7. **显示摘要**
 
    显示归档完成摘要，包括：
    - 变更名称
@@ -170,7 +185,22 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
    mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
    \`\`\`
 
-4. **显示摘要**
+4. **自动提交归档结果**
+
+   归档移动完成后，自动提交本次变更的过程件归档和同步过的主规范文件：
+
+   - 必须只暂存明确路径：旧变更目录、归档后的新目录，以及本次同步写入的 \`codespec/specs/**/spec.md\`
+   - 严禁使用 \`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`
+   - 提交命令必须使用 pathspec 限定范围，避免提交无关文件
+
+   \`\`\`bash
+   git add -- codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name> <synced-spec-files...>
+   git commit -m "docs[codespec-wx]: 归档 <name>" -- codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name> <synced-spec-files...>
+   \`\`\`
+
+   如果没有 Git 仓库、没有变更或 commit 失败，显示原因和可手动执行的明确路径命令；不要因此撤销已完成归档。
+
+5. **显示摘要**
 
    显示归档完成摘要，包括：
    - 变更名称

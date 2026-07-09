@@ -123,11 +123,7 @@ const writingPlansSubagentInstructions = `# 编写计划
    - 预期：PASS
 
 - **步骤 6：Commit**
-   - 指定你的修改文件提交，示例：
-   \`\`\`bash
-   git add tests/path/test.py src/path/file.py
-   git commit -m "feat: add specific feature"
-   \`\`\`
+   - 汇报你修改/新增/删除的明确文件路径；不要在单个任务内执行 git commit，最终由 \`/codespec/apply\` 统一提交。
 \`\`\`\`
 
 ## 禁止占位符

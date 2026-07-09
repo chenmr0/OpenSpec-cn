@@ -40,18 +40,18 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getOpsxExploreCommandTemplate: '7314e78fe42cbcb6e86c7746f12fdd9c1fd254cc1d43a3b5620850ea97ffcc76',
   getOpsxNewCommandTemplate: '9849dc9a6fb7e678672f1baef4377302b86c3181663cfdce9af81119c4861e26',
   getOpsxContinueCommandTemplate: 'a9f23050acab52c9aed6f3defbe1e254d0e82cb0c6574f941d4f800ff9fb111c',
-  getOpsxApplyCommandTemplate: '078e0fea52eec09d407d9dbb52e4affafa162a3b01ff5e3a5b7a8a8b62eb791f',
+  getOpsxApplyCommandTemplate: '8de6682d9fa1b7e793ab50ee2fec05a4507141f99b94bce6e906875f717b139e',
   getOpsxFfCommandTemplate: 'b68c64b6aabae225ba9eb01d83aebb1a0e9ded5f62e48d643e1f19d577a88e73',
-  getArchiveChangeSkillTemplate: '58fd91ba35e953faaa7f60bb6320bd4488b0474f1ebc82b0b1dbbf288aac8205',
+  getArchiveChangeSkillTemplate: 'b9d8dfc69e58c9a171901255cca7606b0567c1765cc093c2aebe3320716e410a',
   getBulkArchiveChangeSkillTemplate: '4037c88f6f16fd65d0ba284185500105e8cf322824ece8122c660d08de8c0a9b',
   getOpsxSyncCommandTemplate: '46bd0ff6efb194f91cef351ce90e0fa098a87ca89eed2faace4cbd10cefc0afc',
   getVerifyChangeSkillTemplate: '6c8eca6b17c7470675c5ae2cc57744112471d7dfc5dc08105fdd31ab416fa236',
-  getOpsxArchiveCommandTemplate: 'f57d92cb876494a1f2cff4acdd6de5d8c53f671c1d5ad742f41be0f7ddbd6adb',
+  getOpsxArchiveCommandTemplate: '8b1853080b71ee34bd620ee669b2cd34c6907d71b80b2efcb4a287bdc94d7e29',
   getOpsxOnboardCommandTemplate: 'ea6491d56b5e5aa5747e2b2368b0badbf152397b193b5627df1ce037f1e45e34',
   getOpsxBulkArchiveCommandTemplate: '6e633296d1388b901611b8c2abb70baf323ddc31d48571cc6f33688498b0032e',
   getOpsxVerifyCommandTemplate: 'da84a351871074f2ee4fd2a71dbda388e32d33feea8b9dcbbdcd64fafaceee86',
-  getOpsxProposeSkillTemplate: 'f633ed3d52e8e1e13e53fd6861e529508a41c7b066262404c6d0fb05505c7cc5',
-  getOpsxProposeCommandTemplate: '5e4ee96037eebdf491e46d016770ac7b9349a8254b062dd084f5af6abd4503a2',
+  getOpsxProposeSkillTemplate: '95d61f39b402bd0bc801d0c1b9f9223a6f21752941be573af6361e291ef77ec6',
+  getOpsxProposeCommandTemplate: '9a746a61b47dca1dfbf82c3bc3039ae7ab7c99810fd72ecc110e1b6acb951b5b',
   getFeedbackSkillTemplate: '14e3a17f55fdd22caeee85c9f4245ed31867f49d131ef96908cddb30da78c775',
 };
 
@@ -62,11 +62,11 @@ const EXPECTED_GENERATED_SKILL_CONTENT_HASHES: Record<string, string> = {
   'codespec-apply-change': '5da6e3fa707414d411d07293081b2f0eb41e87334bc46bf04411b9f11cd6db62',
   'codespec-ff-change': 'd879ddef56266ca74494743cd0bdabd8fa1fb7dcbb36e72f6892b2ee0abad795',
   'codespec-sync-specs': 'af9fe8fb030f7af94adfe4c4313bb27cc7f1ea673d4dea7c56a64f93569a19f7',
-  'codespec-archive-change': 'a582801d2ada6b83e4b55df13630f1fec2c9b0620608e04bf8ed2e47b735b8ee',
+  'codespec-archive-change': 'b2cc730c756fb99dc9986b8244f8272150a4528bbb16257552452551b6d8838d',
   'codespec-bulk-archive-change': '5e32574489e46d65ac34961934c06455d22e45f48145904c82063b7250cf09a4',
   'codespec-verify-change': '96c402cf38c6fad78d63e94872f6b323f646c239c19ba26f080a798b96a0bf46',
   'codespec-onboard': '7a9acacd05d525a68ffdc8481a5538c77405a4cf15004549d7b2b2686e88a0c6',
-  'codespec-propose': '8bf501f2ee3d1fc977e63e6e790fc5fa57578e6ac0ddad624f068ddd90bacf60',
+  'codespec-propose': '36e80b255fd47ee9996051818169d4af4c36466a78226756866dd6aea3b7891b',
 };
 
 function stableStringify(value: unknown): string {
@@ -149,5 +149,19 @@ describe('skill templates split parity', () => {
     );
 
     expect(actualHashes).toEqual(EXPECTED_GENERATED_SKILL_CONTENT_HASHES);
+  });
+
+  it('documents path-scoped auto commit instructions for apply and archive', () => {
+    const applyContent = getOpsxApplyCommandTemplate().content;
+    const archiveSkill = getArchiveChangeSkillTemplate().instructions;
+    const archiveCommand = getOpsxArchiveCommandTemplate().content;
+
+    for (const content of [applyContent, archiveSkill, archiveCommand]) {
+      expect(content).toContain('git add --');
+      expect(content).toContain('git commit -m');
+      expect(content).toContain('git add .');
+      expect(content).toContain('git add -A');
+      expect(content).toContain('[codespec-wx]');
+    }
   });
 });

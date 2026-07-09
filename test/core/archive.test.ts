@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { ArchiveCommand } from '../../src/core/archive.js';
 import { Validator } from '../../src/core/validation/validator.js';
+import { autoCommitPaths } from '../../src/core/git-auto-commit.js';
 import { promises as fs } from 'fs';
 import path from 'path';
 import os from 'os';
@@ -9,6 +10,10 @@ import os from 'os';
 vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
   confirm: vi.fn()
+}));
+
+vi.mock('../../src/core/git-auto-commit.js', () => ({
+  autoCommitPaths: vi.fn(),
 }));
 
 describe('ArchiveCommand', () => {
@@ -34,6 +39,12 @@ describe('ArchiveCommand', () => {
     console.log = vi.fn();
     
     archiveCommand = new ArchiveCommand();
+    vi.mocked(autoCommitPaths).mockResolvedValue({
+      committed: true,
+      skipped: false,
+      message: 'docs[codespec-wx]: 归档 test',
+      command: 'git add -- codespec/changes/test',
+    });
   });
 
   afterEach(async () => {
@@ -58,9 +69,9 @@ describe('ArchiveCommand', () => {
       const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
       await fs.mkdir(changeDir, { recursive: true });
       
-      // Create tasks.md with completed tasks
-      const tasksContent = '- [x] Task 1\n- [x] Task 2';
-      await fs.writeFile(path.join(changeDir, 'tasks.md'), tasksContent);
+      // Create task.md with completed tasks
+      const tasksContent = '### [x] Task 1\n### [x] Task 2';
+      await fs.writeFile(path.join(changeDir, 'task.md'), tasksContent);
       
       // Execute archive with --yes flag
       await archiveCommand.execute(changeName, { yes: true });
@@ -74,6 +85,16 @@ describe('ArchiveCommand', () => {
       
       // Verify original change directory no longer exists
       await expect(fs.access(changeDir)).rejects.toThrow();
+
+      expect(autoCommitPaths).toHaveBeenCalledWith(expect.objectContaining({
+        cwd: '.',
+        type: 'docs',
+        description: `归档 ${changeName}`,
+        paths: expect.arrayContaining([
+          path.join('.', 'codespec', 'changes', changeName),
+          expect.stringMatching(new RegExp(`codespec[\\\\/]changes[\\\\/]archive[\\\\/]\\d{4}-\\d{2}-\\d{2}-${changeName}`)),
+        ]),
+      }));
     });
 
     it('should warn about incomplete tasks', async () => {
@@ -81,9 +102,9 @@ describe('ArchiveCommand', () => {
       const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
       await fs.mkdir(changeDir, { recursive: true });
       
-      // Create tasks.md with incomplete tasks
-      const tasksContent = '- [x] Task 1\n- [ ] Task 2\n- [ ] Task 3';
-      await fs.writeFile(path.join(changeDir, 'tasks.md'), tasksContent);
+      // Create task.md with incomplete tasks
+      const tasksContent = '### [x] Task 1\n### [ ] Task 2\n### [ ] Task 3';
+      await fs.writeFile(path.join(changeDir, 'task.md'), tasksContent);
       
       // Execute archive with --yes flag
       await archiveCommand.execute(changeName, { yes: true });
@@ -125,6 +146,11 @@ Then expected result happens`;
       expect(updatedContent).toContain('## 需求');
       expect(updatedContent).toContain('### 需求: The system SHALL provide test capability');
       expect(updatedContent).toContain('#### Scenario: Basic test');
+      expect(autoCommitPaths).toHaveBeenCalledWith(expect.objectContaining({
+        paths: expect.arrayContaining([
+          path.join('.', 'codespec', 'specs', 'test-capability', 'spec.md'),
+        ]),
+      }));
     });
 
     it('should allow REMOVED requirements when creating new spec file (issue #403)', async () => {
@@ -274,14 +300,15 @@ New feature description.
       await expect(
         archiveCommand.execute(changeName, { yes: true })
       ).rejects.toThrow(`归档 '${date}-${changeName}' 已存在。`);
+      expect(autoCommitPaths).not.toHaveBeenCalled();
     });
 
-    it('should handle changes without tasks.md', async () => {
+    it('should handle changes without task.md', async () => {
       const changeName = 'no-tasks-feature';
       const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
       await fs.mkdir(changeDir, { recursive: true });
       
-      // Execute archive without tasks.md
+      // Execute archive without task.md
       await archiveCommand.execute(changeName, { yes: true });
       
       // Should complete without warnings
@@ -341,6 +368,11 @@ New feature description.
       const archives = await fs.readdir(archiveDir);
       expect(archives.length).toBe(1);
       expect(archives[0]).toMatch(new RegExp(`\\d{4}-\\d{2}-\\d{2}-${changeName}`));
+      expect(autoCommitPaths).toHaveBeenCalledWith(expect.objectContaining({
+        paths: expect.not.arrayContaining([
+          path.join('.', 'codespec', 'specs', 'test-capability', 'spec.md'),
+        ]),
+      }));
     });
 
     it('should skip validation when commander sets validate to false (--no-validate)', async () => {
@@ -362,7 +394,7 @@ The system will log all events.
 - **WHEN** an event occurs
 - **THEN** it is captured`;
       await fs.writeFile(path.join(changeSpecDir, 'spec.md'), deltaSpec);
-      await fs.writeFile(path.join(changeDir, 'tasks.md'), '- [x] Task 1\n');
+      await fs.writeFile(path.join(changeDir, 'task.md'), '### [x] Task 1\n');
 
       const deltaSpy = vi.spyOn(Validator.prototype, 'validateChangeDeltaSpecs');
       const specContentSpy = vi.spyOn(Validator.prototype, 'validateSpecContent');
@@ -822,9 +854,9 @@ E1 updated`);
       const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
       await fs.mkdir(changeDir, { recursive: true });
       
-      // Create tasks.md with incomplete tasks
-      const tasksContent = '- [ ] Task 1';
-      await fs.writeFile(path.join(changeDir, 'tasks.md'), tasksContent);
+      // Create task.md with incomplete tasks
+      const tasksContent = '### [ ] Task 1';
+      await fs.writeFile(path.join(changeDir, 'task.md'), tasksContent);
       
       // Mock confirm to return true (proceed)
       mockConfirm.mockResolvedValueOnce(true);
@@ -847,9 +879,9 @@ E1 updated`);
       const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
       await fs.mkdir(changeDir, { recursive: true });
       
-      // Create tasks.md with incomplete tasks
-      const tasksContent = '- [ ] Task 1';
-      await fs.writeFile(path.join(changeDir, 'tasks.md'), tasksContent);
+      // Create task.md with incomplete tasks
+      const tasksContent = '### [ ] Task 1';
+      await fs.writeFile(path.join(changeDir, 'task.md'), tasksContent);
       
       // Mock confirm to return false (cancel) for validation skip
       mockConfirm.mockResolvedValueOnce(false);

@@ -9,6 +9,7 @@ import {
   writeUpdatedSpec,
   type SpecUpdate,
 } from './specs-apply.js';
+import { autoCommitPaths } from './git-auto-commit.js';
 
 /**
  * Recursively copy a directory. Used when fs.rename fails (e.g. EPERM on Windows).
@@ -56,6 +57,7 @@ export class ArchiveCommand {
     const changesDir = path.join(targetPath, 'codespec', 'changes');
     const archiveDir = path.join(changesDir, 'archive');
     const mainSpecsDir = path.join(targetPath, 'codespec', 'specs');
+    const updatedSpecPaths: string[] = [];
 
     // Check if changes directory exists
     try {
@@ -234,6 +236,7 @@ export class ArchiveCommand {
               }
             }
             await writeUpdatedSpec(p.update, p.rebuilt, p.counts);
+            updatedSpecPaths.push(p.update.target);
             totals.added += p.counts.added;
             totals.modified += p.counts.modified;
             totals.removed += p.counts.removed;
@@ -268,6 +271,22 @@ export class ArchiveCommand {
     await moveDirectory(changeDir, archivePath);
 
     console.log(`更改 '${changeName}' 已归档为 '${archiveName}'。`);
+
+    const commitResult = await autoCommitPaths({
+      cwd: targetPath,
+      type: 'docs',
+      description: `归档 ${changeName}`,
+      paths: [changeDir, archivePath, ...updatedSpecPaths],
+    });
+
+    if (commitResult.committed) {
+      console.log(`已自动提交：${commitResult.message}`);
+    } else {
+      console.log(`自动提交跳过/失败：${commitResult.message}`);
+      if (commitResult.command) {
+        console.log(`可手动执行：\n${commitResult.command}`);
+      }
+    }
   }
 
   private async selectChange(changesDir: string): Promise<string | null> {
