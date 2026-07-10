@@ -118,17 +118,26 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 - **可以随时调用**：在所有产出物完成之前（如果存在任务），部分实现之后，与其他操作交错
 - **允许产出物更新**：如果实现揭示了设计问题，建议更新产出物 - 不是阶段锁定的，流畅地工作
 
+**.gitignore 自动补充（谨慎）**
+
+在最终自动提交前，检查本次实现是否产生了明显不应提交的临时文件、缓存目录、构建产物、日志、IDE/本地配置等内容：
+1. 如果已有 \`.gitignore\`，只追加本次需要的最小、具体忽略规则；不要重写整份文件。
+2. 如果没有 \`.gitignore\`，可根据项目类型生成最小基础 \`.gitignore\`。
+3. 不要把 \`.gitignore\` 当作隐藏变更的兜底手段；严禁忽略源码、测试、配置模板、锁文件、文档以及 \`codespec/changes/<change-name>/task.md\`。
+4. 不要使用过宽规则隐藏本次实现应提交的文件。
+5. 如果修改或新增了 \`.gitignore\`，自动提交时必须将 \`.gitignore\` 作为明确文件路径一并提交。
+
 **最终自动提交（关键）**
 
 所有任务完成并通过变更级验证后，必须自动提交本次 SDD 实现改动：
 
-1. 收集本次实现实际修改/新增/删除的明确文件路径，包括代码、测试、配置以及 \`codespec/changes/<change-name>/task.md\`。
-2. 只暂存这些明确文件路径，必须指定具体文件名，严禁使用目录路径、\`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`。
+1. 收集本次实现实际修改/新增/删除的明确文件路径，包括代码、测试和配置\`。
+2. 只暂存这些明确文件路径，必须指定具体文件名；如果修改或新增了 \`.gitignore\`，也必须显式包含 \`.gitignore\`。严禁使用目录路径、\`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`。
 3. 提交命令必须使用具体文件 pathspec 限定范围，避免提交与本需求无关的已暂存文件：
 
    \`\`\`bash
-   git add -- <explicit-file>...
-   git commit -m "<类型>[codespec-wx]: <简短描述>" -- <explicit-file>...
+   git add -- .gitignore <explicit-file>...
+   git commit -m "<类型>[codespec-wx]: <简短描述>" -- .gitignore <explicit-file>...
    \`\`\`
 
 4. commit 类型从 \`feat | fix | docs | style | refactor | perf | test | chore | revert\` 中选择；无法判断时默认 \`feat\`。
