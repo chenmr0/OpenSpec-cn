@@ -122,18 +122,18 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 
 所有任务完成并通过变更级验证后，必须自动提交本次 SDD 实现改动：
 
-1. 收集本次实现实际修改/新增/删除的明确路径，包括代码、测试、配置以及 \`codespec/changes/<change-name>/task.md\`。
-2. 只暂存这些明确路径，严禁使用 \`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`。
-3. 提交命令必须使用 pathspec 限定范围，避免提交与本需求无关的已暂存文件：
+1. 收集本次实现实际修改/新增/删除的明确文件路径，包括代码、测试、配置以及 \`codespec/changes/<change-name>/task.md\`。
+2. 只暂存这些明确文件路径，必须指定具体文件名，严禁使用目录路径、\`git add .\`、\`git add -A\`、\`git add --all\` 或 \`git add *\`。
+3. 提交命令必须使用具体文件 pathspec 限定范围，避免提交与本需求无关的已暂存文件：
 
    \`\`\`bash
-   git add -- <explicit-file-or-dir>...
-   git commit -m "<类型>[codespec-wx]: <简短描述>" -- <explicit-file-or-dir>...
+   git add -- <explicit-file>...
+   git commit -m "<类型>[codespec-wx]: <简短描述>" -- <explicit-file>...
    \`\`\`
 
 4. commit 类型从 \`feat | fix | docs | style | refactor | perf | test | chore | revert\` 中选择；无法判断时默认 \`feat\`。
 5. 简短描述使用中文或英文，不超过 50 个字符，结尾不加句号。
-6. 如果没有 Git 仓库、没有变更或 commit 失败，报告原因和可手动执行的明确路径命令；不要因此撤销已完成实现。
+6. 如果没有 Git 仓库、没有变更或 commit 失败，报告原因和可手动执行的明确文件路径命令；不要因此撤销已完成实现。
 
 <!-- command: codespec-apply-change -->`
   };
