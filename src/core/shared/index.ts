@@ -28,6 +28,8 @@ export {
   getSkillTemplates,
   getExternalSkillTemplates,
   getExternalAgentTemplates,
+  OPENCODE_SUBAGENT_FILES,
+  injectFrontmatterMode,
   getCommandTemplates,
   getCommandContents,
   generateSkillContent,

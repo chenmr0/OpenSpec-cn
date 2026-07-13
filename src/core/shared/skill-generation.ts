@@ -285,3 +285,28 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
     { filename: 'concept-clarify.md', content: conceptClarifierContent },
   ];
 }
+
+/**
+ * 需要在 opencode 下注入 `mode: subagent` 的 external agent 文件名集合。
+ * 其余 agent（如 code-generator.md）保持默认（不配 mode，即 all）。
+ */
+export const OPENCODE_SUBAGENT_FILES = new Set([
+  'change-verifier.md',
+  'code-quality-reviewer.md',
+  'concept-clarify.md',
+  'spec-reviewer.md',
+]);
+
+/**
+ * 在 markdown agent 文件的 YAML frontmatter 中插入 `mode: subagent`。
+ * 仅当文件以 `---\n` 开头且 frontmatter 内尚无 `mode:` 字段时插入；
+ * 插入位置为 frontmatter 闭合 `---` 之前。幂等。
+ */
+export function injectFrontmatterMode(content: string, mode = 'subagent'): string {
+  if (!content.startsWith('---\n')) return content;
+  const closingIdx = content.indexOf('\n---\n', 4);
+  if (closingIdx === -1) return content;
+  const frontmatter = content.slice(0, closingIdx);
+  if (/^mode:/m.test(frontmatter)) return content;
+  return frontmatter + `\nmode: ${mode}` + content.slice(closingIdx);
+}

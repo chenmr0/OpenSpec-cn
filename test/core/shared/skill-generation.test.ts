@@ -4,6 +4,9 @@ import {
   getCommandTemplates,
   getCommandContents,
   generateSkillContent,
+  getExternalAgentTemplates,
+  OPENCODE_SUBAGENT_FILES,
+  injectFrontmatterMode,
 } from '../../../src/core/shared/skill-generation.js';
 
 describe('skill-generation', () => {
@@ -298,6 +301,93 @@ describe('skill-generation', () => {
 
       expect(content).toContain('Some REPLACED text here.');
       expect(content).not.toContain('PLACEHOLDER');
+    });
+  });
+
+  describe('getExternalAgentTemplates', () => {
+    it('should return all 5 external agent templates', () => {
+      const agents = getExternalAgentTemplates();
+      expect(agents).toHaveLength(5);
+      const filenames = agents.map(a => a.filename);
+      expect(filenames).toEqual(expect.arrayContaining([
+        'code-generator.md',
+        'change-verifier.md',
+        'code-quality-reviewer.md',
+        'concept-clarify.md',
+        'spec-reviewer.md',
+      ]));
+    });
+  });
+
+  describe('OPENCODE_SUBAGENT_FILES', () => {
+    it('should contain exactly the 4 pure-subagent files', () => {
+      expect(OPENCODE_SUBAGENT_FILES.size).toBe(4);
+      expect(OPENCODE_SUBAGENT_FILES.has('change-verifier.md')).toBe(true);
+      expect(OPENCODE_SUBAGENT_FILES.has('code-quality-reviewer.md')).toBe(true);
+      expect(OPENCODE_SUBAGENT_FILES.has('concept-clarify.md')).toBe(true);
+      expect(OPENCODE_SUBAGENT_FILES.has('spec-reviewer.md')).toBe(true);
+      // code-generator.md must NOT be in the set (stays default mode)
+      expect(OPENCODE_SUBAGENT_FILES.has('code-generator.md')).toBe(false);
+    });
+  });
+
+  describe('injectFrontmatterMode', () => {
+    it('should insert mode: subagent before the closing frontmatter delimiter', () => {
+      const input = `---
+name: change-verifier
+description: |
+  some description here
+---
+
+body content`;
+      const result = injectFrontmatterMode(input);
+      expect(result).toBe(`---
+name: change-verifier
+description: |
+  some description here
+mode: subagent
+---
+
+body content`);
+    });
+
+    it('should be idempotent when mode field already exists', () => {
+      const input = `---
+name: change-verifier
+description: test
+mode: primary
+---
+
+body`;
+      const result = injectFrontmatterMode(input);
+      expect(result).toBe(input);
+    });
+
+    it('should return content unchanged when no frontmatter exists', () => {
+      const input = 'just some markdown without frontmatter';
+      const result = injectFrontmatterMode(input);
+      expect(result).toBe(input);
+    });
+
+    it('should return content unchanged when frontmatter is malformed (no closing delimiter)', () => {
+      const input = `---
+name: broken
+description: no closing delimiter`;
+      const result = injectFrontmatterMode(input);
+      expect(result).toBe(input);
+    });
+
+    it('should inject all real external subagent templates correctly', () => {
+      const agents = getExternalAgentTemplates();
+      for (const agent of agents) {
+        if (!OPENCODE_SUBAGENT_FILES.has(agent.filename)) continue;
+        const injected = injectFrontmatterMode(agent.content);
+        // must contain mode: subagent in frontmatter
+        const frontmatterEnd = injected.indexOf('\n---\n', 4);
+        expect(frontmatterEnd).toBeGreaterThan(0);
+        const frontmatter = injected.slice(0, frontmatterEnd);
+        expect(frontmatter).toMatch(/^mode: subagent$/m);
+      }
     });
   });
 });

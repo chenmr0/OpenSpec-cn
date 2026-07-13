@@ -560,6 +560,55 @@ describe('InitCommand - profile and detection features', () => {
     expect(await directoryExists(newCommandsDir)).toBe(true);
   });
 
+  it('should inject mode: subagent into the 4 pure-subagent agents for opencode', async () => {
+    const initCommand = new InitCommand({ tools: 'opencode' });
+    await initCommand.execute(testDir);
+
+    // opencode agents are written to the user-level config dir (redirected via XDG_CONFIG_HOME)
+    const opencodeAgentsDir = path.join(configTempDir, 'opencode', 'agents');
+
+    const expectedSubagents = [
+      'change-verifier.md',
+      'code-quality-reviewer.md',
+      'concept-clarify.md',
+      'spec-reviewer.md',
+    ];
+    for (const filename of expectedSubagents) {
+      const content = await fs.readFile(path.join(opencodeAgentsDir, filename), 'utf-8');
+      // frontmatter must contain mode: subagent before the closing ---
+      const frontmatterEnd = content.indexOf('\n---\n', 4);
+      const frontmatter = content.slice(0, frontmatterEnd);
+      expect(frontmatter).toMatch(/^mode: subagent$/m);
+    }
+
+    // code-generator.md must NOT have a mode field (stays default = all)
+    const codeGenContent = await fs.readFile(
+      path.join(opencodeAgentsDir, 'code-generator.md'),
+      'utf-8',
+    );
+    const codeGenFrontmatterEnd = codeGenContent.indexOf('\n---\n', 4);
+    const codeGenFrontmatter = codeGenContent.slice(0, codeGenFrontmatterEnd);
+    expect(codeGenFrontmatter).not.toMatch(/^mode:/m);
+  });
+
+  it('should NOT inject mode: subagent for claude tool (shared templates stay clean)', async () => {
+    const initCommand = new InitCommand({ tools: 'claude', force: true });
+    await initCommand.execute(testDir);
+
+    const claudeAgentsDir = path.join(testDir, '.claude', 'agents');
+    const agentFiles = [
+      'change-verifier.md',
+      'code-quality-reviewer.md',
+      'concept-clarify.md',
+      'spec-reviewer.md',
+      'code-generator.md',
+    ];
+    for (const filename of agentFiles) {
+      const content = await fs.readFile(path.join(claudeAgentsDir, filename), 'utf-8');
+      expect(content).not.toMatch(/^mode:/m);
+    }
+  });
+
   it('should preselect configured tools but not directory-detected tools in extend mode', async () => {
     // Simulate existing CodeSpec project (extend mode).
     await fs.mkdir(path.join(testDir, 'codespec'), { recursive: true });

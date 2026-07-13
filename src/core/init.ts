@@ -39,6 +39,8 @@ import {
   getToolStates,
   getExternalSkillTemplates,
   getExternalAgentTemplates,
+  OPENCODE_SUBAGENT_FILES,
+  injectFrontmatterMode,
   getCommandContents,
   generateSkillContent,
   cleanupDeprecatedExternalSkillDirs,
@@ -527,7 +529,11 @@ export class InitCommand {
               ? path.join(getOpenCodeUserConfigDir(), 'agents')
               : path.join(projectPath, tool.skillsDir, 'agents');
             const agentFile = path.join(agentsDir, agent.filename);
-            await FileSystemUtils.writeFile(agentFile, agent.content);
+            // 仅 opencode 下，对指定的纯子代理 agent 注入 mode: subagent
+            const content = tool.value === 'opencode' && OPENCODE_SUBAGENT_FILES.has(agent.filename)
+              ? injectFrontmatterMode(agent.content)
+              : agent.content;
+            await FileSystemUtils.writeFile(agentFile, content);
           }
         }
 
