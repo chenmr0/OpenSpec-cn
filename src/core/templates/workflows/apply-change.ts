@@ -69,6 +69,13 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
    - 如果未找到标记，默认使用 **subagent** 模式
    - 宣布："执行模式：<subagent | main>"
 
+**检测 TDD 状态**
+
+   读取 \`task.md\` 文件头部的 TDD 标记：
+   - 查找 \`> **TDD**: \\\`启用\\\`\` 或 \`> **TDD**: \\\`未启用\\\`\`
+   - 如果未找到标记，默认视为 **未启用** TDD
+   - 宣布："TDD：<启用 | 未启用>"
+
 ### 任务实施
 
    **无人值守原则：** 一旦进入实现阶段，自主推进所有任务直到全部完成。遇到问题时自行解决，不暂停等待用户介入。**continuation enforcer 会在你试图提前停止时自动注入 prompt 强制你继续，所以不要停下来等待用户确认——直接执行。**
