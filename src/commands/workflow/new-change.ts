@@ -44,16 +44,16 @@ export async function newChangeCommand(name: string | undefined, options: NewCha
 
   try {
     const result = await createChange(projectRoot, name, { schema: options.schema });
+    const changeDir = path.join(projectRoot, 'codespec', 'changes', name);
 
     // If description provided, create README.md with description
     if (options.description) {
       const { promises: fs } = await import('fs');
-      const changeDir = path.join(projectRoot, 'codespec', 'changes', name);
       const readmePath = path.join(changeDir, 'README.md');
       await fs.writeFile(readmePath, `# ${name}\n\n${options.description}\n`, 'utf-8');
     }
 
-    spinner.succeed(`已创建变更 '${name}'，位于 codespec/changes/${name}/ (Schema: ${result.schema})`);
+    spinner.succeed(`已创建变更 '${name}'，位于 ${changeDir}${path.sep} (Schema: ${result.schema})`);
   } catch (error) {
     spinner.fail(`创建变更 '${name}' 失败`);
     throw error;
