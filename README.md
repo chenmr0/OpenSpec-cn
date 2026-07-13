@@ -95,10 +95,10 @@ codespec init
 | 技能 | 作用 |
 |------|------|
 | **writing-plans** | 将设计拆解为可执行的小任务，不允许占位符代码 |
-| **test-driven-development** | 红灯-绿灯-重构循环，无失败测试不写产品代码 |
-| **subagent-driven-development** | 子代理执行 + spec/质量双审查 + 状态管理 |
+| **codespec-test-driven-development** | 红灯-绿灯-重构循环，无失败测试不写产品代码 |
+| **codespec-subagent-driven-development** | 子代理执行 + spec/质量双审查 + 状态管理 |
 | **quick-driven-development** | 主上下文顺序实现 + 自审 + 验证，跳过每任务子代理审查 |
-| **verification-before-completion** | 必须提供新鲜的验证证据才能声明完成 |
+| **codespec-verification-before-completion** | 必须提供新鲜的验证证据才能声明完成 |
 
 ### 上下文压缩
 

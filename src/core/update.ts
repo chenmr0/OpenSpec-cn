@@ -25,6 +25,7 @@ import {
   getCommandContents,
   generateSkillContent,
   getToolsWithSkillsDir,
+  cleanupDeprecatedExternalSkillDirs,
   type ToolVersionStatus,
 } from './shared/index.js';
 import {
@@ -191,6 +192,11 @@ export class UpdateCommand {
         const skillsDir = tool.value === 'opencode'
           ? path.join(getOpenCodeUserConfigDir(), 'skills')
           : path.join(resolvedProjectPath, tool.skillsDir, 'skills');
+
+        // Remove external skill directories left by previous CodeSpec versions that
+        // used colliding dir names. update does not rewrite external skills, so this
+        // is the only chance to clear stale dirs during an upgrade.
+        await cleanupDeprecatedExternalSkillDirs(skillsDir);
 
         // Generate skill files if delivery includes skills
         if (shouldGenerateSkills) {
@@ -714,6 +720,10 @@ export class UpdateCommand {
         const skillsDir = tool.value === 'opencode'
           ? path.join(getOpenCodeUserConfigDir(), 'skills')
           : path.join(projectPath, tool.skillsDir, 'skills');
+
+        // Clear deprecated external skill dirs here too, since legacy upgrade may run
+        // without the main update loop touching every tool.
+        await cleanupDeprecatedExternalSkillDirs(skillsDir);
 
         // Create skill files when delivery includes skills
         if (shouldGenerateSkills) {

@@ -357,8 +357,8 @@ TDD 循环：
 
 export function getTestDrivenDevelopmentSkillTemplate(): SkillTemplate {
   return {
-    name: 'test-driven-development',
-    description: 'test-driven-development',
+    name: 'codespec-test-driven-development',
+    description: 'codespec-test-driven-development',
     instructions: tddInstructions,
     license: 'MIT',
     compatibility: '无特殊依赖。',

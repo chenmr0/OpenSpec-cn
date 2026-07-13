@@ -143,8 +143,8 @@ const verificationInstructions = `# 完成前验证
 
 export function getVerificationBeforeCompletionSkillTemplate(): SkillTemplate {
   return {
-    name: 'verification-before-completion',
-    description: 'verification-before-completion',
+    name: 'codespec-verification-before-completion',
+    description: 'codespec-verification-before-completion',
     instructions: verificationInstructions,
     license: 'MIT',
     compatibility: '无特殊依赖。',

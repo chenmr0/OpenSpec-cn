@@ -41,6 +41,7 @@ import {
   getExternalAgentTemplates,
   getCommandContents,
   generateSkillContent,
+  cleanupDeprecatedExternalSkillDirs,
   type ToolSkillStatus,
 } from './shared/index.js';
 import { getAvailableTools } from './available-tools.js';
@@ -493,6 +494,11 @@ export class InitCommand {
           const skillsDir = tool.value === 'opencode'
             ? path.join(getOpenCodeUserConfigDir(), 'skills')
             : path.join(projectPath, tool.skillsDir, 'skills');
+
+          // Remove external skill directories left by previous CodeSpec versions that
+          // used colliding dir names (subagent-driven-development etc.). Only deletes
+          // directories carrying the CodeSpec `generatedBy` marker.
+          await cleanupDeprecatedExternalSkillDirs(skillsDir);
 
           // Always create external skills (writing-plans, test-driven-development, etc.)
           for (const { template, dirName, extraFiles } of externalSkillTemplates) {

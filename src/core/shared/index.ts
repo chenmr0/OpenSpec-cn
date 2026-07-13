@@ -31,4 +31,7 @@ export {
   getCommandTemplates,
   getCommandContents,
   generateSkillContent,
+  DEPRECATED_EXTERNAL_SKILL_DIRS,
+  isCodeSpecGeneratedSkill,
+  cleanupDeprecatedExternalSkillDirs,
 } from './skill-generation.js';

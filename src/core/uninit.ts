@@ -18,6 +18,8 @@ import {
   getExternalAgentTemplates,
   getExternalSkillTemplates,
   getSkillTemplates,
+  DEPRECATED_EXTERNAL_SKILL_DIRS,
+  isCodeSpecGeneratedSkill,
 } from './shared/index.js';
 import { CommandAdapterRegistry } from './command-generation/index.js';
 
@@ -94,8 +96,16 @@ export class UninitCommand {
     const skillsDir = path.join(opencodeDir, 'skills');
     const skillEntries = [...getSkillTemplates(), ...getExternalSkillTemplates()];
 
-    for (const entry of skillEntries) {
-      const skillDir = path.join(skillsDir, entry.dirName);
+    // Also enumerate deprecated external skill dir names so that uninit cleans up
+    // stale directories created by previous CodeSpec versions (renamed to avoid
+    // collisions with superpowers-zh skills of the same name).
+    const dirNamesToCheck: string[] = [
+      ...skillEntries.map((entry) => entry.dirName),
+      ...DEPRECATED_EXTERNAL_SKILL_DIRS.map((entry) => entry.oldDirName),
+    ];
+
+    for (const dirName of dirNamesToCheck) {
+      const skillDir = path.join(skillsDir, dirName);
       const skillFile = path.join(skillDir, 'SKILL.md');
 
       if (!fs.existsSync(skillDir)) {
@@ -109,7 +119,7 @@ export class UninitCommand {
         }
 
         const content = await fs.promises.readFile(skillFile, 'utf-8');
-        if (!this.isCodeSpecGeneratedSkill(content)) {
+        if (!isCodeSpecGeneratedSkill(content)) {
           result.skippedSkills.push(skillDir);
           continue;
         }
@@ -120,10 +130,6 @@ export class UninitCommand {
         result.errors.push(this.formatFsError('skill', skillDir, error));
       }
     }
-  }
-
-  private isCodeSpecGeneratedSkill(content: string): boolean {
-    return /^\s*generatedBy:\s*["']?[^"'\n]+["']?\s*$/m.test(content);
   }
 
   private async removeCommands(

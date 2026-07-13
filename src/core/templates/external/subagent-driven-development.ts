@@ -553,8 +553,8 @@ Task tool (general-purpose):
 
 export function getSubagentDrivenDevelopmentSkillTemplate(): SkillTemplate {
   return {
-    name: 'subagent-driven-development',
-    description: 'subagent-driven-development',
+    name: 'codespec-subagent-driven-development',
+    description: 'codespec-subagent-driven-development',
     instructions: sddInstructions,
     license: 'MIT',
     compatibility: '无特殊依赖。',

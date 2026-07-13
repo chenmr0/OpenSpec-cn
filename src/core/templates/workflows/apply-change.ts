@@ -89,7 +89,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 
    #### subagent 模式（质量优先）
 
-   **加载 \`subagent-driven-development\` 技能，严格按照该技能的流程执行所有任务。**
+   **加载 \`codespec-subagent-driven-development\` 技能，严格按照该技能的流程执行所有任务。**
 
    该技能会自动执行：为每个任务分派隔离的实现子智能体 → 规格合规审查 → 代码质量审查 → 标记完成 → 继续下一个任务 → 全部任务完成后委派 change-verifier 变更级验证。你只需确保传递正确的上下文（完整任务文本 + 场景铺设 + 工作目录），其余流程由技能驱动。
 
@@ -106,7 +106,7 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
 - 开始前始终阅读上下文文件（来自 apply instructions 输出）
 - 使用 CLI 输出中的 contextFiles，不要假设特定的文件名
 - 保持代码更改最小化并限定在每个任务范围内
-- **subagent 模式**：实施阶段的子智能体纪律、审查流程全部由 \`subagent-driven-development\` 技能定义，严格遵循该技能的红线和要求
+- **subagent 模式**：实施阶段的子智能体纪律、审查流程全部由 \`codespec-subagent-driven-development\` 技能定义，严格遵循该技能的红线和要求
 - **main 模式**：主 agent 直接执行实现，全部任务完成后统一执行 spec-reviewer + code-quality-reviewer 审查
 - **不要试图提前结束**：continuation enforcer 机制会在你停下来时自动注入续行 prompt。如果你想停下来"等待确认"或"询问用户"，系统会强制你继续。只有所有任务真正完成并通过验证时才停下来
 - **不得将任务合并执行**：反例：我可以将任务5-7合并委派给subagent实现。合并将导致任务完成质量不可控
