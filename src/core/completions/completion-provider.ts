@@ -1,4 +1,5 @@
 import { getActiveChangeIds, getSpecIds } from '../../utils/item-discovery.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 
 /**
  * Cache entry for completion data
@@ -22,11 +23,11 @@ export class CompletionProvider {
    * Creates a new completion provider
    *
    * @param cacheTTLMs - Cache time-to-live in milliseconds (default: 2000ms)
-   * @param projectRoot - Project root directory (default: process.cwd())
+   * @param projectRoot - Project root directory (default: resolveCodespecRoot())
    */
   constructor(
     private readonly cacheTTLMs: number = 2000,
-    private readonly projectRoot: string = process.cwd()
+    private readonly projectRoot: string = resolveCodespecRoot()
   ) {
     this.cacheTTL = cacheTTLMs;
   }

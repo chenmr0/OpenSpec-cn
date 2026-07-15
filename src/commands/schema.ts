@@ -12,6 +12,7 @@ import {
 } from '../core/artifact-graph/resolver.js';
 import { parseSchema, SchemaValidationError } from '../core/artifact-graph/schema.js';
 import type { SchemaYaml, Artifact } from '../core/artifact-graph/types.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 /**
  * Schema source location type
@@ -299,7 +300,7 @@ export function registerSchemaCommand(program: Command): void {
     .option('--all', '列出所有 Schema 及其解析来源')
     .action(async (name?: string, options?: { json?: boolean; all?: boolean }) => {
       try {
-        const projectRoot = process.cwd();
+        const projectRoot = resolveCodespecRoot();
 
         if (options?.all) {
           // List all schemas
@@ -401,7 +402,7 @@ export function registerSchemaCommand(program: Command): void {
     .option('--verbose', '显示详细验证步骤')
     .action(async (name?: string, options?: { json?: boolean; verbose?: boolean }) => {
       try {
-        const projectRoot = process.cwd();
+        const projectRoot = resolveCodespecRoot();
 
         if (!name) {
           // Validate all project schemas
@@ -548,7 +549,7 @@ export function registerSchemaCommand(program: Command): void {
       const spinner = options?.json ? null : ora();
 
       try {
-        const projectRoot = process.cwd();
+        const projectRoot = resolveCodespecRoot();
         const destinationName = name || `${source}-custom`;
 
         // Validate destination name
@@ -678,7 +679,7 @@ export function registerSchemaCommand(program: Command): void {
       const spinner = options?.json ? null : ora();
 
       try {
-        const projectRoot = process.cwd();
+        const projectRoot = resolveCodespecRoot();
 
         // Validate name
         if (!isValidSchemaName(name)) {

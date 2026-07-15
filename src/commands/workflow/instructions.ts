@@ -21,6 +21,7 @@ import {
   type TaskItem,
   type ApplyInstructions,
 } from './shared.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -49,7 +50,7 @@ export async function instructionsCommand(
   const spinner = options.json ? undefined : ora('正在生成指令...').start();
 
   try {
-    const projectRoot = process.cwd();
+    const projectRoot = resolveCodespecRoot();
     const changeName = await validateChangeExists(options.change, projectRoot);
 
     // Validate schema if explicitly provided
@@ -343,7 +344,7 @@ export async function applyInstructionsCommand(options: ApplyInstructionsOptions
   const spinner = options.json ? undefined : ora('正在生成应用指令...').start();
 
   try {
-    const projectRoot = process.cwd();
+    const projectRoot = resolveCodespecRoot();
     const changeName = await validateChangeExists(options.change, projectRoot);
 
     // Validate schema if explicitly provided

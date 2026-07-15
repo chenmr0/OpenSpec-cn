@@ -7,6 +7,7 @@
 import ora from 'ora';
 import path from 'path';
 import { createChange, validateChangeName } from '../../utils/change-utils.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 import { validateSchemaExists } from './shared.js';
 
 // -----------------------------------------------------------------------------
@@ -32,7 +33,7 @@ export async function newChangeCommand(name: string | undefined, options: NewCha
     throw new Error(validation.error);
   }
 
-  const projectRoot = process.cwd();
+  const projectRoot = resolveCodespecRoot();
 
   // Validate schema if provided
   if (options.schema) {

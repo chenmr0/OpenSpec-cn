@@ -18,6 +18,7 @@ import {
   getStatusIndicator,
   getStatusColor,
 } from './shared.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -37,7 +38,7 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
   const spinner = options.json ? undefined : ora('正在加载变更状态...').start();
 
   try {
-    const projectRoot = process.cwd();
+    const projectRoot = resolveCodespecRoot();
 
     // Handle no-changes case gracefully — status is informational,
     // so "no changes" is a valid state, not an error.

@@ -22,6 +22,7 @@ import {
   isCodeSpecGeneratedSkill,
 } from './shared/index.js';
 import { CommandAdapterRegistry } from './command-generation/index.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 export interface UninitResult {
   removedSkills: string[];
@@ -72,7 +73,7 @@ async function readJsonFile(filePath: string): Promise<unknown> {
 }
 
 export class UninitCommand {
-  async execute(projectPath = '.'): Promise<UninitResult> {
+  async execute(projectPath = resolveCodespecRoot()): Promise<UninitResult> {
     const resolvedProjectPath = path.resolve(projectPath);
     const opencodeDir = getOpenCodeUserConfigDir();
     const result = createEmptyResult();

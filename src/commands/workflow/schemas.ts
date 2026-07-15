@@ -6,6 +6,7 @@
 
 import chalk from 'chalk';
 import { listSchemasWithInfo } from '../../core/artifact-graph/index.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -20,7 +21,7 @@ export interface SchemasOptions {
 // -----------------------------------------------------------------------------
 
 export async function schemasCommand(options: SchemasOptions): Promise<void> {
-  const projectRoot = process.cwd();
+  const projectRoot = resolveCodespecRoot();
   const schemas = listSchemasWithInfo(projectRoot);
 
   if (options.json) {

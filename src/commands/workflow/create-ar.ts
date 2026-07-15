@@ -11,6 +11,7 @@ import { FileSystemUtils } from '../../utils/file-system.js';
 import { resolveSchemaForChange } from '../../utils/change-metadata.js';
 import { getSchemaDir } from '../../core/artifact-graph/index.js';
 import { validateChangeExists, validateSchemaExists, DEFAULT_SCHEMA } from './shared.js';
+import { resolveCodespecRoot } from '../../utils/project-root.js';
 
 export interface CreateArOptions {
   change?: string;
@@ -51,7 +52,7 @@ export async function createArCommand(options: CreateArOptions): Promise<void> {
   const spinner = options.json ? undefined : ora('正在创建 AR 文件...').start();
 
   try {
-    const projectRoot = process.cwd();
+    const projectRoot = resolveCodespecRoot();
     const changeName = await validateChangeExists(options.change, projectRoot);
     const changeDir = path.join(projectRoot, 'codespec', 'changes', changeName);
     const filePath = path.join(changeDir, 'ar.md');

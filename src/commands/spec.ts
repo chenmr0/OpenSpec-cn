@@ -6,6 +6,7 @@ import { Validator } from '../core/validation/validator.js';
 import type { Spec } from '../core/schemas/index.js';
 import { isInteractive } from '../utils/interactive.js';
 import { getSpecIds } from '../utils/item-discovery.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 const SPECS_DIR = 'codespec/specs';
 
@@ -82,7 +83,7 @@ export class SpecCommand {
       }
     }
 
-    const specPath = join(this.SPECS_DIR, specId, 'spec.md');
+    const specPath = join(resolveCodespecRoot(), this.SPECS_DIR, specId, 'spec.md');
     if (!existsSync(specPath)) {
       throw new Error(`未找到规范 '${specId}'，路径：${this.SPECS_DIR}/${specId}/spec.md`);
     }
@@ -143,15 +144,16 @@ export function registerSpecCommand(rootProgram: typeof program) {
     .option('--long', '显示id和标题及计数')
     .action((options: { json?: boolean; long?: boolean }) => {
       try {
-        if (!existsSync(SPECS_DIR)) {
+        const specsDir = join(resolveCodespecRoot(), SPECS_DIR);
+        if (!existsSync(specsDir)) {
           console.log('未找到项目');
           return;
         }
 
-        const specs = readdirSync(SPECS_DIR, { withFileTypes: true })
+        const specs = readdirSync(specsDir, { withFileTypes: true })
           .filter(dirent => dirent.isDirectory())
           .map(dirent => {
-            const specPath = join(SPECS_DIR, dirent.name, 'spec.md');
+            const specPath = join(specsDir, dirent.name, 'spec.md');
             if (existsSync(specPath)) {
               try {
                 const spec = parseSpecFromFile(specPath, dirent.name);
@@ -217,8 +219,8 @@ export function registerSpecCommand(rootProgram: typeof program) {
           }
         }
 
-        const specPath = join(SPECS_DIR, specId, 'spec.md');
-        
+        const specPath = join(resolveCodespecRoot(), SPECS_DIR, specId, 'spec.md');
+
         if (!existsSync(specPath)) {
           throw new Error(`未找到规范 '${specId}'，路径：${SPECS_DIR}/${specId}/spec.md`);
         }

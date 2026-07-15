@@ -4,6 +4,7 @@ import { getTaskProgressForChange, formatTaskStatus } from '../utils/task-progre
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { MarkdownParser } from './parsers/markdown-parser.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 interface ChangeInfo {
   name: string;
@@ -75,7 +76,7 @@ function formatRelativeTime(date: Date): string {
 }
 
 export class ListCommand {
-  async execute(targetPath: string = '.', mode: 'changes' | 'specs' = 'changes', options: ListOptions = {}): Promise<void> {
+  async execute(targetPath: string = resolveCodespecRoot(), mode: 'changes' | 'specs' = 'changes', options: ListOptions = {}): Promise<void> {
     const { sort = 'recent', json = false } = options;
 
     if (mode === 'changes') {

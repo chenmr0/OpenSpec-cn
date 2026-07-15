@@ -9,6 +9,7 @@ import {
   writeUpdatedSpec,
   type SpecUpdate,
 } from './specs-apply.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 /**
  * Recursively copy a directory. Used when fs.rename fails (e.g. EPERM on Windows).
@@ -52,7 +53,7 @@ export class ArchiveCommand {
     changeName?: string,
     options: { yes?: boolean; skipSpecs?: boolean; noValidate?: boolean; validate?: boolean } = {}
   ): Promise<void> {
-    const targetPath = '.';
+    const targetPath = resolveCodespecRoot();
     const changesDir = path.join(targetPath, 'codespec', 'changes');
     const archiveDir = path.join(changesDir, 'archive');
     const mainSpecsDir = path.join(targetPath, 'codespec', 'specs');

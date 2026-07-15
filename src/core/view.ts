@@ -3,9 +3,10 @@ import * as path from 'path';
 import chalk from 'chalk';
 import { getTaskProgressForChange, formatTaskStatus } from '../utils/task-progress.js';
 import { MarkdownParser } from './parsers/markdown-parser.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 export class ViewCommand {
-  async execute(targetPath: string = '.'): Promise<void> {
+  async execute(targetPath: string = resolveCodespecRoot()): Promise<void> {
     const codespecDir = path.join(targetPath, 'codespec');
     
     if (!fs.existsSync(codespecDir)) {

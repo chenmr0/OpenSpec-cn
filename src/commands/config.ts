@@ -22,6 +22,7 @@ import {
 import { CORE_WORKFLOWS, ALL_WORKFLOWS, getProfileWorkflows } from '../core/profiles.js';
 import { CODESPEC_DIR_NAME } from '../core/config.js';
 import { hasProjectConfigDrift } from '../core/profile-sync-drift.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 type ProfileAction = 'both' | 'delivery' | 'workflows' | 'keep';
 
@@ -525,7 +526,7 @@ export function registerConfigCommand(program: Command): void {
 
         if (action === 'keep') {
           console.log('没有配置更改。');
-          maybeWarnConfigDrift(process.cwd(), currentState, chalk.yellow);
+          maybeWarnConfigDrift(resolveCodespecRoot(), currentState, chalk.yellow);
           return;
         }
 
@@ -600,7 +601,7 @@ export function registerConfigCommand(program: Command): void {
         const diff = diffProfileState(currentState, nextState);
         if (!diff.hasChanges) {
           console.log('没有配置更改。');
-          maybeWarnConfigDrift(process.cwd(), nextState, chalk.yellow);
+          maybeWarnConfigDrift(resolveCodespecRoot(), nextState, chalk.yellow);
           return;
         }
 
@@ -616,7 +617,7 @@ export function registerConfigCommand(program: Command): void {
         saveGlobalConfig(config);
 
         // Check if inside an CodeSpec project
-        const projectDir = process.cwd();
+        const projectDir = resolveCodespecRoot();
         const codespecDir = path.join(projectDir, CODESPEC_DIR_NAME);
         if (fs.existsSync(codespecDir)) {
           const applyNow = await confirm({

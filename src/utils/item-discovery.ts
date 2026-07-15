@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { resolveCodespecRoot } from './project-root.js';
 
-export async function getActiveChangeIds(root: string = process.cwd()): Promise<string[]> {
+export async function getActiveChangeIds(root: string = resolveCodespecRoot()): Promise<string[]> {
   const changesPath = path.join(root, 'codespec', 'changes');
   try {
     const entries = await fs.readdir(changesPath, { withFileTypes: true });
@@ -22,7 +23,7 @@ export async function getActiveChangeIds(root: string = process.cwd()): Promise<
   }
 }
 
-export async function getSpecIds(root: string = process.cwd()): Promise<string[]> {
+export async function getSpecIds(root: string = resolveCodespecRoot()): Promise<string[]> {
   const specsPath = path.join(root, 'codespec', 'specs');
   const result: string[] = [];
   try {
@@ -43,7 +44,7 @@ export async function getSpecIds(root: string = process.cwd()): Promise<string[]
   return result.sort();
 }
 
-export async function getArchivedChangeIds(root: string = process.cwd()): Promise<string[]> {
+export async function getArchivedChangeIds(root: string = resolveCodespecRoot()): Promise<string[]> {
   const archivePath = path.join(root, 'codespec', 'changes', 'archive');
   try {
     const entries = await fs.readdir(archivePath, { withFileTypes: true });

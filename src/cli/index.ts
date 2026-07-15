@@ -4,6 +4,7 @@ import ora from 'ora';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { AI_TOOLS } from '../core/config.js';
+import { resolveCodespecRoot } from '../utils/project-root.js';
 
 import { ListCommand } from '../core/list.js';
 import { ArchiveCommand } from '../core/archive.js';
@@ -105,7 +106,7 @@ program
     try {
       const { UninitCommand } = await import('../core/uninit.js');
       const uninitCommand = new UninitCommand();
-      await uninitCommand.execute('.');
+      await uninitCommand.execute(resolveCodespecRoot());
     } catch (error) {
       console.log();
       ora().fail(`Error: ${(error as Error).message}`);
@@ -147,7 +148,7 @@ program
       const listCommand = new ListCommand();
       const mode: 'changes' | 'specs' = options?.specs ? 'specs' : 'changes';
       const sort = options?.sort === 'name' ? 'name' : 'recent';
-      await listCommand.execute('.', mode, { sort, json: options?.json });
+      await listCommand.execute(resolveCodespecRoot(), mode, { sort, json: options?.json });
     } catch (error) {
       console.log(); // Empty line for spacing
       ora().fail(`错误：${(error as Error).message}`);
@@ -161,7 +162,7 @@ program
   .action(async () => {
     try {
       const viewCommand = new ViewCommand();
-      await viewCommand.execute('.');
+      await viewCommand.execute(resolveCodespecRoot());
     } catch (error) {
       console.log(); // Empty line for spacing
       ora().fail(`错误：${(error as Error).message}`);
