@@ -126,11 +126,12 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
       - 对于冲突，按已解决的顺序应用
       - 跟踪是否已完成同步
 
-   b. **执行归档**：
+   b. **执行归档**（逐变更调用，CLI 自动解析项目根并处理日期前缀/冲突检查/Windows 安全移动）：
       \`\`\`bash
-      mkdir -p codespec/changes/archive
-      mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
+      codespec archive auto "<name>"
       \`\`\`
+
+      **禁止使用裸 \`mkdir\` + \`mv\` 归档**——相对路径会以 agent 当前工作目录为基准，可能把归档放到错误层级的 archive 目录。
 
    c. **跟踪每个变更的结果**：
       - 成功：成功归档
@@ -244,7 +245,8 @@ export function getBulkArchiveChangeSkillTemplate(): SkillTemplate {
 - 跟踪并报告所有结果（成功/跳过/失败）
 - 移动到归档时保留 .codespec.yaml
 - 归档目录目标使用当前日期：YYYY-MM-DD-<name>
-- 如果归档目标已存在，该变更失败但继续处理其他变更`,
+- 如果归档目标已存在，该变更失败但继续处理其他变更
+- **禁止使用裸 \`mkdir\` + \`mv\` 归档**——始终通过 \`codespec archive auto "<name>"\` 让 CLI 解析项目根，避免归档落到错误层级的 archive 目录`,
     license: 'MIT',
     compatibility: '需要 codespec CLI。',
     metadata: { author: 'codespec', version: '1.0' },
@@ -373,11 +375,12 @@ export function getOpsxBulkArchiveCommandTemplate(): CommandTemplate {
       - 对于冲突，按已解决的顺序应用
       - 跟踪是否已完成同步
 
-   b. **执行归档**：
+   b. **执行归档**（逐变更调用，CLI 自动解析项目根并处理日期前缀/冲突检查/Windows 安全移动）：
       \`\`\`bash
-      mkdir -p codespec/changes/archive
-      mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
+      codespec archive auto "<name>"
       \`\`\`
+
+      **禁止使用裸 \`mkdir\` + \`mv\` 归档**——相对路径会以 agent 当前工作目录为基准，可能把归档放到错误层级的 archive 目录。
 
    c. **跟踪每个变更的结果**：
       - 成功：成功归档

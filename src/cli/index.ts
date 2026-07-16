@@ -234,7 +234,7 @@ changeCmd
     }
   });
 
-program
+const archiveCmd = program
   .command('archive [change-name]')
   .description('归档已完成的更改并更新主规范')
   .option('-y, --yes', '跳过确认提示')
@@ -244,6 +244,21 @@ program
     try {
       const archiveCommand = new ArchiveCommand();
       await archiveCommand.execute(changeName, options);
+    } catch (error) {
+      console.log(); // Empty line for spacing
+      ora().fail(`错误：${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// auto: 一条命令自动归档（跳过校验/任务检查/规范合并，仅移动到项目级 archive 目录）
+archiveCmd
+  .command('auto <name>')
+  .description('一条命令自动归档变更（跳过校验、任务检查、规范合并，仅移动到正确的项目级 archive 目录）')
+  .action(async (name: string) => {
+    try {
+      const archiveCommand = new ArchiveCommand();
+      await archiveCommand.execute(name, { moveOnly: true });
     } catch (error) {
       console.log(); // Empty line for spacing
       ora().fail(`错误：${(error as Error).message}`);

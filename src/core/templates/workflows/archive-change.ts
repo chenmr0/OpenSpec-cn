@@ -68,20 +68,13 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 
 5. **执行归档**
 
-   如果归档目录不存在，则创建它：
-   \`\`\`bash
-   mkdir -p codespec/changes/archive
-   \`\`\`
-
-   使用当前日期生成目标名称：\`YYYY-MM-DD-<change-name>\`
-
-   **检查目标是否已存在：**
-   - 如果是：失败并报错，建议重命名现有归档或使用不同日期
-   - 如果否：将变更目录移动到归档
+   使用 \`codespec archive auto\` 一条命令完成归档。该命令会自动解析项目根（逐级向上查找 \`.git\`），把变更移动到正确的项目级 \`codespec/changes/archive/YYYY-MM-DD-<name>/\`，并处理日期前缀、目标冲突检查、Windows 安全移动（rename 失败回退 copy+remove）。
 
    \`\`\`bash
-   mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
+   codespec archive auto "<name>"
    \`\`\`
+
+   **禁止使用裸 \`mkdir\` + \`mv\` 归档**——相对路径会以 agent 当前工作目录为基准，可能把归档放到错误层级的 archive 目录。始终通过 \`codespec archive auto\` 让 CLI 解析项目根。
 
 6. **显示摘要**
 
@@ -112,7 +105,8 @@ export function getArchiveChangeSkillTemplate(): SkillTemplate {
 - 移动到归档时保留 .codespec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要
 - 如果请求同步，使用 codespec-sync-specs 方法（代理驱动）
-- 如果存在增量规格说明，始终运行同步评估并在提示前显示综合摘要`,
+- 如果存在增量规格说明，始终运行同步评估并在提示前显示综合摘要
+- **禁止使用裸 \`mkdir\` + \`mv\` 归档**——始终通过 \`codespec archive auto "<name>"\` 让 CLI 解析项目根，避免归档落到错误层级的 archive 目录`,
     license: 'MIT',
     compatibility: '需要 codespec CLI。',
     metadata: { author: 'codespec', version: '1.0' },
@@ -155,20 +149,13 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 
 3. **执行归档**
 
-   如果归档目录不存在，则创建它：
-   \`\`\`bash
-   mkdir -p codespec/changes/archive
-   \`\`\`
-
-   使用当前日期生成目标名称：\`YYYY-MM-DD-<change-name>\`
-
-   **检查目标是否已存在：**
-   - 如果是：失败并报错，建议重命名现有归档或使用不同日期
-   - 如果否：将变更目录移动到归档
+   使用 \`codespec archive auto\` 一条命令完成归档。CLI 会自动解析项目根（逐级向上查找 \`.git\`），把变更移动到正确的项目级 \`codespec/changes/archive/YYYY-MM-DD-<name>/\`。
 
    \`\`\`bash
-   mv codespec/changes/<name> codespec/changes/archive/YYYY-MM-DD-<name>
+   codespec archive auto "<name>"
    \`\`\`
+
+   **禁止使用裸 \`mkdir\` + \`mv\` 归档**——相对路径会以 agent 当前工作目录为基准，可能把归档放到错误层级的 archive 目录。
 
 4. **显示摘要**
 
@@ -212,6 +199,7 @@ export function getOpsxArchiveCommandTemplate(): CommandTemplate {
 - 使用产出物图（codespec status --json）进行完成度检查
 - 不要在警告时阻止归档 - 只需告知并确认
 - 移动到归档时保留 .codespec.yaml（它与目录一起移动）
-- 显示清晰的操作摘要`
+- 显示清晰的操作摘要
+- **禁止使用裸 \`mkdir\` + \`mv\` 归档**——始终通过 \`codespec archive auto "<name>"\` 让 CLI 解析项目根，避免归档落到错误层级的 archive 目录`
   };
 }

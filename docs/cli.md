@@ -388,6 +388,9 @@ codespec archive add-dark-mode --yes
 
 # 归档不影响规范的工具类变更
 codespec archive update-ci-config --skip-specs
+
+# 一条命令自动归档（跳过校验/任务检查/规范合并，仅移动到正确的项目级 archive 目录）
+codespec archive auto add-dark-mode
 ```
 
 **它会做什么：**
@@ -396,6 +399,28 @@ codespec archive update-ci-config --skip-specs
 2. 询问确认（除非使用 `--yes`）
 3. 将增量规范合并到 `codespec/specs/`
 4. 将变更目录移动到 `codespec/changes/archive/YYYY-MM-DD-<name>/`
+
+### `codespec archive auto`
+
+一条命令自动归档变更，等价于 `codespec archive <name> --yes --skip-specs --no-validate`，但更短、更易被 AI agent 稳定遵守。
+
+```
+codespec archive auto <name>
+```
+
+**参数：**
+
+| 参数 | 必填 | 说明 |
+|----------|----------|-------------|
+| `name` | 是 | 要归档的变更名称 |
+
+**它会做什么：**
+
+1. 解析项目根（逐级向上查找 `.git`），确保归档到正确的项目级 `codespec/changes/archive/`
+2. 跳过校验、任务完成度检查、规范合并
+3. 将变更目录移动到 `codespec/changes/archive/YYYY-MM-DD-<name>/`（Windows 上 rename 失败自动回退 copy+remove）
+
+**适用场景：** AI agent 在 `/codespec/archive` 技能里完成产出物检查与增量规范同步后，用这一条命令完成最终移动；避免裸 `mkdir + mv` 因 agent CWD 不在项目根而把归档放到错误层级的 archive 目录。
 
 ---
 

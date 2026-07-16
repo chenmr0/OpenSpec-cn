@@ -771,6 +771,77 @@ E1 updated`);
     });
   });
 
+  describe('moveOnly (codespec archive auto)', () => {
+    it('should move a change to archive without validation, task checks, or spec merge', async () => {
+      const changeName = 'auto-archive';
+      const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
+      const changeSpecDir = path.join(changeDir, 'specs', 'auto-capability');
+      await fs.mkdir(changeSpecDir, { recursive: true });
+
+      // Incomplete tasks + delta spec that WOULD normally trigger validation/spec merge
+      await fs.writeFile(path.join(changeDir, 'tasks.md'), '- [ ] Task 1\n- [ ] Task 2');
+      await fs.writeFile(
+        path.join(changeSpecDir, 'spec.md'),
+        `# Auto Capability - Changes\n\n## 新增需求\n\n### 需求: Auto Feature\nbody`
+      );
+
+      await archiveCommand.execute(changeName, { moveOnly: true });
+
+      // Change dir moved to archive with date prefix
+      const archiveDir = path.join(tempDir, 'codespec', 'changes', 'archive');
+      const archives = await fs.readdir(archiveDir);
+      expect(archives.some(a => a.match(new RegExp(`\\d{4}-\\d{2}-\\d{2}-${changeName}`)))).toBe(true);
+      await expect(fs.access(changeDir)).rejects.toThrow();
+
+      // Main spec NOT created (spec merge skipped)
+      const mainSpecPath = path.join(tempDir, 'codespec', 'specs', 'auto-capability', 'spec.md');
+      await expect(fs.access(mainSpecPath)).rejects.toThrow();
+
+      // No "跳过验证" warning, no incomplete-task warning
+      expect(console.log).not.toHaveBeenCalledWith(
+        expect.stringContaining('跳过验证')
+      );
+      expect(console.log).not.toHaveBeenCalledWith(
+        expect.stringContaining('未完成任务')
+      );
+    });
+
+    it('should throw error if change does not exist (moveOnly)', async () => {
+      await expect(
+        archiveCommand.execute('non-existent-auto', { moveOnly: true })
+      ).rejects.toThrow("未找到更改 'non-existent-auto'。");
+    });
+
+    it('should throw error if archive target already exists (moveOnly)', async () => {
+      const changeName = 'dup-auto';
+      const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
+      await fs.mkdir(changeDir, { recursive: true });
+
+      const date = new Date().toISOString().split('T')[0];
+      const archivePath = path.join(tempDir, 'codespec', 'changes', 'archive', `${date}-${changeName}`);
+      await fs.mkdir(archivePath, { recursive: true });
+
+      await expect(
+        archiveCommand.execute(changeName, { moveOnly: true })
+      ).rejects.toThrow(`归档 '${date}-${changeName}' 已存在。`);
+    });
+
+    it('should create the archive directory if it does not exist (moveOnly)', async () => {
+      // Remove the pre-created archive dir so moveOnly has to recreate it
+      const archiveDir = path.join(tempDir, 'codespec', 'changes', 'archive');
+      await fs.rm(archiveDir, { recursive: true, force: true });
+
+      const changeName = 'auto-mkdir';
+      const changeDir = path.join(tempDir, 'codespec', 'changes', changeName);
+      await fs.mkdir(changeDir, { recursive: true });
+
+      await archiveCommand.execute(changeName, { moveOnly: true });
+
+      const archives = await fs.readdir(archiveDir);
+      expect(archives.some(a => a.includes(changeName))).toBe(true);
+    });
+  });
+
   describe('error handling', () => {
     it('should throw error when codespec directory does not exist', async () => {
       // Remove codespec directory

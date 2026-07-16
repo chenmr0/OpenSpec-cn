@@ -51,7 +51,7 @@ async function moveDirectory(src: string, dest: string): Promise<void> {
 export class ArchiveCommand {
   async execute(
     changeName?: string,
-    options: { yes?: boolean; skipSpecs?: boolean; noValidate?: boolean; validate?: boolean } = {}
+    options: { yes?: boolean; skipSpecs?: boolean; noValidate?: boolean; validate?: boolean; moveOnly?: boolean } = {}
   ): Promise<void> {
     const targetPath = resolveCodespecRoot();
     const changesDir = path.join(targetPath, 'codespec', 'changes');
@@ -85,6 +85,27 @@ export class ArchiveCommand {
       }
     } catch {
       throw new Error(`未找到更改 '${changeName}'。`);
+    }
+
+    // moveOnly fast path: skip validation, task checks, and spec merge.
+    // Used by `codespec archive auto <name>` — just resolve the project root
+    // (already done above via resolveCodespecRoot) and move the change dir
+    // into <root>/codespec/changes/archive/YYYY-MM-DD-<name>.
+    if (options.moveOnly) {
+      const archiveName = `${this.getArchiveDate()}-${changeName}`;
+      const archivePath = path.join(archiveDir, archiveName);
+      try {
+        await fs.access(archivePath);
+        throw new Error(`归档 '${archiveName}' 已存在。`);
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+      }
+      await fs.mkdir(archiveDir, { recursive: true });
+      await moveDirectory(changeDir, archivePath);
+      console.log(`更改 '${changeName}' 已归档为 '${archiveName}'。`);
+      return;
     }
 
     const skipValidation = options.validate === false || options.noValidate === true;
