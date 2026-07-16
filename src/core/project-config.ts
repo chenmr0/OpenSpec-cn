@@ -21,6 +21,25 @@ const CompressionConfigSchema = z.object({
 });
 
 /**
+ * Valid reviewer identifiers that may be skipped via config.
+ * Keep in sync with the reviewer agents installed by skill-generation.ts.
+ */
+export const VALID_REVIEWERS = new Set([
+  'spec-reviewer',
+  'code-quality-reviewer',
+  'change-verifier',
+]);
+
+const ApplyConfigSchema = z.object({
+  // Reviewers listed here are skipped during the apply phase in speed-first
+  // (main) mode. Unknown values are filtered out with a warning during parsing.
+  skipReviewers: z
+    .array(z.string())
+    .optional()
+    .describe('Reviewers to skip during apply (spec-reviewer, code-quality-reviewer, change-verifier)'),
+});
+
+/**
  * Zod schema for project configuration.
  *
  * Purpose:
@@ -60,6 +79,11 @@ export const ProjectConfigSchema = z.object({
   compression: CompressionConfigSchema
     .optional()
     .describe('Compression settings for completed task context'),
+
+  // Optional: apply phase settings (e.g. which reviewers to skipped for speed)
+  apply: ApplyConfigSchema
+    .optional()
+    .describe('Apply phase settings (e.g. reviewers to skip)'),
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
@@ -181,6 +205,38 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         config.compression = compressionResult.data;
       } else {
         console.warn(`Invalid 'compression' field in config`);
+      }
+    }
+
+    // Parse apply field, validating skipReviewers entries against known reviewers
+    if (raw.apply !== undefined) {
+      if (typeof raw.apply === 'object' && raw.apply !== null && !Array.isArray(raw.apply)) {
+        const applyRaw = raw.apply as Record<string, unknown>;
+        if (applyRaw.skipReviewers !== undefined) {
+          const skipResult = z.array(z.string()).safeParse(applyRaw.skipReviewers);
+          if (skipResult.success) {
+            const valid: string[] = [];
+            for (const reviewer of skipResult.data) {
+              if (VALID_REVIEWERS.has(reviewer)) {
+                if (!valid.includes(reviewer)) {
+                  valid.push(reviewer);
+                }
+              } else {
+                const known = Array.from(VALID_REVIEWERS).join(', ');
+                console.warn(
+                  `Unknown reviewer '${reviewer}' in apply.skipReviewers, ignoring. Valid reviewers: ${known}`
+                );
+              }
+            }
+            if (valid.length > 0) {
+              config.apply = { skipReviewers: valid };
+            }
+          } else {
+            console.warn(`Invalid 'apply.skipReviewers' field in config (must be array of strings)`);
+          }
+        }
+      } else {
+        console.warn(`Invalid 'apply' field in config (must be object)`);
       }
     }
 

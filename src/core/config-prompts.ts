@@ -22,6 +22,18 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('    keepRecentTasks: 1');
   lines.push('');
 
+  // Apply section — skipReviewers commented out by default
+  lines.push('# 应用阶段审查设置（可选）');
+  lines.push('# 速度优先时可跳过部分审查子代理，由 `codespec apply flow` 据此返回裁剪后的流程。');
+  lines.push('# 取消注释并在下方列出要跳过的审查者即可生效；可填一个或多个，顺序无关。');
+  lines.push('# 可选值：spec-reviewer / code-quality-reviewer / change-verifier');
+  lines.push('# apply:');
+  lines.push('#   skipReviewers:');
+  lines.push('#     - spec-reviewer');
+  lines.push('#     - code-quality-reviewer');
+  lines.push('#     - change-verifier');
+  lines.push('');
+
   // Context section with comments
   lines.push('# 项目上下文（可选）');
   lines.push('# 在创建工件时向 AI 显示此信息。');

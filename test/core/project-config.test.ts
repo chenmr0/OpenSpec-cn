@@ -116,6 +116,135 @@ compression:
         expect(consoleWarnSpy).not.toHaveBeenCalled();
       });
 
+      it('should parse apply.skipReviewers config', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply:
+  skipReviewers:
+    - spec-reviewer
+    - code-quality-reviewer
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          apply: {
+            skipReviewers: ['spec-reviewer', 'code-quality-reviewer'],
+          },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should filter out unknown reviewers in apply.skipReviewers', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply:
+  skipReviewers:
+    - spec-reviewer
+    - bogus-reviewer
+    - change-verifier
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          apply: {
+            skipReviewers: ['spec-reviewer', 'change-verifier'],
+          },
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Unknown reviewer 'bogus-reviewer' in apply.skipReviewers")
+        );
+      });
+
+      it('should dedupe duplicate reviewers in apply.skipReviewers', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply:
+  skipReviewers:
+    - spec-reviewer
+    - spec-reviewer
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          apply: {
+            skipReviewers: ['spec-reviewer'],
+          },
+        });
+      });
+
+      it('should warn when apply.skipReviewers is not an array', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply:
+  skipReviewers: "not-an-array"
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'apply.skipReviewers' field in config")
+        );
+      });
+
+      it('should warn when apply is not an object', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply: ["not", "an", "object"]
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'apply' field in config")
+        );
+      });
+
+      it('should omit apply when all reviewers are filtered out', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+apply:
+  skipReviewers:
+    - totally-bogus
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(config?.apply).toBeUndefined();
+      });
+
       it('should return partial config when schema is invalid', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });

@@ -22,6 +22,7 @@ import {
   type ApplyInstructions,
 } from './shared.js';
 import { resolveCodespecRoot } from '../../utils/project-root.js';
+import { readProjectConfig } from '../../core/project-config.js';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -327,6 +328,11 @@ export async function generateApplyInstructions(
     instruction = schemaInstruction?.trim() ?? '所有必需的产出物已完成。继续实现。';
   }
 
+  // Read project config to surface reviewers that should be skipped during apply.
+  // This drives the conditional skip logic embedded in skill instructions.
+  const projectConfig = readProjectConfig(projectRoot);
+  const skipReviewers = projectConfig?.apply?.skipReviewers;
+
   return {
     changeName,
     changeDir,
@@ -337,6 +343,7 @@ export async function generateApplyInstructions(
     state,
     missingArtifacts: missingArtifacts.length > 0 ? missingArtifacts : undefined,
     instruction,
+    skipReviewers: skipReviewers && skipReviewers.length > 0 ? skipReviewers : undefined,
   };
 }
 
@@ -370,7 +377,7 @@ export async function applyInstructionsCommand(options: ApplyInstructionsOptions
 }
 
 export function printApplyInstructionsText(instructions: ApplyInstructions): void {
-  const { changeName, schemaName, contextFiles, progress, tasks, state, missingArtifacts, instruction } = instructions;
+  const { changeName, schemaName, contextFiles, progress, tasks, state, missingArtifacts, instruction, skipReviewers } = instructions;
 
   console.log(`## 应用： ${changeName}`);
   console.log(`Schema： ${schemaName}`);
@@ -421,4 +428,13 @@ export function printApplyInstructionsText(instructions: ApplyInstructions): voi
   // Instruction
   console.log('指令：');
   console.log(instruction);
+
+  // Skipped reviewers (speed-first config)
+  if (skipReviewers && skipReviewers.length > 0) {
+    console.log();
+    console.log('跳过的审查者（来自 config.yaml apply.skipReviewers）：');
+    for (const reviewer of skipReviewers) {
+      console.log(`- ${reviewer}`);
+    }
+  }
 }

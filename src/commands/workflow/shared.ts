@@ -35,6 +35,12 @@ export interface ApplyInstructions {
   state: 'blocked' | 'all_done' | 'ready';
   missingArtifacts?: string[];
   instruction: string;
+  /**
+   * Reviewers configured to be skipped during apply (from config.yaml
+   * `apply.skipReviewers`). Consumed by skill instructions to conditionally
+   * skip review steps. Undefined / empty means run all reviewers.
+   */
+  skipReviewers?: string[];
 }
 
 // -----------------------------------------------------------------------------

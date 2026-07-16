@@ -25,6 +25,7 @@ import {
   schemasCommand,
   newChangeCommand,
   createArCommand,
+  flowCommand,
   DEFAULT_SCHEMA,
   type StatusOptions,
   type InstructionsOptions,
@@ -32,6 +33,7 @@ import {
   type SchemasOptions,
   type NewChangeOptions,
   type CreateArOptions,
+  type FlowOptions,
 } from '../commands/workflow/index.js';
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -402,6 +404,25 @@ program
       } else {
         await instructionsCommand(artifactId, options);
       }
+    } catch (error) {
+      console.log();
+      ora().fail(`错误：${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// Apply command group: apply-phase helpers
+const applyCmd = program.command('apply').description('应用阶段相关命令');
+
+// Flow subcommand: returns the apply-phase flow tailored to config.yaml skipReviewers
+applyCmd
+  .command('flow')
+  .description('显示根据 config.yaml apply.skipReviewers 裁剪后的本批执行流程图与步骤')
+  .option('--change <id>', '变更名称（可选，仅用于输出标注）')
+  .option('--json', '以 JSON 格式输出')
+  .action(async (options: FlowOptions) => {
+    try {
+      await flowCommand(options);
     } catch (error) {
       console.log();
       ora().fail(`错误：${(error as Error).message}`);

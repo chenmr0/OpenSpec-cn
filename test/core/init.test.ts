@@ -78,6 +78,12 @@ describe('InitCommand', () => {
       expect(content).toContain('compression:');
       expect(content).toContain('  apply:');
       expect(content).toContain('    keepRecentTasks: 1');
+      // apply.skipReviewers section is scaffolded as commented-out guidance
+      expect(content).toContain('# apply:');
+      expect(content).toContain('#   skipReviewers:');
+      expect(content).toContain('#     - spec-reviewer');
+      expect(content).toContain('#     - code-quality-reviewer');
+      expect(content).toContain('#     - change-verifier');
       expect(content).toContain('  apply-quick:');
       expect(content).toContain('    keepRecentTasks: 3');
     });

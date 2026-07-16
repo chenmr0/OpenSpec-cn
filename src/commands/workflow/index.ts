@@ -22,4 +22,7 @@ export type { NewChangeOptions } from './new-change.js';
 export { createArCommand } from './create-ar.js';
 export type { CreateArOptions } from './create-ar.js';
 
+export { flowCommand, computeFlowKey, resolveFlow } from './flow.js';
+export type { FlowOptions, FlowResult } from './flow.js';
+
 export { DEFAULT_SCHEMA } from './shared.js';
