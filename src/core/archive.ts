@@ -104,7 +104,7 @@ export class ArchiveCommand {
       }
       await fs.mkdir(archiveDir, { recursive: true });
       await moveDirectory(changeDir, archivePath);
-      console.log(`更改 '${changeName}' 已归档为 '${archiveName}'。`);
+      console.log(`变更 '${changeName}' 已归档至 ${archivePath}`);
       return;
     }
 
