@@ -946,6 +946,7 @@ codespec completion uninstall
 | 变量 | 描述 |
 |----------|-------------|
 | `CODESPEC_CONCURRENCY` | 批量校验的默认并发数（默认：6） |
+| `CODESPEC_ROOT_MODE` | 根目录解析模式：`cwd`（默认，使用启动目录）或 `git`（从启动目录向上查找 `.git` 所在目录作为根目录） |
 | `EDITOR` 或 `VISUAL` | 用于 `codespec config edit` 的编辑器 |
 | `NO_COLOR` | 设置时禁用彩色输出 |
 
