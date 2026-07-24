@@ -137,6 +137,7 @@ export function getCommandContents(workflowFilter?: readonly string[]): CommandC
     category: template.category,
     tags: template.tags,
     body: template.content,
+    ...(template.agent !== undefined ? { agent: template.agent } : {}),
   }));
 }
 
@@ -288,7 +289,8 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
 
 /**
  * 需要在 opencode 下注入 `mode: subagent` 的 external agent 文件名集合。
- * 其余 agent（如 code-generator.md）保持默认（不配 mode，即 all）。
+ * 这些是仅作为子 agent 被派生调用的一次性审查 agent。code-generator.md 不在此列：
+ * apply 命令通过 frontmatter `agent` 切换到它在主会话执行（不 fork），故不配 mode。
  */
 export const OPENCODE_SUBAGENT_FILES = new Set([
   'change-verifier.md',
@@ -296,6 +298,17 @@ export const OPENCODE_SUBAGENT_FILES = new Set([
   'concept-clarify.md',
   'spec-reviewer.md',
 ]);
+
+/**
+ * 需要在 opencode 下额外注入 `permission` 的 external agent 文件名 → 权限映射。
+ * opencode 的 task 工具对子 agent 有 canTodo/canTask 守卫：子 agent 必须有显式的
+ * todowrite/task permission 规则，否则这两个工具会被强制禁用。code-generator 作为
+ * apply 的实施 agent，需要 todowrite（task-compress 记录任务边界）和 task
+ * （派 spec-reviewer / code-quality-reviewer / change-verifier 审查子 agent）。
+ */
+export const OPENCODE_AGENT_PERMISSIONS: Record<string, Record<string, string>> = {
+  'code-generator.md': { todowrite: 'allow', task: 'allow' },
+};
 
 /**
  * 在 markdown agent 文件的 YAML frontmatter 中插入 `mode: subagent`。
@@ -309,4 +322,30 @@ export function injectFrontmatterMode(content: string, mode = 'subagent'): strin
   const frontmatter = content.slice(0, closingIdx);
   if (/^mode:/m.test(frontmatter)) return content;
   return frontmatter + `\nmode: ${mode}` + content.slice(closingIdx);
+}
+
+/**
+ * 在 markdown agent 文件的 YAML frontmatter 中插入 `permission` 块。
+ * 仅当文件以 `---\n` 开头、frontmatter 内尚无 `permission:` 字段时插入；
+ * 插入位置为 frontmatter 闭合 `---` 之前。幂等。
+ *
+ * 生成的形如：
+ *   permission:
+ *     todowrite: allow
+ *     task: allow
+ */
+export function injectFrontmatterPermission(
+  content: string,
+  permission: Record<string, string>,
+): string {
+  if (!content.startsWith('---\n')) return content;
+  const closingIdx = content.indexOf('\n---\n', 4);
+  if (closingIdx === -1) return content;
+  const frontmatter = content.slice(0, closingIdx);
+  if (/^permission:/m.test(frontmatter)) return content;
+  const block = [
+    'permission:',
+    ...Object.entries(permission).map(([key, action]) => `  ${key}: ${action}`),
+  ].join('\n');
+  return frontmatter + `\n${block}` + content.slice(closingIdx);
 }

@@ -6,7 +6,9 @@ import {
   generateSkillContent,
   getExternalAgentTemplates,
   OPENCODE_SUBAGENT_FILES,
+  OPENCODE_AGENT_PERMISSIONS,
   injectFrontmatterMode,
+  injectFrontmatterPermission,
 } from '../../../src/core/shared/skill-generation.js';
 
 describe('skill-generation', () => {
@@ -187,6 +189,16 @@ describe('skill-generation', () => {
       const noFilter = getCommandContents(undefined);
       expect(noFilter).toHaveLength(all.length);
     });
+
+    it('should propagate agent metadata from templates to contents', () => {
+      const contents = getCommandContents();
+      const apply = contents.find(c => c.id === 'apply');
+      expect(apply).toBeDefined();
+      expect(apply?.agent).toBe('code-generator');
+      // commands without subagent config should not carry the field
+      const explore = contents.find(c => c.id === 'explore');
+      expect(explore?.agent).toBeUndefined();
+    });
   });
 
   describe('generateSkillContent', () => {
@@ -326,8 +338,17 @@ describe('skill-generation', () => {
       expect(OPENCODE_SUBAGENT_FILES.has('code-quality-reviewer.md')).toBe(true);
       expect(OPENCODE_SUBAGENT_FILES.has('concept-clarify.md')).toBe(true);
       expect(OPENCODE_SUBAGENT_FILES.has('spec-reviewer.md')).toBe(true);
-      // code-generator.md must NOT be in the set (stays default mode)
+      // code-generator.md must NOT be in the set (apply runs it in main session, no mode)
       expect(OPENCODE_SUBAGENT_FILES.has('code-generator.md')).toBe(false);
+    });
+  });
+
+  describe('OPENCODE_AGENT_PERMISSIONS', () => {
+    it('should grant todowrite + task to code-generator', () => {
+      expect(OPENCODE_AGENT_PERMISSIONS['code-generator.md']).toEqual({
+        todowrite: 'allow',
+        task: 'allow',
+      });
     });
   });
 
@@ -388,6 +409,70 @@ description: no closing delimiter`;
         const frontmatter = injected.slice(0, frontmatterEnd);
         expect(frontmatter).toMatch(/^mode: subagent$/m);
       }
+    });
+  });
+
+  describe('injectFrontmatterPermission', () => {
+    const permission = { todowrite: 'allow', task: 'allow' };
+
+    it('should insert a permission block before the closing frontmatter delimiter', () => {
+      const input = `---
+name: code-generator
+description: |
+  some description here
+---
+
+body content`;
+      const result = injectFrontmatterPermission(input, permission);
+      expect(result).toBe(`---
+name: code-generator
+description: |
+  some description here
+permission:
+  todowrite: allow
+  task: allow
+---
+
+body content`);
+    });
+
+    it('should be idempotent when a permission field already exists', () => {
+      const input = `---
+name: code-generator
+description: test
+permission:
+  todowrite: deny
+---
+body`;
+      const result = injectFrontmatterPermission(input, permission);
+      expect(result).toBe(input);
+    });
+
+    it('should return content unchanged when no frontmatter exists', () => {
+      const input = 'just some markdown without frontmatter';
+      const result = injectFrontmatterPermission(input, permission);
+      expect(result).toBe(input);
+    });
+
+    it('should return content unchanged when frontmatter is malformed (no closing delimiter)', () => {
+      const input = `---
+name: broken
+description: no closing delimiter`;
+      const result = injectFrontmatterPermission(input, permission);
+      expect(result).toBe(input);
+    });
+
+    it('should inject permission into the real code-generator template', () => {
+      const agents = getExternalAgentTemplates();
+      const cg = agents.find(a => a.filename === 'code-generator.md');
+      expect(cg).toBeDefined();
+      const injected = injectFrontmatterPermission(cg!.content, permission);
+      const frontmatterEnd = injected.indexOf('\n---\n', 4);
+      expect(frontmatterEnd).toBeGreaterThan(0);
+      const frontmatter = injected.slice(0, frontmatterEnd);
+      expect(frontmatter).toMatch(/^permission:$/m);
+      expect(frontmatter).toMatch(/^  todowrite: allow$/m);
+      expect(frontmatter).toMatch(/^  task: allow$/m);
     });
   });
 });

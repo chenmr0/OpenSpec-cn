@@ -17,4 +17,6 @@ export interface CommandTemplate {
   category: string;
   tags: string[];
   content: string;
+  /** 执行该命令时切换到的子 agent（仅部分工具支持，如 opencode 的 command frontmatter `agent`） */
+  agent?: string;
 }

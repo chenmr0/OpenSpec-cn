@@ -23,6 +23,8 @@ export function getOpsxApplyCommandTemplate(): CommandTemplate {
     description: '实现变更中的任务',
     category: 'Workflow',
     tags: ['workflow', 'artifacts', 'experimental'],
+    // opencode 下：命令触发时切换到 code-generator agent 执行（主会话，不 fork 子会话）
+    agent: 'code-generator',
     content: `# 实现变更中的任务。
 
 **输入**：可选择指定变更名称（例如，\`/codespec/apply "<name>"\`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。

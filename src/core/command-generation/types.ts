@@ -22,6 +22,8 @@ export interface CommandContent {
   tags: string[];
   /** The command instruction content (body text) */
   body: string;
+  /** 执行该命令时切换到的子 agent（仅部分工具支持，如 opencode 的 command frontmatter `agent`） */
+  agent?: string;
 }
 
 /**

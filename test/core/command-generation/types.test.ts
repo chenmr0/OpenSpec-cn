@@ -33,6 +33,20 @@ describe('command-generation/types', () => {
 
       expect(content.tags).toEqual([]);
     });
+
+    it('should allow optional agent field', () => {
+      const content: CommandContent = {
+        id: 'apply',
+        name: 'Apply',
+        description: '实现变更',
+        category: 'Workflow',
+        tags: ['workflow'],
+        body: 'Body',
+        agent: 'code-generator',
+      };
+
+      expect(content.agent).toBe('code-generator');
+    });
   });
 
   describe('ToolCommandAdapter interface contract', () => {

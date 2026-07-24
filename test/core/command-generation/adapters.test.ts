@@ -521,6 +521,24 @@ describe('command-generation/adapters', () => {
       expect(output).toContain('This is the command body.');
     });
 
+    it('should not emit agent frontmatter when absent', () => {
+      const output = opencodeAdapter.formatFile(sampleContent);
+      expect(output).not.toContain('agent:');
+    });
+
+    it('should emit agent frontmatter when present', () => {
+      const contentWithAgent: CommandContent = {
+        ...sampleContent,
+        agent: 'code-generator',
+      };
+      const output = opencodeAdapter.formatFile(contentWithAgent);
+      expect(output).toContain('description: Enter explore mode for thinking');
+      expect(output).toContain('agent: code-generator');
+      // frontmatter must still close before the body
+      expect(output).toContain('---\n\n');
+      expect(output).toContain('This is the command body.');
+    });
+
     it('should transform colon-based command references to hyphen-based', () => {
       const contentWithCommands: CommandContent = {
         ...sampleContent,

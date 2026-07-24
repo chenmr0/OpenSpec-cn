@@ -40,7 +40,9 @@ import {
   getExternalSkillTemplates,
   getExternalAgentTemplates,
   OPENCODE_SUBAGENT_FILES,
+  OPENCODE_AGENT_PERMISSIONS,
   injectFrontmatterMode,
+  injectFrontmatterPermission,
   getCommandContents,
   generateSkillContent,
   cleanupDeprecatedExternalSkillDirs,
@@ -529,10 +531,17 @@ export class InitCommand {
               ? path.join(getOpenCodeUserConfigDir(), 'agents')
               : path.join(projectPath, tool.skillsDir, 'agents');
             const agentFile = path.join(agentsDir, agent.filename);
-            // 仅 opencode 下，对指定的纯子代理 agent 注入 mode: subagent
-            const content = tool.value === 'opencode' && OPENCODE_SUBAGENT_FILES.has(agent.filename)
-              ? injectFrontmatterMode(agent.content)
-              : agent.content;
+            // 仅 opencode 下：对指定子 agent 注入 mode: subagent，再按需注入 permission
+            let content = agent.content;
+            if (tool.value === 'opencode') {
+              if (OPENCODE_SUBAGENT_FILES.has(agent.filename)) {
+                content = injectFrontmatterMode(content);
+              }
+              const permission = OPENCODE_AGENT_PERMISSIONS[agent.filename];
+              if (permission) {
+                content = injectFrontmatterPermission(content, permission);
+              }
+            }
             await FileSystemUtils.writeFile(agentFile, content);
           }
         }

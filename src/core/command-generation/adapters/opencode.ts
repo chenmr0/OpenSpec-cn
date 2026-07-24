@@ -28,8 +28,12 @@ export const opencodeAdapter: ToolCommandAdapter = {
     // Transform command references from /opsx:xxx or /opsx-xxx to /sdd/<mapped>
     const transformedBody = transformToOpenCodeCommands(content.body);
 
+    // opencode command frontmatter supports `agent` to switch the executing
+    // agent for the command. Only emit when present.
+    const extraBlock = content.agent ? `\nagent: ${content.agent}` : '';
+
     return `---
-description: ${content.description}
+description: ${content.description}${extraBlock}
 ---
 
 ${transformedBody}
