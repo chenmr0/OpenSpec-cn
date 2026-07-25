@@ -25,18 +25,54 @@ describe('resolveCodespecRoot', () => {
     await fs.rm(testDir, { recursive: true, force: true });
   });
 
-  describe('默认模式（CODESPEC_ROOT_MODE 未设置或非 git）—— 返回启动目录', () => {
+  describe('默认模式（CODESPEC_ROOT_MODE 未设置或非 cwd）—— 向上查找 .git', () => {
     beforeEach(() => {
       previousMode = process.env.CODESPEC_ROOT_MODE;
       delete process.env.CODESPEC_ROOT_MODE;
     });
 
-    it('未设置时即使上层存在 .git 也返回启动目录', () => {
+    it('未设置时从深层子目录向上找到 .git 目录时返回仓库根', () => {
       const root = path.join(testDir, 'repo');
       const deep = path.join(root, 'packages', 'core', 'src');
       nodeFs.mkdirSync(deep, { recursive: true });
       nodeFs.mkdirSync(path.join(root, '.git'));
-      // 默认不再向上查找 .git，直接返回启动目录
+      // 默认即向上查找 .git
+      expect(resolveCodespecRoot(deep)).toBe(path.resolve(root));
+    });
+
+    it('启动目录本身有 .git 时返回该目录', () => {
+      const root = path.join(testDir, 'repo');
+      nodeFs.mkdirSync(root);
+      nodeFs.mkdirSync(path.join(root, '.git'));
+      expect(resolveCodespecRoot(root)).toBe(path.resolve(root));
+    });
+
+    it('CODESPEC_ROOT_MODE 为未知值时按 git 处理', () => {
+      process.env.CODESPEC_ROOT_MODE = 'something-else';
+      const root = path.join(testDir, 'repo');
+      const deep = path.join(root, 'sub');
+      nodeFs.mkdirSync(deep, { recursive: true });
+      nodeFs.mkdirSync(path.join(root, '.git'));
+      expect(resolveCodespecRoot(deep)).toBe(path.resolve(root));
+    });
+
+    it('未传 startDir 时默认基于 process.cwd() 解析且不抛错', () => {
+      const result = resolveCodespecRoot();
+      expect(path.isAbsolute(result)).toBe(true);
+    });
+  });
+
+  describe('cwd 模式（CODESPEC_ROOT_MODE=cwd）—— 直接返回启动目录', () => {
+    beforeEach(() => {
+      previousMode = process.env.CODESPEC_ROOT_MODE;
+      process.env.CODESPEC_ROOT_MODE = 'cwd';
+    });
+
+    it('即使上层存在 .git 也返回启动目录', () => {
+      const root = path.join(testDir, 'repo');
+      const deep = path.join(root, 'packages', 'core', 'src');
+      nodeFs.mkdirSync(deep, { recursive: true });
+      nodeFs.mkdirSync(path.join(root, '.git'));
       expect(resolveCodespecRoot(deep)).toBe(path.resolve(deep));
     });
 
@@ -47,27 +83,13 @@ describe('resolveCodespecRoot', () => {
       expect(resolveCodespecRoot(root)).toBe(path.resolve(root));
     });
 
-    it('显式 CODESPEC_ROOT_MODE=cwd 时返回启动目录', () => {
-      process.env.CODESPEC_ROOT_MODE = 'cwd';
+    it('cwd 取值大小写不敏感', () => {
+      process.env.CODESPEC_ROOT_MODE = 'CWD';
       const root = path.join(testDir, 'repo');
       const deep = path.join(root, 'sub');
       nodeFs.mkdirSync(deep, { recursive: true });
       nodeFs.mkdirSync(path.join(root, '.git'));
       expect(resolveCodespecRoot(deep)).toBe(path.resolve(deep));
-    });
-
-    it('CODESPEC_ROOT_MODE 为未知值时按 cwd 处理', () => {
-      process.env.CODESPEC_ROOT_MODE = 'something-else';
-      const root = path.join(testDir, 'repo');
-      const deep = path.join(root, 'sub');
-      nodeFs.mkdirSync(deep, { recursive: true });
-      nodeFs.mkdirSync(path.join(root, '.git'));
-      expect(resolveCodespecRoot(deep)).toBe(path.resolve(deep));
-    });
-
-    it('未传 startDir 时默认基于 process.cwd() 解析且不抛错', () => {
-      const result = resolveCodespecRoot();
-      expect(path.isAbsolute(result)).toBe(true);
     });
   });
 
