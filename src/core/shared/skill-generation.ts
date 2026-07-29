@@ -39,7 +39,7 @@ import { getMainAgentDevelopmentSkillTemplate } from '../templates/external/main
 import { getTestDrivenDevelopmentSkillTemplate, testingAntiPatternsContent } from '../templates/external/test-driven-development.js';
 import { getSubagentDrivenDevelopmentSkillTemplate } from '../templates/external/subagent-driven-development.js';
 import { getVerificationBeforeCompletionSkillTemplate } from '../templates/external/verification-before-completion.js';
-import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent, conceptClarifierContent, dtCodeGeneratorContent, dtCodeQualityReviewerContent } from '../templates/agents/index.js';
+import { codeGeneratorContent, specReviewerContent, codeQualityReviewerContent, changeVerifierContent, conceptClarifierContent } from '../templates/agents/index.js';
 import type { CommandContent } from '../command-generation/index.js';
 
 /**
@@ -284,8 +284,7 @@ export function getExternalAgentTemplates(): AgentTemplateEntry[] {
     { filename: 'code-quality-reviewer.md', content: codeQualityReviewerContent },
     { filename: 'change-verifier.md', content: changeVerifierContent },
     { filename: 'concept-clarify.md', content: conceptClarifierContent },
-    { filename: 'dt-code-generator.md', content: dtCodeGeneratorContent },
-    { filename: 'dt-code-quality-reviewer.md', content: dtCodeQualityReviewerContent },
+    // dt-code-generator / dt-code-quality-reviewer 暂未开放，init 时不自动创建
   ];
 }
 
@@ -299,8 +298,6 @@ export const OPENCODE_SUBAGENT_FILES = new Set([
   'code-quality-reviewer.md',
   'concept-clarify.md',
   'spec-reviewer.md',
-  'dt-code-generator.md',
-  'dt-code-quality-reviewer.md',
 ]);
 
 /**

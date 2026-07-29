@@ -40,7 +40,7 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('# 在此直接用 graphviz dot 原文定义每个任务的 per-task 流程图，由 `codespec apply-subagent flow` 原样透传。');
   lines.push('# 不校验内容、不生成步骤列表，agent 自行解析 dot。');
   lines.push('# 下面是内置默认流程的注释版——取消注释即得默认行为，可在此基础上修改');
-  lines.push('# （如拆分为"业务实现 / 测试验证"两阶段、引入 dt-code-generator / dt-code-quality-reviewer）。');
+  lines.push('# （如拆分为"业务实现 / 测试验证"两阶段；图中引用的 agent 需已随 init 安装）。');
   const subagentYaml = [
     'subagent-apply:',
     '  taskFlow:',
