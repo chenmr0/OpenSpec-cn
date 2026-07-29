@@ -39,6 +39,19 @@ const ApplyConfigSchema = z.object({
     .describe('Reviewers to skip during apply (spec-reviewer, code-quality-reviewer, change-verifier)'),
 });
 
+const SubagentApplyConfigSchema = z.object({
+  // Per-task flow for subagent mode, authored as a raw graphviz dot string.
+  // Consumed by `codespec apply-subagent flow` and passed through verbatim —
+  // no validation, no step-list generation. Omit to fall back to the built-in
+  // default dot shipped with the command.
+  taskFlow: z
+    .object({
+      flowDot: z.string().optional(),
+    })
+    .optional()
+    .describe('Subagent-mode per-task flow as raw dot (consumed by codespec apply-subagent flow)'),
+});
+
 /**
  * Zod schema for project configuration.
  *
@@ -84,6 +97,12 @@ export const ProjectConfigSchema = z.object({
   apply: ApplyConfigSchema
     .optional()
     .describe('Apply phase settings (e.g. reviewers to skip)'),
+
+  // Optional: subagent-mode apply settings (per-task flow as raw dot).
+  // Independent top-level section, deliberately separate from `apply` (main mode).
+  'subagent-apply': SubagentApplyConfigSchema
+    .optional()
+    .describe('Subagent-mode apply settings (per-task flow as raw dot)'),
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
@@ -237,6 +256,33 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         }
       } else {
         console.warn(`Invalid 'apply' field in config (must be object)`);
+      }
+    }
+
+    // Parse subagent-apply field (per-task flow as raw dot), independent of `apply`
+    if (raw['subagent-apply'] !== undefined) {
+      const subagentRaw = raw['subagent-apply'];
+      if (
+        typeof subagentRaw === 'object' &&
+        subagentRaw !== null &&
+        !Array.isArray(subagentRaw)
+      ) {
+        const subagentObj = subagentRaw as Record<string, unknown>;
+        const taskFlowRaw = subagentObj.taskFlow;
+        if (taskFlowRaw !== undefined) {
+          if (typeof taskFlowRaw === 'object' && taskFlowRaw !== null && !Array.isArray(taskFlowRaw)) {
+            const flowDotResult = z.string().safeParse((taskFlowRaw as Record<string, unknown>).flowDot);
+            if (flowDotResult.success) {
+              config['subagent-apply'] = { taskFlow: { flowDot: flowDotResult.data } };
+            } else if ((taskFlowRaw as Record<string, unknown>).flowDot !== undefined) {
+              console.warn(`Invalid 'subagent-apply.taskFlow.flowDot' field in config (must be string)`);
+            }
+          } else {
+            console.warn(`Invalid 'subagent-apply.taskFlow' field in config (must be object)`);
+          }
+        }
+      } else {
+        console.warn(`Invalid 'subagent-apply' field in config (must be object)`);
       }
     }
 

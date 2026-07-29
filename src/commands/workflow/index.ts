@@ -25,4 +25,7 @@ export type { CreateArOptions } from './create-ar.js';
 export { flowCommand, computeFlowKey, resolveFlow } from './flow.js';
 export type { FlowOptions, FlowResult } from './flow.js';
 
+export { applySubagentFlowCommand, resolveSubagentFlow, DEFAULT_SUBAGENT_FLOW_DOT } from './apply-subagent-flow.js';
+export type { FlowOptions as SubagentFlowOptions, FlowResult as SubagentFlowResult } from './apply-subagent-flow.js';
+
 export { DEFAULT_SCHEMA } from './shared.js';

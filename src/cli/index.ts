@@ -26,6 +26,7 @@ import {
   newChangeCommand,
   createArCommand,
   flowCommand,
+  applySubagentFlowCommand,
   DEFAULT_SCHEMA,
   type StatusOptions,
   type InstructionsOptions,
@@ -34,6 +35,7 @@ import {
   type NewChangeOptions,
   type CreateArOptions,
   type FlowOptions,
+  type SubagentFlowOptions,
 } from '../commands/workflow/index.js';
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -438,6 +440,25 @@ applyCmd
   .action(async (options: FlowOptions) => {
     try {
       await flowCommand(options);
+    } catch (error) {
+      console.log();
+      ora().fail(`错误：${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// Apply-subagent command group: subagent-mode apply helpers
+const applySubagentCmd = program.command('apply-subagent').description('subagent 模式应用阶段相关命令');
+
+// Subagent flow subcommand: returns the per-task flow from config.yaml subagent-apply.taskFlow.flowDot
+applySubagentCmd
+  .command('flow')
+  .description('显示 config.yaml subagent-apply.taskFlow.flowDot 定制的 per-task 执行流程图（缺省返回内置默认）')
+  .option('--change <id>', '变更名称（可选，仅用于输出标注）')
+  .option('--json', '以 JSON 格式输出')
+  .action(async (options: SubagentFlowOptions) => {
+    try {
+      await applySubagentFlowCommand(options);
     } catch (error) {
       console.log();
       ora().fail(`错误：${(error as Error).message}`);
