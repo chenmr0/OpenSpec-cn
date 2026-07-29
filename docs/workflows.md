@@ -445,3 +445,4 @@ implement-2fa                 wip
 - [命令](commands.md) - 带选项的完整命令参考
 - [概念](concepts.md) - 深入探讨规范、制品和模式
 - [自定义](customization.md) - 创建自定义工作流
+- [定制 subagent 模式的 per-task 执行流程](subagent-flow-customization.md) - 用 dot 原文定制 subagent 模式审查流程

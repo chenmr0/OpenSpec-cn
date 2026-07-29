@@ -339,4 +339,5 @@ codespec schema fork spec-driven with-review
 
 ## 另请参阅
 
+- [定制 subagent 模式的 per-task 执行流程](subagent-flow-customization.md) - 用 dot 原文定制 subagent 模式每个任务的审查流程图
 - [CLI 参考：Schema 命令](cli.md#schema-commands) - 终端命令
