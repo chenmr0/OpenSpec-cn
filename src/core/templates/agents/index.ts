@@ -11,3 +11,5 @@ export { specReviewerContent } from './spec-reviewer.js';
 export { codeQualityReviewerContent } from './code-quality-reviewer.js';
 export { changeVerifierContent } from './change-verifier.js';
 export { conceptClarifierContent } from './concept-clarifier.js';
+export { dtCodeGeneratorContent } from './dt-code-generator.js';
+export { dtCodeQualityReviewerContent } from './dt-code-quality-reviewer.js';

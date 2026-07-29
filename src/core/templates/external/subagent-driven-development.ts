@@ -4,78 +4,41 @@
  * Copied from superpowers-cn/skills/subagent-driven-development.
  * This skill is always installed during init alongside other external skills.
  * Spec reviewer and code quality reviewer are installed as agents (see agents/ directory).
+ *
+ * The per-task flow is no longer hardcoded here: it is returned at runtime by
+ * `codespec apply-subagent flow`, which reads config.yaml `subagent-apply.taskFlow.flowDot`
+ * (raw dot) or falls back to the built-in default dot shipped with the command.
  */
 import type { SkillTemplate } from '../types.js';
 
 const sddInstructions = `# 子智能体驱动开发
 
-通过为每个任务分派一个全新的子智能体来执行计划，每个任务完成后进行两阶段审查：先审查规格合规性，再审查代码质量。
+通过为每个任务分派一个全新的子智能体来执行计划，每个任务完成后按返回流程图中的审查节点进行审查。
 
 **为什么用子智能体：** 你将任务委派给具有隔离上下文的专用智能体。通过精心设计它们的指令和上下文，确保它们专注并成功完成任务。它们不应继承你的会话上下文或历史记录——你要精确构造它们所需的一切。这样也能为你自己保留用于协调工作的上下文。
 
-**核心原则：** 每个任务一个全新子智能体 + 两阶段审查（先规格后质量）= 高质量、快速迭代
+**核心原则：** 每个任务一个全新子智能体 + 按流程图审查 = 高质量、快速迭代
 
 ## 流程
 
-\`\`\`dot
-digraph process {
-    rankdir=TB;
+**本批要执行的 per-task 流程由 \`codespec apply-subagent flow\` 命令动态返回，在开始执行任何任务之前第一步获取。**
 
-    subgraph cluster_per_task {
-        label="每个任务";
-        "分派实现子智能体 (code-generator)" [shape=box];
-        "实现子智能体有疑问?" [shape=diamond];
-        "回答问题，提供上下文" [shape=box];
-        "实现子智能体实现、测试、自审" [shape=box];
-        "分派规格审查子智能体 (spec-reviewer)" [shape=box];
-        "规格审查子智能体确认代码匹配规格?" [shape=diamond];
-        "实现子智能体修复规格差距" [shape=box];
-        "分派代码质量审查子智能体 (code-quality-reviewer)" [shape=box];
-        "代码质量审查子智能体通过?" [shape=diamond];
-        "实现子智能体修复质量问题" [shape=box];
-        "在 TodoWrite 中标记任务完成，更新 task.md 中对应任务复选框 [ ] → [x]" [shape=box];
-    }
+在开始执行任何任务之前：
 
-    "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite" [shape=box];
-    "还有剩余任务?" [shape=diamond];
-    "分派最终代码审查子智能体审查整体实现" [shape=box];
-    "委派 change-verifier 变更级验证" [shape=box];
-    "验证通过?" [shape=diamond];
-    "修复循环（最多3次）" [shape=box];
-    "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
-    "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
-
-    "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite" -> "分派实现子智能体 (code-generator)";
-    "分派实现子智能体 (code-generator)" -> "实现子智能体有疑问?";
-    "实现子智能体(code-generator)有疑问?" -> "回答问题，提供上下文" [label="是"];
-    "回答问题，提供上下文" -> "分派实现子智能体 (code-generator)";
-    "实现子智能体有疑问?" -> "实现子智能体实现、测试、自审" [label="否"];
-    "实现子智能体实现、测试、自审" -> "分派规格审查子智能体 (spec-reviewer)";
-    "分派规格审查子智能体 (spec-reviewer)" -> "规格审查子智能体确认代码匹配规格?";
-    "规格审查子智能体确认代码匹配规格?" -> "实现子智能体修复规格差距" [label="否"];
-    "实现子智能体修复规格差距" -> "分派规格审查子智能体 (spec-reviewer)" [label="重新审查"];
-    "规格审查子智能体确认代码匹配规格?" -> "分派代码质量审查子智能体 (code-quality-reviewer)" [label="是"];
-    "分派代码质量审查子智能体 (code-quality-reviewer)" -> "代码质量审查子智能体通过?";
-    "代码质量审查子智能体通过?" -> "实现子智能体修复质量问题" [label="否"];
-    "实现子智能体修复质量问题" -> "分派代码质量审查子智能体 (code-quality-reviewer)" [label="重新审查"];
-    "代码质量审查子智能体通过?" -> "在 TodoWrite 中标记任务完成，更新 task.md 中对应任务复选框 [ ] → [x]" [label="是"];
-    "在 TodoWrite 中标记任务完成，更新 task.md 中对应任务复选框 [ ] → [x]" -> "还有剩余任务?";
-    "还有剩余任务?" -> "分派实现子智能体 (code-generator)" [label="是"];
-    "还有剩余任务?" -> "分派最终代码审查子智能体审查整体实现" [label="否"];
-    "分派最终代码审查子智能体审查整体实现" -> "委派 change-verifier 变更级验证";
-    "委派 change-verifier 变更级验证" -> "验证通过?";
-    "验证通过?" -> "修复循环（最多3次）" [label="否"];
-    "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
-    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
-    "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
-}
-\`\`\`
+1. **获取本批执行流程（关键，第一步）**：运行：
+   \`\`\`bash
+   codespec apply-subagent flow
+   \`\`\`
+   - 返回的 dot 流程图即本批实际要执行的 per-task 流程。
+   - 严格按返回图中的节点与边执行：只为图中出现的 agent 分派子智能体；不添加图中没有的审查步骤，也不跳过图中有的审查步骤。
+2. 读取 spec.md, design.md 和 task.md，建立全局需求理解。
+3. 提取所有任务的完整文本与上下文，创建 TodoWrite（审查条目按 \`codespec apply-subagent flow\` 返回图中的审查节点创建，只为图中出现的审查创建条目）。
 
 ## 处理实现者状态
 
 实现子智能体报告四种状态之一。根据每种状态进行相应处理：
 
-**DONE：** 进入规格合规性审查。
+**DONE：** 进入流程图中的下一个审查节点。
 
 **DONE_WITH_CONCERNS：** 实现者完成了工作但标记了疑虑。在继续之前阅读这些疑虑。如果疑虑涉及正确性或范围，在审查前解决。如果只是观察性说明（如"这个文件越来越大了"），记录下来并继续审查。
 
@@ -89,11 +52,12 @@ digraph process {
 
 **绝不** 忽略上报或在不做任何更改的情况下让同一模型重试。如果实现者说卡住了，说明有什么东西需要改变。
 
-## 示例工作流
+## 示例工作流（以内置默认流程为例；自定义流程图同理，按返回的图执行）
 
 \`\`\`
 你：我正在使用子智能体驱动开发来执行这个计划。
 
+[第一步：运行 codespec apply-subagent flow 获取本批流程图]
 [一次性读取任务文件：task.md]
 [提取全部 5 个任务的完整文本和上下文]
 [用所有任务创建 TodoWrite]
@@ -113,10 +77,10 @@ digraph process {
   - 添加了测试，5/5 通过
   - 自审：发现遗漏了 --force 参数，已添加
 
-[分派规格合规审查]
+[按流程图分派规格合规审查]
 规格审查者：✅ 符合规格 - 所有需求已满足，无多余内容
 
-[获取 git SHA，分派代码质量审查]
+[按流程图分派代码质量审查]
 代码审查者：优点：测试覆盖好，代码整洁。问题：无。通过。
 
 [标记任务 1 完成，更新 task.md 中 ### [ ] → ### [x]]
@@ -132,7 +96,7 @@ digraph process {
   - 8/8 测试通过
   - 自审：一切正常
 
-[分派规格合规审查]
+[按流程图分派规格合规审查]
 规格审查者：❌ 问题：
   - 缺失：进度报告（规格要求"每 100 项报告一次"）
   - 多余：添加了 --json 参数（未被要求）
@@ -143,7 +107,7 @@ digraph process {
 [规格审查者再次审查]
 规格审查者：✅ 现在符合规格
 
-[分派代码质量审查]
+[按流程图分派代码质量审查]
 代码审查者：优点：扎实。问题（重要）：魔法数字（100）
 
 [实现者修复]
@@ -179,13 +143,13 @@ digraph process {
 
 **质量关卡：**
 - 自审在交接前发现问题
-- 两阶段审查：规格合规性，然后代码质量
+- 按流程图中的审查节点逐个审查
 - 审查循环确保修复确实有效
 - 规格合规防止过度/不足构建
 - 代码质量确保实现良好，验证编译通过
 
 **成本：**
-- 更多子智能体调用（每个任务需要实现者 + 2 个审查者）
+- 更多子智能体调用（每个任务需要实现者 + 流程图中的审查者）
 - 控制者需要更多准备工作（预先提取所有任务）
 - 审查循环增加迭代次数
 - 但能及早发现问题（比后期调试更省成本）
@@ -194,16 +158,16 @@ digraph process {
 
 **绝不：**
 - 未经用户明确同意就在 main/master 分支上开始实现
-- 跳过审查（规格合规性或代码质量）
+- 跳过流程图中的审查节点
 - 带着未修复的问题继续
 - 并行分派多个实现子智能体（会冲突）
 - 让子智能体读取计划文件（应提供完整文本）
 - 跳过场景铺设上下文（子智能体需要理解任务在哪个环节）
 - 忽视子智能体的问题（在让它们继续之前先回答）
-- 在规格合规性上接受"差不多就行"（规格审查者发现问题 = 未完成）
+- 在审查合规性上接受"差不多就行"（审查者发现问题 = 未完成）
 - 跳过审查循环（审查者发现问题 = 实现者修复 = 再次审查）
 - 让实现者的自审替代正式审查（两者都需要）
-- **在规格合规性审查通过之前开始代码质量审查**（顺序错误）
+- **不按流程图顺序执行审查**（顺序由图中的边决定，顺序错误）
 - 在任一审查有未解决问题时就进入下一个任务
 
 **如果子智能体提问：**

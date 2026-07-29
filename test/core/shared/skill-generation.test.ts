@@ -317,9 +317,9 @@ describe('skill-generation', () => {
   });
 
   describe('getExternalAgentTemplates', () => {
-    it('should return all 5 external agent templates', () => {
+    it('should return all 7 external agent templates', () => {
       const agents = getExternalAgentTemplates();
-      expect(agents).toHaveLength(5);
+      expect(agents).toHaveLength(7);
       const filenames = agents.map(a => a.filename);
       expect(filenames).toEqual(expect.arrayContaining([
         'code-generator.md',
@@ -327,17 +327,21 @@ describe('skill-generation', () => {
         'code-quality-reviewer.md',
         'concept-clarify.md',
         'spec-reviewer.md',
+        'dt-code-generator.md',
+        'dt-code-quality-reviewer.md',
       ]));
     });
   });
 
   describe('OPENCODE_SUBAGENT_FILES', () => {
-    it('should contain exactly the 4 pure-subagent files', () => {
-      expect(OPENCODE_SUBAGENT_FILES.size).toBe(4);
+    it('should contain exactly the 6 pure-subagent files', () => {
+      expect(OPENCODE_SUBAGENT_FILES.size).toBe(6);
       expect(OPENCODE_SUBAGENT_FILES.has('change-verifier.md')).toBe(true);
       expect(OPENCODE_SUBAGENT_FILES.has('code-quality-reviewer.md')).toBe(true);
       expect(OPENCODE_SUBAGENT_FILES.has('concept-clarify.md')).toBe(true);
       expect(OPENCODE_SUBAGENT_FILES.has('spec-reviewer.md')).toBe(true);
+      expect(OPENCODE_SUBAGENT_FILES.has('dt-code-generator.md')).toBe(true);
+      expect(OPENCODE_SUBAGENT_FILES.has('dt-code-quality-reviewer.md')).toBe(true);
       // code-generator.md must NOT be in the set (apply runs it in main session, no mode)
       expect(OPENCODE_SUBAGENT_FILES.has('code-generator.md')).toBe(false);
     });

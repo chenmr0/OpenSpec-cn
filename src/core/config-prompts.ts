@@ -1,4 +1,5 @@
 import type { ProjectConfig } from './project-config.js';
+import { DEFAULT_SUBAGENT_FLOW_DOT } from '../commands/workflow/apply-subagent-flow.js';
 
 /**
  * Serialize config to YAML string with helpful comments.
@@ -32,6 +33,23 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('#     - spec-reviewer');
   lines.push('#     - code-quality-reviewer');
   lines.push('#     - change-verifier');
+  lines.push('');
+
+  // Subagent-apply section — taskFlow.flowDot commented-out default for easy editing
+  lines.push('# subagent 模式应用阶段设置（可选，与上面的 apply 互不干扰）');
+  lines.push('# 在此直接用 graphviz dot 原文定义每个任务的 per-task 流程图，由 `codespec apply-subagent flow` 原样透传。');
+  lines.push('# 不校验内容、不生成步骤列表，agent 自行解析 dot。');
+  lines.push('# 下面是内置默认流程的注释版——取消注释即得默认行为，可在此基础上修改');
+  lines.push('# （如拆分为"业务实现 / 测试验证"两阶段、引入 dt-code-generator / dt-code-quality-reviewer）。');
+  const subagentYaml = [
+    'subagent-apply:',
+    '  taskFlow:',
+    '    flowDot: |-',
+    ...DEFAULT_SUBAGENT_FLOW_DOT.split('\n').map((l) => '      ' + l),
+  ];
+  for (const line of subagentYaml) {
+    lines.push(line.trim() === '' ? '#' : '# ' + line);
+  }
   lines.push('');
 
   // Context section with comments
