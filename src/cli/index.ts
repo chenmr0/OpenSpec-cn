@@ -450,12 +450,16 @@ applyCmd
 // Apply-subagent command group: subagent-mode apply helpers
 const applySubagentCmd = program.command('apply-subagent').description('subagent 模式应用阶段相关命令');
 
-// Subagent flow subcommand: returns the per-task flow from config.yaml subagent-apply.taskFlow.flowDot
+// Subagent flow subcommand: returns the per-task flow + example for a test mode
+// (tdd / test-after / no-test), read from config.yaml subagent-apply.<mode>.
 applySubagentCmd
   .command('flow')
-  .description('显示 config.yaml subagent-apply.taskFlow.flowDot 定制的 per-task 执行流程图（缺省返回内置默认）')
+  .description('显示按测试模式定制的 per-task 执行流程图与示例工作流（config.yaml subagent-apply.<mode>，缺省返回内置默认）')
   .option('--change <id>', '变更名称（可选，仅用于输出标注）')
   .option('--json', '以 JSON 格式输出')
+  .option('--tdd', '按 tdd 测试模式返回流程（默认）')
+  .option('--test-after', '按 test-after 测试模式返回流程')
+  .option('--no-test', '按 no-test 测试模式返回流程')
   .action(async (options: SubagentFlowOptions) => {
     try {
       await applySubagentFlowCommand(options);

@@ -1,5 +1,8 @@
 import type { ProjectConfig } from './project-config.js';
-import { DEFAULT_SUBAGENT_FLOW_DOT } from '../commands/workflow/apply-subagent-flow.js';
+import {
+  DEFAULT_SUBAGENT_FLOW_DOT,
+  DEFAULT_SUBAGENT_FLOW_EXAMPLE,
+} from '../commands/workflow/apply-subagent-flow.js';
 
 /**
  * Serialize config to YAML string with helpful comments.
@@ -35,17 +38,22 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('#     - change-verifier');
   lines.push('');
 
-  // Subagent-apply section — taskFlow.flowDot commented-out default for easy editing
+  // Subagent-apply section — per-test-mode flowDot + example, commented-out defaults for easy editing
   lines.push('# subagent 模式应用阶段设置（可选，与上面的 apply 互不干扰）');
-  lines.push('# 在此直接用 graphviz dot 原文定义每个任务的 per-task 流程图，由 `codespec apply-subagent flow` 原样透传。');
-  lines.push('# 不校验内容、不生成步骤列表，agent 自行解析 dot。');
-  lines.push('# 下面是内置默认流程的注释版——取消注释即得默认行为，可在此基础上修改');
-  lines.push('# （如拆分为"业务实现 / 测试验证"两阶段；图中引用的 agent 需已随 init 安装）。');
+  lines.push('# 按测试模式（tdd / test-after / no-test，对应 task.md 头部 `测试策略` 标记）分别定制 per-task 流程图与示例工作流。');
+  lines.push('# 由 `codespec apply-subagent flow --tdd|--test-after|--no-test` 原样透传，不校验内容、不生成步骤列表，agent 自行解析。');
+  lines.push('# 三种模式缺省时都回退到内置默认流程与默认示例；下面以 tdd 为例展开默认值，取消注释即得默认行为，可在此基础上修改。');
+  lines.push('# test-after / no-test 默认与 tdd 相同，如需定制请参照 tdd 的结构取消注释并展开 flowDot / example。');
+  lines.push('# 图中引用的 agent 需已随 init 安装（code-generator / spec-reviewer / code-quality-reviewer / change-verifier）。');
   const subagentYaml = [
     'subagent-apply:',
-    '  taskFlow:',
+    '  tdd:',
     '    flowDot: |-',
     ...DEFAULT_SUBAGENT_FLOW_DOT.split('\n').map((l) => '      ' + l),
+    '    example: |-',
+    ...DEFAULT_SUBAGENT_FLOW_EXAMPLE.split('\n').map((l) => '      ' + l),
+    '  # test-after：默认与 tdd 相同；如需定制，取消本行注释并按 tdd 结构补全 flowDot / example',
+    '  # no-test：默认与 tdd 相同；如需定制，取消本行注释并按 tdd 结构补全 flowDot / example',
   ];
   for (const line of subagentYaml) {
     lines.push(line.trim() === '' ? '#' : '# ' + line);

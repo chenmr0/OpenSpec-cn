@@ -39,18 +39,31 @@ const ApplyConfigSchema = z.object({
     .describe('Reviewers to skip during apply (spec-reviewer, code-quality-reviewer, change-verifier)'),
 });
 
-const SubagentApplyConfigSchema = z.object({
-  // Per-task flow for subagent mode, authored as a raw graphviz dot string.
-  // Consumed by `codespec apply-subagent flow` and passed through verbatim —
-  // no validation, no step-list generation. Omit to fall back to the built-in
-  // default dot shipped with the command.
-  taskFlow: z
-    .object({
-      flowDot: z.string().optional(),
-    })
+// Per-test-mode flow config: raw graphviz dot + example workflow text. Consumed
+// by `codespec apply-subagent flow` and passed through verbatim — no
+// validation, no step-list generation. Omit either field to fall back to the
+// built-in default shipped with the command.
+const TestModeConfigSchema = z.object({
+  flowDot: z
+    .string()
     .optional()
-    .describe('Subagent-mode per-task flow as raw dot (consumed by codespec apply-subagent flow)'),
+    .describe('Per-task flow as raw dot (consumed by codespec apply-subagent flow)'),
+  example: z
+    .string()
+    .optional()
+    .describe('Example workflow text shown to the agent (consumed by codespec apply-subagent flow)'),
 });
+
+export type TestModeConfig = z.infer<typeof TestModeConfigSchema>;
+
+const SubagentApplyConfigSchema = z.object({
+  // Per-test-mode per-task flow for subagent mode, keyed by the `测试策略`
+  // marker in task.md headers (tdd / test-after / no-test). Each mode is
+  // optional and independently customized.
+  tdd: TestModeConfigSchema.optional(),
+  'test-after': TestModeConfigSchema.optional(),
+  'no-test': TestModeConfigSchema.optional(),
+}).describe('Subagent-mode apply settings per test mode (consumed by codespec apply-subagent flow)');
 
 /**
  * Zod schema for project configuration.
@@ -259,7 +272,8 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
       }
     }
 
-    // Parse subagent-apply field (per-task flow as raw dot), independent of `apply`
+    // Parse subagent-apply field (per-test-mode flow as raw dot + example),
+    // independent of `apply`. Keys are tdd / test-after / no-test.
     if (raw['subagent-apply'] !== undefined) {
       const subagentRaw = raw['subagent-apply'];
       if (
@@ -268,18 +282,60 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         !Array.isArray(subagentRaw)
       ) {
         const subagentObj = subagentRaw as Record<string, unknown>;
-        const taskFlowRaw = subagentObj.taskFlow;
-        if (taskFlowRaw !== undefined) {
-          if (typeof taskFlowRaw === 'object' && taskFlowRaw !== null && !Array.isArray(taskFlowRaw)) {
-            const flowDotResult = z.string().safeParse((taskFlowRaw as Record<string, unknown>).flowDot);
-            if (flowDotResult.success) {
-              config['subagent-apply'] = { taskFlow: { flowDot: flowDotResult.data } };
-            } else if ((taskFlowRaw as Record<string, unknown>).flowDot !== undefined) {
-              console.warn(`Invalid 'subagent-apply.taskFlow.flowDot' field in config (must be string)`);
-            }
-          } else {
-            console.warn(`Invalid 'subagent-apply.taskFlow' field in config (must be object)`);
+        const modes: Record<string, TestModeConfig> = {};
+        for (const modeKey of ['tdd', 'test-after', 'no-test'] as const) {
+          const modeRaw = subagentObj[modeKey];
+          if (modeRaw === undefined) continue;
+
+          if (
+            typeof modeRaw !== 'object' ||
+            modeRaw === null ||
+            Array.isArray(modeRaw)
+          ) {
+            console.warn(
+              `Invalid 'subagent-apply.${modeKey}' field in config (must be object)`
+            );
+            continue;
           }
+          const modeObj = modeRaw as Record<string, unknown>;
+          const parsed: TestModeConfig = {};
+          let hasField = false;
+
+          if (modeObj.flowDot !== undefined) {
+            const flowDotResult = z.string().safeParse(modeObj.flowDot);
+            if (flowDotResult.success) {
+              parsed.flowDot = flowDotResult.data;
+              hasField = true;
+            } else {
+              console.warn(
+                `Invalid 'subagent-apply.${modeKey}.flowDot' field in config (must be string)`
+              );
+            }
+          }
+          if (modeObj.example !== undefined) {
+            const exampleResult = z.string().safeParse(modeObj.example);
+            if (exampleResult.success) {
+              parsed.example = exampleResult.data;
+              hasField = true;
+            } else {
+              console.warn(
+                `Invalid 'subagent-apply.${modeKey}.example' field in config (must be string)`
+              );
+            }
+          }
+
+          if (hasField) {
+            modes[modeKey] = parsed;
+          }
+        }
+        if (Object.keys(modes).length > 0) {
+          config['subagent-apply'] = modes;
+        }
+        // Legacy `taskFlow` key is no longer supported; warn if present.
+        if (subagentObj.taskFlow !== undefined) {
+          console.warn(
+            `'subagent-apply.taskFlow' 已废弃，请改用 subagent-apply.tdd / test-after / no-test 三模式结构`
+          );
         }
       } else {
         console.warn(`Invalid 'subagent-apply' field in config (must be object)`);

@@ -245,18 +245,21 @@ apply:
         expect(config?.apply).toBeUndefined();
       });
 
-      it('should parse subagent-apply.taskFlow.flowDot config', () => {
+      it('should parse subagent-apply single mode (tdd) with flowDot + example', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });
         fs.writeFileSync(
           path.join(configDir, 'config.yaml'),
           `schema: spec-driven
 subagent-apply:
-  taskFlow:
+  tdd:
     flowDot: |
       digraph process {
         rankdir=TB;
       }
+    example: |
+      你：示例
+      完成！
 `
         );
 
@@ -265,20 +268,53 @@ subagent-apply:
         expect(config).toEqual({
           schema: 'spec-driven',
           'subagent-apply': {
-            taskFlow: { flowDot: 'digraph process {\n  rankdir=TB;\n}\n' },
+            tdd: {
+              flowDot: 'digraph process {\n  rankdir=TB;\n}\n',
+              example: '你：示例\n完成！\n',
+            },
           },
         });
         expect(consoleWarnSpy).not.toHaveBeenCalled();
       });
 
-      it('should warn when subagent-apply.taskFlow.flowDot is not a string', () => {
+      it('should parse multiple test modes independently', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });
         fs.writeFileSync(
           path.join(configDir, 'config.yaml'),
           `schema: spec-driven
 subagent-apply:
-  taskFlow:
+  tdd:
+    flowDot: digraph a {}
+  test-after:
+    example: 后补测试示例
+  no-test:
+    flowDot: digraph c {}
+    example: 无测试示例
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          'subagent-apply': {
+            tdd: { flowDot: 'digraph a {}' },
+            'test-after': { example: '后补测试示例' },
+            'no-test': { flowDot: 'digraph c {}', example: '无测试示例' },
+          },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should warn when a mode flowDot is not a string', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+subagent-apply:
+  tdd:
     flowDot: 123
 `
         );
@@ -288,18 +324,42 @@ subagent-apply:
         expect(config).toEqual({ schema: 'spec-driven' });
         expect(config?.['subagent-apply']).toBeUndefined();
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          expect.stringContaining("Invalid 'subagent-apply.taskFlow.flowDot' field in config")
+          expect.stringContaining("Invalid 'subagent-apply.tdd.flowDot' field in config")
         );
       });
 
-      it('should warn when subagent-apply.taskFlow is not an object', () => {
+      it('should warn when a mode example is not a string but keep valid flowDot', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });
         fs.writeFileSync(
           path.join(configDir, 'config.yaml'),
           `schema: spec-driven
 subagent-apply:
-  taskFlow: "not-an-object"
+  tdd:
+    flowDot: digraph ok {}
+    example: 123
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          'subagent-apply': { tdd: { flowDot: 'digraph ok {}' } },
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'subagent-apply.tdd.example' field in config")
+        );
+      });
+
+      it('should warn when a mode value is not an object', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+subagent-apply:
+  tdd: "not-an-object"
 `
         );
 
@@ -307,7 +367,7 @@ subagent-apply:
 
         expect(config).toEqual({ schema: 'spec-driven' });
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          expect.stringContaining("Invalid 'subagent-apply.taskFlow' field in config")
+          expect.stringContaining("Invalid 'subagent-apply.tdd' field in config")
         );
       });
 
@@ -329,14 +389,16 @@ subagent-apply: ["not", "an", "object"]
         );
       });
 
-      it('should omit subagent-apply when flowDot is absent', () => {
+      it('should omit subagent-apply when all modes are empty', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });
         fs.writeFileSync(
           path.join(configDir, 'config.yaml'),
           `schema: spec-driven
 subagent-apply:
-  taskFlow: {}
+  tdd: {}
+  test-after: {}
+  no-test: {}
 `
         );
 
@@ -345,6 +407,32 @@ subagent-apply:
         expect(config).toEqual({ schema: 'spec-driven' });
         expect(config?.['subagent-apply']).toBeUndefined();
         expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should warn deprecation when legacy taskFlow key is present', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+subagent-apply:
+  taskFlow:
+    flowDot: digraph legacy {}
+  tdd:
+    example: 真正的示例
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        // tdd.example is parsed; legacy taskFlow is ignored with a deprecation warning.
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          'subagent-apply': { tdd: { example: '真正的示例' } },
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("'subagent-apply.taskFlow' 已废弃")
+        );
       });
 
       it('should return partial config when schema is invalid', () => {

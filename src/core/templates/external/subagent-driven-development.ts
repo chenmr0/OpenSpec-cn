@@ -5,9 +5,11 @@
  * This skill is always installed during init alongside other external skills.
  * Spec reviewer and code quality reviewer are installed as agents (see agents/ directory).
  *
- * The per-task flow is no longer hardcoded here: it is returned at runtime by
- * `codespec apply-subagent flow`, which reads config.yaml `subagent-apply.taskFlow.flowDot`
- * (raw dot) or falls back to the built-in default dot shipped with the command.
+ * The per-task flow and the example workflow are no longer hardcoded here: they
+ * are returned at runtime by `codespec apply-subagent flow --<tdd|test-after|no-test>`,
+ * which reads config.yaml `subagent-apply.<mode>.flowDot` / `.example` (raw dot /
+ * example text) or falls back to the built-in defaults shipped with the command.
+ * The test mode is taken from the `测试策略` marker in task.md headers.
  */
 import type { SkillTemplate } from '../types.js';
 
@@ -21,15 +23,17 @@ const sddInstructions = `# 子智能体驱动开发
 
 ## 流程
 
-**本批要执行的 per-task 流程由 \`codespec apply-subagent flow\` 命令动态返回，在开始执行任何任务之前第一步获取。**
+**本批要执行的 per-task 流程与示例工作流由 \`codespec apply-subagent flow\` 命令按测试模式动态返回，在开始执行任何任务之前第一步获取。**
 
 在开始执行任何任务之前：
 
-1. **获取本批执行流程（关键，第一步）**：运行：
+1. **确定测试模式并获取本批执行流程（关键，第一步）**：
+   - 先读取 task.md 头部的 \`测试策略\` 标记（\`tdd\` / \`test-after\` / \`no-test\`）；未找到时默认 \`tdd\`。
+   - 按该模式运行（缺省 flag 时命令默认按 \`tdd\` 返回）：
    \`\`\`bash
-   codespec apply-subagent flow
+   codespec apply-subagent flow --tdd        # 或 --test-after / --no-test
    \`\`\`
-   - 返回的 dot 流程图即本批实际要执行的 per-task 流程。
+   - 返回的 dot 流程图即本批实际要执行的 per-task 流程；返回的 example 即本批示例工作流（见下文「示例工作流」一节）。
    - 严格按返回图中的节点与边执行：只为图中出现的 agent 分派子智能体；不添加图中没有的审查步骤，也不跳过图中有的审查步骤。
 2. 读取 spec.md, design.md 和 task.md，建立全局需求理解。
 3. 提取所有任务的完整文本与上下文，创建 TodoWrite（审查条目按 \`codespec apply-subagent flow\` 返回图中的审查节点创建，只为图中出现的审查创建条目）。
@@ -52,80 +56,13 @@ const sddInstructions = `# 子智能体驱动开发
 
 **绝不** 忽略上报或在不做任何更改的情况下让同一模型重试。如果实现者说卡住了，说明有什么东西需要改变。
 
-## 示例工作流（以内置默认流程为例；自定义流程图同理，按返回的图执行）
+## 示例工作流
 
-\`\`\`
-你：我正在使用子智能体驱动开发来执行这个计划。
+本批的示例工作流不再硬编码于本技能，而是由 \`codespec apply-subagent flow --<tdd|test-after|no-test>\` 命令一并返回（JSON 的 \`example\` 字段，或文本输出的「示例工作流」一节）。其默认值为内置默认示例（以内置默认流程为例；自定义流程图同理，按返回的图执行），用户可在 \`config.yaml\` 的 \`subagent-apply.<mode>.example\` 中覆盖。
 
-[第一步：运行 codespec apply-subagent flow 获取本批流程图]
-[一次性读取任务文件：task.md]
-[提取全部 5 个任务的完整文本和上下文]
-[用所有任务创建 TodoWrite]
+获取后，参照返回的示例理解控制者与子智能体之间的交互节奏（提问 → 实现 → 自审 → 按流程图审查 → 修复 → 重审 → 标记完成），并按本批实际返回的流程图执行。
 
-任务 1：Hook 安装脚本，包含4个子步骤
-
-[获取任务 1 的文本和上下文（已提取）]
-[将任务的4个子步骤一次性分派实现子智能体，附带完整任务文本 + 上下文]
-
-实现者："在我开始之前——hook 应该安装在用户级别还是系统级别？"
-
-你："用户级别（~/.config/superpowers/hooks/）"
-
-实现者："明白了。现在开始实现……"
-[稍后] 实现者：
-  - 实现了 install-hook 命令
-  - 添加了测试，5/5 通过
-  - 自审：发现遗漏了 --force 参数，已添加
-
-[按流程图分派规格合规审查]
-规格审查者：✅ 符合规格 - 所有需求已满足，无多余内容
-
-[按流程图分派代码质量审查]
-代码审查者：优点：测试覆盖好，代码整洁。问题：无。通过。
-
-[标记任务 1 完成，更新 task.md 中 ### [ ] → ### [x]]
-
-任务 2：恢复模式
-
-[获取任务 2 的文本和上下文（已提取）]
-[分派实现子智能体，附带完整任务文本 + 上下文]
-
-实现者：[无疑问，直接开始]
-实现者：
-  - 添加了 verify/repair 模式
-  - 8/8 测试通过
-  - 自审：一切正常
-
-[按流程图分派规格合规审查]
-规格审查者：❌ 问题：
-  - 缺失：进度报告（规格要求"每 100 项报告一次"）
-  - 多余：添加了 --json 参数（未被要求）
-
-[实现者修复问题]
-实现者：移除了 --json 参数，添加了进度报告
-
-[规格审查者再次审查]
-规格审查者：✅ 现在符合规格
-
-[按流程图分派代码质量审查]
-代码审查者：优点：扎实。问题（重要）：魔法数字（100）
-
-[实现者修复]
-实现者：提取了 PROGRESS_INTERVAL 常量
-
-[代码审查者再次审查]
-代码审查者：✅ 通过
-
-[标记任务 2 完成，更新 task.md 中 ### [ ] → ### [x]]
-
-...
-
-[所有任务完成后]
-[分派最终代码审查]
-最终审查者：所有需求已满足，可以合并
-
-完成！
-\`\`\`
+> 注意：内置默认示例以 \`tdd\` / \`test-after\` 风格展示（含测试步骤）。当本批测试策略为 \`no-test\` 时，实现者不会编写或运行任何单元测试，示例中的"添加了测试 / N/N 通过"等环节应理解为编译检查与功能自审，而非单元测试。
 
 ## 优势
 
