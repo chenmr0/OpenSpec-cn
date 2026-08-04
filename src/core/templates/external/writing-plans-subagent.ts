@@ -50,7 +50,6 @@ const writingPlansSubagentInstructions = `# 编写计划
 - "运行它确认失败" - 一步
 - "实现最少代码让测试通过" - 一步
 - "运行测试确认通过" - 一步
-- "编译检查" - 一步
 - "Commit" - 一步
 
 **策略 2：test-after（写完代码再补 UT）：**
