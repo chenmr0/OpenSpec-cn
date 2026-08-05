@@ -71,9 +71,9 @@ describe('apply-subagent-flow', () => {
       expect(result.flowDot).toBe(DEFAULT_SUBAGENT_FLOW_DOT);
     });
 
-    it('default dot is a valid closed digraph with change-verifier', () => {
+    it('default dot is a valid closed digraph without change-verifier', () => {
       expect(DEFAULT_SUBAGENT_FLOW_DOT).toContain('digraph process');
-      expect(DEFAULT_SUBAGENT_FLOW_DOT).toContain('change-verifier');
+      expect(DEFAULT_SUBAGENT_FLOW_DOT).not.toContain('change-verifier');
       expect(DEFAULT_SUBAGENT_FLOW_DOT.trim().endsWith('}')).toBe(true);
     });
 

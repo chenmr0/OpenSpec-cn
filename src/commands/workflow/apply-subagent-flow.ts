@@ -86,11 +86,7 @@ export const DEFAULT_SUBAGENT_FLOW_DOT = `digraph process {
     "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite（每任务一个条目）" [shape=box];
     "还有剩余任务?" [shape=diamond];
     "分派最终代码审查子智能体审查整体实现" [shape=box];
-    "委派 change-verifier 变更级验证" [shape=box];
-    "验证通过?" [shape=diamond];
-    "修复循环（最多3次）" [shape=box];
-    "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
-    "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
+    "报告完成" [shape=box style=filled fillcolor=lightgreen];
 
     "读取计划，提取所有任务的完整文本，记录上下文，创建 TodoWrite（每任务一个条目）" -> "分派实现子智能体 (code-generator)";
     "分派实现子智能体 (code-generator)" -> "实现子智能体有疑问?";
@@ -109,12 +105,7 @@ export const DEFAULT_SUBAGENT_FLOW_DOT = `digraph process {
     "在 TodoWrite 中标记任务完成，更新 task.md 中对应任务复选框 [ ] → [x]" -> "还有剩余任务?";
     "还有剩余任务?" -> "分派实现子智能体 (code-generator)" [label="是"];
     "还有剩余任务?" -> "分派最终代码审查子智能体审查整体实现" [label="否"];
-    "分派最终代码审查子智能体审查整体实现" -> "委派 change-verifier 变更级验证";
-    "委派 change-verifier 变更级验证" -> "验证通过?";
-    "验证通过?" -> "修复循环（最多3次）" [label="否"];
-    "修复循环（最多3次）" -> "委派 change-verifier 变更级验证" [label="重新验证"];
-    "验证通过?" -> "报告完成，验证测试通过" [label="是"];
-    "修复循环（最多3次）" -> "报告暂停——需要人工介入" [label="超过3次"];
+    "分派最终代码审查子智能体审查整体实现" -> "报告完成";
 }`;
 
 /**
@@ -194,12 +185,6 @@ export const DEFAULT_SUBAGENT_FLOW_EXAMPLE = `你：我正在使用子智能体�
 [所有任务完成后]
 [分派最终代码审查]
 最终审查者：所有需求已满足，可以合并
-
-[按流程图委派 change-verifier 变更级验证]
-change-verifier：
-  - 构建：npm run build → exit 0 ✅
-  - 测试：npm test → 34/34 通过 ✅
-  - 结论：通过
 
 完成！`;
 

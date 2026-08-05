@@ -151,16 +151,12 @@ const sddInstructions = `# 子智能体驱动开发
 **执行模式：** subagent
 **进度：** 7/7 任务已完成 ✓
 
-### 变更级验证
-- **构建：** \`npm run build\` → exit 0 ✅
-- **测试：** \`npm test\` → 34/34 pass ✅
-
 ### 本次会话已完成
 - [x] 任务 3：<description>
 - [x] 任务 4：<description>
 ...
 
-所有任务已完成并通过验证！可以使用 \`/codespec/archive\` 归档此变更。
+所有任务已完成并通过审查！可以使用 \`/codespec/archive\` 归档此变更。
 \`\`\`
 
 ## 暂停时的输出（仅在反复自主修复仍无法通过时）
