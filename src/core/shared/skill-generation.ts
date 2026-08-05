@@ -306,9 +306,15 @@ export const OPENCODE_SUBAGENT_FILES = new Set([
  * todowrite/task permission 规则，否则这两个工具会被强制禁用。code-generator 作为
  * apply 的实施 agent，需要 todowrite（task-compress 记录任务边界）和 task
  * （派 spec-reviewer / code-quality-reviewer / change-verifier 审查子 agent）。
+ *
+ * 此外 opencode 的默认权限集对所有 agent 设 `question: deny`（见 opencode agent.ts
+ * 的 defaults）。自定义 agent 必须在 frontmatter 显式声明 `question: allow` 才能经由
+ * Permission.merge（agent.ts 中 frontmatter permission 最后合并）覆盖默认 deny、启用
+ * question 工具。code-quality-reviewer 审查时需向用户确认歧义，故配 `question: allow`。
  */
 export const OPENCODE_AGENT_PERMISSIONS: Record<string, Record<string, string>> = {
   'code-generator.md': { todowrite: 'allow', task: 'allow' },
+  'code-quality-reviewer.md': { question: 'allow' },
 };
 
 /**

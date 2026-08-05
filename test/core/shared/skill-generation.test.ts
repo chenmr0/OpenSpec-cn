@@ -356,6 +356,12 @@ describe('skill-generation', () => {
         task: 'allow',
       });
     });
+
+    it('should grant question to code-quality-reviewer', () => {
+      expect(OPENCODE_AGENT_PERMISSIONS['code-quality-reviewer.md']).toEqual({
+        question: 'allow',
+      });
+    });
   });
 
   describe('injectFrontmatterMode', () => {
@@ -479,6 +485,18 @@ description: no closing delimiter`;
       expect(frontmatter).toMatch(/^permission:$/m);
       expect(frontmatter).toMatch(/^  todowrite: allow$/m);
       expect(frontmatter).toMatch(/^  task: allow$/m);
+    });
+
+    it('should inject question permission into the real code-quality-reviewer template', () => {
+      const agents = getExternalAgentTemplates();
+      const cqr = agents.find(a => a.filename === 'code-quality-reviewer.md');
+      expect(cqr).toBeDefined();
+      const injected = injectFrontmatterPermission(cqr!.content, { question: 'allow' });
+      const frontmatterEnd = injected.indexOf('\n---\n', 4);
+      expect(frontmatterEnd).toBeGreaterThan(0);
+      const frontmatter = injected.slice(0, frontmatterEnd);
+      expect(frontmatter).toMatch(/^permission:$/m);
+      expect(frontmatter).toMatch(/^  question: allow$/m);
     });
   });
 });
