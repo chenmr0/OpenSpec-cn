@@ -84,14 +84,15 @@ describe('flow', () => {
     it('steps list always starts with implement and ends with report', () => {
       for (const key of ALL_KEYS) {
         const variant = resolveFlow(keyToSkip(key));
-        expect(variant.steps[0]).toContain('逐任务实现');
+        expect(variant.steps[0]).toContain('逐任务执行');
+        expect(variant.steps[0]).toContain('按 task.md 编号逐条执行');
         expect(variant.steps[variant.steps.length - 1]).toBe('报告完成');
       }
     });
 
     it('steps list contains exactly the active reviewers', () => {
       expect(resolveFlow([]).steps).toEqual([
-        '逐任务实现（读目标→读上下文→实现→验证→标记完成）',
+        '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）',
         'spec-reviewer 审查规格合规性（失败→修复→重审）',
         'code-quality-reviewer 审查代码质量（失败→修复→重审）',
         'change-verifier 变更级验证（失败→修复循环，最多3次）',
@@ -99,13 +100,13 @@ describe('flow', () => {
       ]);
 
       expect(resolveFlow(['spec-reviewer', 'code-quality-reviewer']).steps).toEqual([
-        '逐任务实现（读目标→读上下文→实现→验证→标记完成）',
+        '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）',
         'change-verifier 变更级验证（失败→修复循环，最多3次）',
         '报告完成',
       ]);
 
       expect(resolveFlow(['change-verifier']).steps).toEqual([
-        '逐任务实现（读目标→读上下文→实现→验证→标记完成）',
+        '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）',
         'spec-reviewer 审查规格合规性（失败→修复→重审）',
         'code-quality-reviewer 审查代码质量（失败→修复→重审）',
         '报告完成',
@@ -114,7 +115,7 @@ describe('flow', () => {
       expect(
         resolveFlow(['spec-reviewer', 'code-quality-reviewer', 'change-verifier']).steps
       ).toEqual([
-        '逐任务实现（读目标→读上下文→实现→验证→标记完成）',
+        '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）',
         '报告完成',
       ]);
     });

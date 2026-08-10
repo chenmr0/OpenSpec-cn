@@ -36,9 +36,9 @@ const FLOW_PREFIX = `digraph process {
 
     subgraph cluster_per_task {
         label="每个任务（主 Agent 直接执行）";
-        "读取任务目标和涉及文件" [shape=box];
+        "读取任务目标、涉及文件和完整执行步骤" [shape=box];
         "读取关联 spec/design 章节" [shape=box];
-        "实现代码、编译、测试、自审" [shape=box];
+        "按 task.md 编号步骤逐条执行并记录证据" [shape=box];
         "标记完成（TodoWrite + task.md 复选框）" [shape=box];
     }
 
@@ -47,15 +47,15 @@ const FLOW_PREFIX = `digraph process {
     "报告完成，验证测试通过" [shape=box style=filled fillcolor=lightgreen];
     "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
 
-    "读取 spec.md, design.md, task.md；提取任务，创建 TodoWrite" -> "读取任务目标和涉及文件";
-    "读取任务目标和涉及文件" -> "精读关联 spec/design 章节";
-    "精读关联 spec/design 章节" -> "实现代码、编译、测试、自审";
-    "实现代码、编译、测试、自审" -> "标记完成（TodoWrite + task.md 复选框）";
+    "读取 spec.md, design.md, task.md；提取任务，创建 TodoWrite" -> "读取任务目标、涉及文件和完整执行步骤";
+    "读取任务目标、涉及文件和完整执行步骤" -> "读取关联 spec/design 章节";
+    "读取关联 spec/design 章节" -> "按 task.md 编号步骤逐条执行并记录证据";
+    "按 task.md 编号步骤逐条执行并记录证据" -> "标记完成（TodoWrite + task.md 复选框）";
     "标记完成（TodoWrite + task.md 复选框）" -> "还有剩余任务?";
-    "还有剩余任务?" -> "读取任务目标和涉及文件" [label="是"];
+    "还有剩余任务?" -> "读取任务目标、涉及文件和完整执行步骤" [label="是"];
 `;
 
-const IMPLEMENT_STEP = '逐任务实现（读目标→读上下文→实现→验证→标记完成）';
+const IMPLEMENT_STEP = '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）';
 const SPEC_STEP = 'spec-reviewer 审查规格合规性（失败→修复→重审）';
 const CQ_STEP = 'code-quality-reviewer 审查代码质量（失败→修复→重审）';
 const CV_STEP = 'change-verifier 变更级验证（失败→修复循环，最多3次）';
