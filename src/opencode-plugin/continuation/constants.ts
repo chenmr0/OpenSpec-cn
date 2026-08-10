@@ -5,7 +5,13 @@
 
 export const HOOK_NAME = "CodeSpec";
 
-export const CONTINUATION_PROMPT = `[CodeSpec]
+/**
+ * 续接注入消息的文本签名。用于区分"我们注入的续接消息"与"用户真实输入"。
+ * CONTINUATION_PROMPT 以本签名开头（按构造一致），跟随 HOOK_NAME 变化。
+ */
+export const INJECTION_SIGNATURE = `[${HOOK_NAME}]`;
+
+export const CONTINUATION_PROMPT = `${INJECTION_SIGNATURE}
 
 你的任务列表中仍有未完成的任务。继续处理下一个待处理任务。
 

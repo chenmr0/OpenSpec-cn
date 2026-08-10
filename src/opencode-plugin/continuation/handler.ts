@@ -23,6 +23,10 @@ export function handleNonIdleEvent(args: {
       const state = sessionStateStore.getState(sessionID);
       state.wasCancelled = true;
       state.abortDetectedAt = Date.now();
+      // 粘性叫停：opencode 双击 ESC = 一次 abort，视为用户明确停止续接。
+      // 尾随清理事件无权清除该字段，仅在 idle 重入检测中按"真实重入"解除。
+      state.stoppedByUser = true;
+      state.stoppedAt = Date.now();
       state.lastIncompleteCount = undefined;
       state.lastInjectedAt = undefined;
       state.awaitingPostInjectionProgressCheck = false;

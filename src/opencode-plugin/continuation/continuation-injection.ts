@@ -13,6 +13,7 @@ import {
 import { getIncompleteCount } from "./todo.js";
 import type { Todo } from "./types.js";
 import type { SessionStateStore } from "./session-state.js";
+import { isLastAssistantMessageAborted, normalizeSDKResponse } from "./messages-util.js";
 
 export async function injectContinuation(args: {
   ctx: PluginInput;
@@ -31,6 +32,10 @@ export async function injectContinuation(args: {
   }
 
   if (state?.wasCancelled) {
+    return;
+  }
+
+  if (state?.stoppedByUser) {
     return;
   }
 
@@ -60,6 +65,26 @@ ${todoList}`;
 
   const injectionState = sessionStateStore.getExistingState(sessionID);
   if (injectionState?.wasCancelled) {
+    return;
+  }
+
+  if (injectionState?.stoppedByUser) {
+    return;
+  }
+
+  // 注入前复查 API 兜底：覆盖 session.error 被漏掉 + idle 瞬间 abort 错误未落库、
+  // 倒计时 2 秒后才落库的竞态。复查失败同样保守不注入。
+  try {
+    const resp = await ctx.client.session.messages({ path: { id: sessionID } });
+    const messages = normalizeSDKResponse<Record<string, unknown>[]>(resp, []);
+    if (isLastAssistantMessageAborted(messages)) {
+      if (injectionState) {
+        injectionState.stoppedByUser = true;
+        injectionState.stoppedAt = Date.now();
+      }
+      return;
+    }
+  } catch {
     return;
   }
 

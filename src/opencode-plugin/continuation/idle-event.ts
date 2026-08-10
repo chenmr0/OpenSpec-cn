@@ -18,34 +18,12 @@ import { getIncompleteCount } from "./todo.js";
 import type { SessionState, Todo } from "./types.js";
 import type { SessionStateStore } from "./session-state.js";
 import { startCountdown } from "./countdown.js";
+import {
+  hasGenuineReengagement,
+  isLastAssistantMessageAborted,
+  normalizeSDKResponse,
+} from "./messages-util.js";
 import { APPLY_MARKER } from "../context-compression/session-detection.js";
-
-/**
- * Check if the last assistant message in a list has an abort error.
- * This is a fallback detection mechanism: even if session.error events are
- * missed or wasCancelled is reset by trailing events, we can still detect
- * the abort by inspecting the actual message content via the API.
- */
-function isLastAssistantMessageAborted(
-  messages: Array<Record<string, unknown>>,
-): boolean {
-  if (!messages || messages.length === 0) return false;
-
-  const assistantMessages = messages.filter(
-    (msg) => {
-      const info = msg.info as Record<string, unknown> | undefined;
-      return info?.role === "assistant";
-    },
-  );
-  if (assistantMessages.length === 0) return false;
-
-  const lastAssistant = assistantMessages[assistantMessages.length - 1];
-  const info = lastAssistant.info as Record<string, unknown> | undefined;
-  const error = info?.error as { name?: string } | undefined;
-  if (!error?.name) return false;
-
-  return error.name === "MessageAbortedError" || error.name === "AbortError";
-}
 
 /**
  * Check if messages contain the APPLY_MARKER, indicating a /codespec/apply session.
@@ -70,15 +48,6 @@ function detectApplySessionFromMessages(
     }
   }
   return false;
-}
-
-function normalizeSDKResponse<T>(response: unknown, fallback: T): T {
-  if (response && typeof response === "object" && "data" in response) {
-    const data = (response as { data?: unknown }).data;
-    return Array.isArray(data) ? (data as T) : fallback;
-  }
-  if (Array.isArray(response)) return response as T;
-  return fallback;
 }
 
 export async function handleSessionIdle(args: {
@@ -115,29 +84,37 @@ export async function handleSessionIdle(args: {
     state.abortDetectedAt = undefined;
   }
 
-  // API fallback: check if the last assistant message was aborted.
-  // This catches aborts that were missed by session.error events or
-  // had their wasCancelled state reset by trailing cleanup events.
-  // Also detects /codespec/apply sessions via APPLY_MARKER.
+  // 取消息：用于 apply 会话判定、abort 兜底探测、用户重入判定。
+  // 保守策略（④）：取消息失败时无法验证 abort/重入，一律不续接。
+  let messages: Record<string, unknown>[] = [];
   try {
     const messagesResp = await ctx.client.session.messages({
       path: { id: sessionID },
     });
-    const messages = normalizeSDKResponse<Record<string, unknown>[]>(
-      messagesResp,
-      [],
-    );
-
-    // Only run continuation enforcer in /codespec/apply sessions
-    if (!detectApplySessionFromMessages(state, messages)) {
-      return;
-    }
-
-    if (isLastAssistantMessageAborted(messages)) {
-      return;
-    }
+    messages = normalizeSDKResponse<Record<string, unknown>[]>(messagesResp, []);
   } catch {
-    // If messages fetch fails, continue with other checks
+    return;
+  }
+
+  // 仅在 /codespec/apply 会话中生效
+  if (!detectApplySessionFromMessages(state, messages)) {
+    return;
+  }
+
+  // abort 是最近事件 → 保持叫停（同时补设 stoppedByUser，覆盖 session.error 被漏掉的情况）
+  if (isLastAssistantMessageAborted(messages)) {
+    state.stoppedByUser = true;
+    state.stoppedAt = Date.now();
+    return;
+  }
+
+  // 已叫停：只有"abort 之后真实重入"才解除，否则保持停止
+  if (state.stoppedByUser) {
+    if (hasGenuineReengagement(messages, state.stoppedAt)) {
+      state.stoppedByUser = false;
+    } else {
+      return;
+    }
   }
 
   // Fetch todos
