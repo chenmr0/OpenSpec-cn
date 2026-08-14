@@ -10,14 +10,23 @@
 import ora from 'ora';
 import { resolveCodespecRoot } from '../../utils/project-root.js';
 import { readProjectConfig, VALID_REVIEWERS } from '../../core/project-config.js';
+import { resolveTestMode, type TestMode } from './apply-subagent-flow.js';
 
 export interface FlowOptions {
   change?: string;
   json?: boolean;
+  /** --tdd flag (commander boolean). */
+  tdd?: boolean;
+  /** --test-after flag (commander camelCase). */
+  testAfter?: boolean;
+  /** --no-test flag (commander exposes this as `test: false`). */
+  test?: boolean;
 }
 
 export interface FlowResult {
   changeName?: string;
+  /** The test mode this flow was resolved for. */
+  mode: TestMode;
   skipReviewers: string[];
   activeReviewers: string[];
   steps: string[];
@@ -25,22 +34,84 @@ export interface FlowResult {
 }
 
 // ---------------------------------------------------------------------------
-// Flow graph: shared prefix + 8 hand-written suffixes
+// Flow graph: per-test-mode prefix + 8 hand-written suffixes
 // ---------------------------------------------------------------------------
-// The prefix contains the entry node, the per-task subgraph, the
-// "还有剩余任务?" branch, and the two terminal nodes. Every suffix attaches
-// at "还有剩余任务?否" and closes the digraph with `}`.
+// The prefix contains the entry node, the per-task subgraph (expanded per
+// test mode: tdd red-green cycle / test-after / no-test), the "还有剩余任务?"
+// branch, and the two terminal nodes. Every suffix attaches at "还有剩余任务?否"
+// and closes the digraph with `}`.
 
-const FLOW_PREFIX = `digraph process {
-    rankdir=TB;
-
-    subgraph cluster_per_task {
-        label="每个任务（主 Agent 直接执行）";
+/** Per-task subgraph node declarations, one variant per test mode. */
+const PER_TASK_SUBGRAPH: Record<TestMode, string> = {
+  'tdd': `    subgraph cluster_per_task {
+        label="每个任务（主 Agent 直接执行，TDD 红绿循环）";
         "读取任务目标、涉及文件和完整执行步骤" [shape=box];
         "读取关联 spec/design 章节" [shape=box];
-        "按 task.md 编号步骤逐条执行并记录证据" [shape=box];
+        "编写失败的测试（红灯）" [shape=box];
+        "运行测试验证失败（确认红灯）" [shape=box];
+        "按实现约束完成最小实现（绿灯）" [shape=box];
+        "运行测试验证通过（确认绿灯）" [shape=box];
+        "编译检查" [shape=box];
         "标记完成（TodoWrite + task.md 复选框）" [shape=box];
-    }
+    }`,
+  'test-after': `    subgraph cluster_per_task {
+        label="每个任务（主 Agent 直接执行，实现后补测）";
+        "读取任务目标、涉及文件和完整执行步骤" [shape=box];
+        "读取关联 spec/design 章节" [shape=box];
+        "实现功能代码" [shape=box];
+        "编译检查" [shape=box];
+        "编写单元测试覆盖验收场景" [shape=box];
+        "运行测试验证通过" [shape=box];
+        "标记完成（TodoWrite + task.md 复选框）" [shape=box];
+    }`,
+  'no-test': `    subgraph cluster_per_task {
+        label="每个任务（主 Agent 直接执行，无单元测试）";
+        "读取任务目标、涉及文件和完整执行步骤" [shape=box];
+        "读取关联 spec/design 章节" [shape=box];
+        "实现功能代码" [shape=box];
+        "编译检查" [shape=box];
+        "标记完成（TodoWrite + task.md 复选框）" [shape=box];
+    }`,
+};
+
+/** Per-task internal edges (from "读取任务目标…" to "标记完成…"), one variant per test mode. */
+const PER_TASK_EDGES: Record<TestMode, string[]> = {
+  'tdd': [
+    `    "读取任务目标、涉及文件和完整执行步骤" -> "读取关联 spec/design 章节";`,
+    `    "读取关联 spec/design 章节" -> "编写失败的测试（红灯）";`,
+    `    "编写失败的测试（红灯）" -> "运行测试验证失败（确认红灯）";`,
+    `    "运行测试验证失败（确认红灯）" -> "按实现约束完成最小实现（绿灯）";`,
+    `    "按实现约束完成最小实现（绿灯）" -> "运行测试验证通过（确认绿灯）";`,
+    `    "运行测试验证通过（确认绿灯）" -> "编译检查";`,
+    `    "编译检查" -> "标记完成（TodoWrite + task.md 复选框）";`,
+  ],
+  'test-after': [
+    `    "读取任务目标、涉及文件和完整执行步骤" -> "读取关联 spec/design 章节";`,
+    `    "读取关联 spec/design 章节" -> "实现功能代码";`,
+    `    "实现功能代码" -> "编译检查";`,
+    `    "编译检查" -> "编写单元测试覆盖验收场景";`,
+    `    "编写单元测试覆盖验收场景" -> "运行测试验证通过";`,
+    `    "运行测试验证通过" -> "标记完成（TodoWrite + task.md 复选框）";`,
+  ],
+  'no-test': [
+    `    "读取任务目标、涉及文件和完整执行步骤" -> "读取关联 spec/design 章节";`,
+    `    "读取关联 spec/design 章节" -> "实现功能代码";`,
+    `    "实现功能代码" -> "编译检查";`,
+    `    "编译检查" -> "标记完成（TodoWrite + task.md 复选框）";`,
+  ],
+};
+
+/**
+ * Builds the flow prefix for a given test mode: digraph head + per-task
+ * subgraph + shared node declarations + shared edges + per-task internal
+ * edges. Ends at "还有剩余任务?是" so every FLOW_VARIANTS suffix splices in
+ * unchanged.
+ */
+export function buildFlowPrefix(testMode: TestMode): string {
+  return `digraph process {
+    rankdir=TB;
+
+${PER_TASK_SUBGRAPH[testMode]}
 
     "读取 spec.md, design.md, task.md；提取任务，创建 TodoWrite" [shape=box];
     "还有剩余任务?" [shape=diamond];
@@ -48,14 +119,19 @@ const FLOW_PREFIX = `digraph process {
     "报告暂停——需要人工介入" [shape=box style=filled fillcolor=orange];
 
     "读取 spec.md, design.md, task.md；提取任务，创建 TodoWrite" -> "读取任务目标、涉及文件和完整执行步骤";
-    "读取任务目标、涉及文件和完整执行步骤" -> "读取关联 spec/design 章节";
-    "读取关联 spec/design 章节" -> "按 task.md 编号步骤逐条执行并记录证据";
-    "按 task.md 编号步骤逐条执行并记录证据" -> "标记完成（TodoWrite + task.md 复选框）";
+${PER_TASK_EDGES[testMode].join('\n')}
     "标记完成（TodoWrite + task.md 复选框）" -> "还有剩余任务?";
     "还有剩余任务?" -> "读取任务目标、涉及文件和完整执行步骤" [label="是"];
 `;
+}
 
-const IMPLEMENT_STEP = '逐任务执行（读取完整步骤→按 task.md 编号逐条执行并记录证据→全部通过后标记完成）';
+/** Per-test-mode implement step summary. `IMPLEMENT_STEP` aliases the tdd default so the 8 FLOW_VARIANTS step lists stay unchanged. */
+const IMPLEMENT_STEPS: Record<TestMode, string> = {
+  'tdd': '逐任务执行（读取完整步骤→按 task.md 编号逐条执行：编写失败测试并运行确认失败→最小实现→运行确认通过→编译检查→标记完成）',
+  'test-after': '逐任务执行（读取完整步骤→按 task.md 编号逐条执行：实现功能→编译检查→编写单元测试→运行确认通过→标记完成）',
+  'no-test': '逐任务执行（读取完整步骤→按 task.md 编号逐条执行：实现功能→编译检查→标记完成）',
+};
+const IMPLEMENT_STEP = IMPLEMENT_STEPS['tdd'];
 const SPEC_STEP = 'spec-reviewer 审查规格合规性（失败→修复→重审）';
 const CQ_STEP = 'code-quality-reviewer 审查代码质量（失败→修复→重审）';
 const CV_STEP = 'change-verifier 变更级验证（失败→修复循环，最多3次）';
@@ -237,15 +313,17 @@ export function computeFlowKey(skipReviewers: string[]): string {
  * Resolves the flow variant for a given skipReviewers list.
  * Exposed for testing.
  */
-export function resolveFlow(skipReviewers: string[]): FlowVariant {
+export function resolveFlow(skipReviewers: string[], testMode: TestMode = 'tdd'): FlowVariant {
   const key = computeFlowKey(skipReviewers);
-  const variant = FLOW_VARIANTS[key];
-  if (!variant) {
-    // Defensive: unknown reviewers are filtered out before reaching here,
-    // but guard anyway with the full-review fallback.
-    return FLOW_VARIANTS['SCV'];
+  // Defensive: unknown reviewers are filtered out before reaching here,
+  // but guard anyway with the full-review fallback.
+  const variant = FLOW_VARIANTS[key] ?? FLOW_VARIANTS['SCV'];
+  // tdd is the default step list baked into FLOW_VARIANTS; only swap the
+  // implement step when a non-default test mode is requested.
+  if (testMode === 'tdd') {
+    return variant;
   }
-  return variant;
+  return { ...variant, steps: [IMPLEMENT_STEPS[testMode], ...variant.steps.slice(1)] };
 }
 
 // ---------------------------------------------------------------------------
@@ -263,17 +341,19 @@ export async function flowCommand(options: FlowOptions): Promise<void> {
       VALID_REVIEWERS.has(r)
     );
 
-    const variant = resolveFlow(skipReviewers);
+    const mode = resolveTestMode(options);
+    const variant = resolveFlow(skipReviewers, mode);
     const activeReviewers = ['spec-reviewer', 'code-quality-reviewer', 'change-verifier'].filter(
       (r) => !skipReviewers.includes(r)
     );
 
     const result: FlowResult = {
       changeName: options.change,
+      mode,
       skipReviewers,
       activeReviewers,
       steps: variant.steps,
-      flowDot: FLOW_PREFIX + variant.suffix + '\n',
+      flowDot: buildFlowPrefix(mode) + variant.suffix + '\n',
     };
 
     spinner?.stop();
@@ -293,6 +373,8 @@ export async function flowCommand(options: FlowOptions): Promise<void> {
 export function printFlowText(result: FlowResult): void {
   const changeLabel = result.changeName ? `（变更： ${result.changeName}）` : '';
   console.log(`## 本批执行流程${changeLabel}`);
+  console.log();
+  console.log(`**测试模式：** ${result.mode}`);
   console.log();
   if (result.skipReviewers.length > 0) {
     console.log(`跳过的审查者： ${result.skipReviewers.join(', ')}`);

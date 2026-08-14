@@ -21,11 +21,13 @@ const mainAgentDevInstructions = `# 主 Agent 直接开发
 
 在开始执行任何任务之前：
 
-1. **获取本批执行流程（关键，第一步）**：运行：
-   \`\`\`bash
-   codespec apply flow
-   \`\`\`
-   - 返回的流程图即本批实际要执行的流程，**只包含需要执行的审查节点**。
+1. **获取本批执行流程（关键，第一步）**：
+   - 先读取 task.md 头部的 \`测试策略\` 标记（\`tdd\` / \`test-after\` / \`no-test\`）；未找到时默认 \`tdd\`。
+   - 按该策略运行：
+     \`\`\`bash
+     codespec apply flow --tdd        # 或 --test-after / --no-test
+     \`\`\`
+   - 返回的流程图即本批实际要执行的流程，per-task 子图已按测试策略展开（tdd 为红绿循环、test-after 为实现后补测、no-test 为无测试），**只包含需要执行的审查节点**。
    - 严格按返回的"执行步骤"顺序执行，不要添加流程图里没有的审查步骤，也不要分派流程图里没有的子代理。
    - 立即宣布返回的执行步骤，例如："本批执行：逐任务实现 → change-verifier 变更级验证 → 报告完成"。
 2. 读取 spec.md, design.md 和 task.md，建立全局需求理解。

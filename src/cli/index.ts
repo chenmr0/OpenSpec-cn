@@ -434,9 +434,12 @@ const applyCmd = program.command('apply').description('应用阶段相关命令'
 // Flow subcommand: returns the apply-phase flow tailored to config.yaml skipReviewers
 applyCmd
   .command('flow')
-  .description('显示根据 config.yaml apply.skipReviewers 裁剪后的本批执行流程图与步骤')
+  .description('显示按测试模式（--tdd/--test-after/--no-test）展开 per-task 子图、并根据 config.yaml apply.skipReviewers 裁剪审查节点的本批执行流程图与步骤')
   .option('--change <id>', '变更名称（可选，仅用于输出标注）')
   .option('--json', '以 JSON 格式输出')
+  .option('--tdd', '按 tdd 测试模式返回流程（默认）')
+  .option('--test-after', '按 test-after 测试模式返回流程')
+  .option('--no-test', '按 no-test 测试模式返回流程')
   .action(async (options: FlowOptions) => {
     try {
       await flowCommand(options);

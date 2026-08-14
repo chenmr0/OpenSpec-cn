@@ -40,7 +40,7 @@ const EXPECTED_FUNCTION_HASHES: Record<string, string> = {
   getOpsxExploreCommandTemplate: '7314e78fe42cbcb6e86c7746f12fdd9c1fd254cc1d43a3b5620850ea97ffcc76',
   getOpsxNewCommandTemplate: '9849dc9a6fb7e678672f1baef4377302b86c3181663cfdce9af81119c4861e26',
   getOpsxContinueCommandTemplate: 'a9f23050acab52c9aed6f3defbe1e254d0e82cb0c6574f941d4f800ff9fb111c',
-  getOpsxApplyCommandTemplate: 'f7aa12316a12e5e5c1b6fe9742221157924056d19798e29f9144776a3e3766b6',
+  getOpsxApplyCommandTemplate: '277080973c482336dd8bae625637d1c7d9d3682095f6f924333c86c5b7d33e7e',
   getOpsxFfCommandTemplate: 'b68c64b6aabae225ba9eb01d83aebb1a0e9ded5f62e48d643e1f19d577a88e73',
   getArchiveChangeSkillTemplate: 'd121fc5618b0e0b91f9b0bf66257e292c913a4e025490377b9ffa97efbf8d92e',
   getBulkArchiveChangeSkillTemplate: '3ff836b208db75c4cfcd4f5e52e7511c5e580e3112d1a4c45d764e62812731f1',
