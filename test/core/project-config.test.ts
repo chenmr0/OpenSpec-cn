@@ -435,6 +435,166 @@ subagent-apply:
         );
       });
 
+      it('should parse plan with both testStrategy and executionMode', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  testStrategy: no-test
+  executionMode: main
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          plan: { testStrategy: 'no-test', executionMode: 'main' },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should parse plan with only testStrategy', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  testStrategy: test-after
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          plan: { testStrategy: 'test-after' },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should parse plan with only executionMode', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  executionMode: subagent
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          plan: { executionMode: 'subagent' },
+        });
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should warn and drop invalid plan.testStrategy value', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  testStrategy: bogus
+  executionMode: main
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          plan: { executionMode: 'main' },
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'plan.testStrategy' value in config")
+        );
+      });
+
+      it('should warn and drop invalid plan.executionMode value', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  testStrategy: tdd
+  executionMode: fast
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({
+          schema: 'spec-driven',
+          plan: { testStrategy: 'tdd' },
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'plan.executionMode' value in config")
+        );
+      });
+
+      it('should omit plan when all fields are invalid', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan:
+  testStrategy: nope
+  executionMode: nope
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(config?.plan).toBeUndefined();
+      });
+
+      it('should omit plan when section is empty', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan: {}
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(config?.plan).toBeUndefined();
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+      });
+
+      it('should warn when plan is not an object', () => {
+        const configDir = path.join(tempDir, 'codespec');
+        fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(
+          path.join(configDir, 'config.yaml'),
+          `schema: spec-driven
+plan: "not-an-object"
+`
+        );
+
+        const config = readProjectConfig(tempDir);
+
+        expect(config).toEqual({ schema: 'spec-driven' });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'plan' field in config")
+        );
+      });
+
       it('should return partial config when schema is invalid', () => {
         const configDir = path.join(tempDir, 'codespec');
         fs.mkdirSync(configDir, { recursive: true });

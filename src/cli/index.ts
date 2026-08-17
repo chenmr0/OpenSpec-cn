@@ -27,6 +27,7 @@ import {
   createArCommand,
   flowCommand,
   applySubagentFlowCommand,
+  planDefaultsCommand,
   DEFAULT_SCHEMA,
   type StatusOptions,
   type InstructionsOptions,
@@ -36,6 +37,7 @@ import {
   type CreateArOptions,
   type FlowOptions,
   type SubagentFlowOptions,
+  type PlanDefaultsOptions,
 } from '../commands/workflow/index.js';
 const program = new Command();
 const require = createRequire(import.meta.url);
@@ -466,6 +468,24 @@ applySubagentCmd
   .action(async (options: SubagentFlowOptions) => {
     try {
       await applySubagentFlowCommand(options);
+    } catch (error) {
+      console.log();
+      ora().fail(`错误：${(error as Error).message}`);
+      process.exit(1);
+    }
+  });
+
+// Plan command group: Plan-phase helpers
+const planCmd = program.command('plan').description('Plan 阶段相关命令');
+
+// Plan defaults subcommand: returns config.yaml `plan` strategy defaults
+planCmd
+  .command('defaults')
+  .description('查询 config.yaml plan 段预置的 Plan 阶段策略默认值（测试策略 / 执行模式），供 agent 在生成 task.md 时直接采用、跳过询问')
+  .option('--json', '以 JSON 格式输出')
+  .action(async (options: PlanDefaultsOptions) => {
+    try {
+      await planDefaultsCommand(options);
     } catch (error) {
       console.log();
       ora().fail(`错误：${(error as Error).message}`);

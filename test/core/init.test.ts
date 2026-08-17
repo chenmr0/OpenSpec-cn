@@ -84,6 +84,10 @@ describe('InitCommand', () => {
       expect(content).toContain('#     - spec-reviewer');
       expect(content).toContain('#     - code-quality-reviewer');
       expect(content).toContain('#     - change-verifier');
+      // plan section is scaffolded as commented-out guidance
+      expect(content).toContain('# plan:');
+      expect(content).toContain('#   testStrategy: tdd');
+      expect(content).toContain('#   executionMode: subagent');
       expect(content).toContain('  apply-quick:');
       expect(content).toContain('    keepRecentTasks: 3');
     });

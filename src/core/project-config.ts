@@ -56,6 +56,34 @@ const TestModeConfigSchema = z.object({
 
 export type TestModeConfig = z.infer<typeof TestModeConfigSchema>;
 
+/**
+ * Valid test-strategy values for the Plan-phase `plan.testStrategy` config.
+ * Mirrors `TestMode` in apply-subagent-flow.ts (tdd / test-after / no-test).
+ */
+export const VALID_TEST_STRATEGIES = new Set(['tdd', 'test-after', 'no-test']);
+
+/**
+ * Valid execution-mode values for the Plan-phase `plan.executionMode` config.
+ * Mirrors the `执行模式` marker written to task.md headers (subagent / main).
+ */
+export const VALID_EXECUTION_MODES = new Set(['subagent', 'main']);
+
+const PlanConfigSchema = z.object({
+  // Plan-phase strategy defaults. When configured, the propose workflow
+  // adopts the value directly via `codespec plan defaults --json` and skips the
+  // corresponding AskUserQuestion. Each field is independently optional.
+  testStrategy: z
+    .enum(['tdd', 'test-after', 'no-test'])
+    .optional()
+    .describe('Plan 阶段测试策略默认值（tdd / test-after / no-test，已配置时跳过询问）'),
+  executionMode: z
+    .enum(['subagent', 'main'])
+    .optional()
+    .describe('Plan 阶段执行模式默认值（subagent 质量优先 / main 速度优先，已配置时跳过询问）'),
+}).describe('Plan 阶段策略默认值（已配置时跳过对应询问）');
+
+export type PlanConfig = z.infer<typeof PlanConfigSchema>;
+
 const SubagentApplyConfigSchema = z.object({
   // Per-test-mode per-task flow for subagent mode, keyed by the `测试策略`
   // marker in task.md headers (tdd / test-after / no-test). Each mode is
@@ -116,6 +144,13 @@ export const ProjectConfigSchema = z.object({
   'subagent-apply': SubagentApplyConfigSchema
     .optional()
     .describe('Subagent-mode apply settings (per-task flow as raw dot)'),
+
+  // Optional: Plan-phase strategy defaults (test strategy / execution mode).
+  // When configured, `codespec plan defaults --json` returns the values and the
+  // propose workflow skips the corresponding AskUserQuestion.
+  plan: PlanConfigSchema
+    .optional()
+    .describe('Plan 阶段策略默认值（测试策略 / 执行模式，已配置时跳过对应询问）'),
 });
 
 export type ProjectConfig = z.infer<typeof ProjectConfigSchema>;
@@ -339,6 +374,47 @@ export function readProjectConfig(projectRoot: string): ProjectConfig | null {
         }
       } else {
         console.warn(`Invalid 'subagent-apply' field in config (must be object)`);
+      }
+    }
+
+    // Parse plan field (Plan-phase strategy defaults: testStrategy / executionMode).
+    // Each field is validated against its enum; unknown values are warned and
+    // dropped. The section is only set when at least one field is valid.
+    if (raw.plan !== undefined) {
+      const planRaw = raw.plan;
+      if (typeof planRaw === 'object' && planRaw !== null && !Array.isArray(planRaw)) {
+        const planObj = planRaw as Record<string, unknown>;
+        const parsed: PlanConfig = {};
+        let hasField = false;
+
+        if (planObj.testStrategy !== undefined) {
+          if (typeof planObj.testStrategy === 'string' && VALID_TEST_STRATEGIES.has(planObj.testStrategy)) {
+            parsed.testStrategy = planObj.testStrategy as PlanConfig['testStrategy'];
+            hasField = true;
+          } else {
+            const known = Array.from(VALID_TEST_STRATEGIES).join(', ');
+            console.warn(
+              `Invalid 'plan.testStrategy' value in config (must be one of: ${known}), ignoring`
+            );
+          }
+        }
+        if (planObj.executionMode !== undefined) {
+          if (typeof planObj.executionMode === 'string' && VALID_EXECUTION_MODES.has(planObj.executionMode)) {
+            parsed.executionMode = planObj.executionMode as PlanConfig['executionMode'];
+            hasField = true;
+          } else {
+            const known = Array.from(VALID_EXECUTION_MODES).join(', ');
+            console.warn(
+              `Invalid 'plan.executionMode' value in config (must be one of: ${known}), ignoring`
+            );
+          }
+        }
+
+        if (hasField) {
+          config.plan = parsed;
+        }
+      } else {
+        console.warn(`Invalid 'plan' field in config (must be object)`);
       }
     }
 

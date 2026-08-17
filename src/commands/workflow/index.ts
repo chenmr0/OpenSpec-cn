@@ -40,4 +40,7 @@ export type {
   ModeFlowConfig,
 } from './apply-subagent-flow.js';
 
+export { planDefaultsCommand, resolvePlanDefaults } from './plan-defaults.js';
+export type { PlanDefaultsOptions, PlanDefaultsResult } from './plan-defaults.js';
+
 export { DEFAULT_SCHEMA } from './shared.js';

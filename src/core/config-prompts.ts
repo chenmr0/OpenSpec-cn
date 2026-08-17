@@ -26,6 +26,18 @@ export function serializeConfig(config: Partial<ProjectConfig>): string {
   lines.push('    keepRecentTasks: 1');
   lines.push('');
 
+  // Plan section — strategy defaults commented out by default
+  lines.push('# Plan 阶段策略默认值（可选）');
+  lines.push('# 在生成实现计划（task.md）时，Plan 阶段默认会询问用户选择测试策略与执行模式。');
+  lines.push('# 在此取消注释并配置后，agent 会通过 `codespec plan defaults --json` 读取并直接采用，不再询问；');
+  lines.push('# 两个字段各自独立可选，配置哪个就跳过哪个询问，未配置的仍交互询问。');
+  lines.push('# testStrategy（测试策略）：tdd（先写用例再写代码）/ test-after（写完代码再补 UT）/ no-test（不写 UT）');
+  lines.push('# executionMode（执行模式）：subagent（质量优先，每 task 委派独立子代理）/ main（速度优先，主 Agent 统一实施）');
+  lines.push('# plan:');
+  lines.push('#   testStrategy: tdd');
+  lines.push('#   executionMode: subagent');
+  lines.push('');
+
   // Apply section — skipReviewers commented out by default
   lines.push('# 应用阶段审查设置（可选）');
   lines.push('# 速度优先时可跳过部分审查子代理，由 `codespec apply flow` 据此返回裁剪后的流程。');
