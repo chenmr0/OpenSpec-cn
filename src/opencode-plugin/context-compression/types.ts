@@ -32,8 +32,8 @@ export interface CompressionState {
   nudgeInjectedForTask: string | null;
   /** Whether this session is a /codespec/apply session (detected via APPLY_MARKER) */
   isApplySession: boolean;
-  /** Whether this apply session uses main-agent-development (speed-first mode) */
-  isMainAgentMode: boolean;
+  /** Whether this apply session uses subagent-driven-development (quality-first mode) */
+  isSubagentMode: boolean;
   /** Apply command detected for this session, if any */
   applyCommand: ApplyCommand | null;
   /** Number of recently completed tasks to keep uncompressed (default: 1) */

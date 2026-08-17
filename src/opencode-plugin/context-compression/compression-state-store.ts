@@ -17,7 +17,7 @@ export interface CompressionStateStoreOptions {
 }
 
 const DEFAULT_KEEP_RECENT_TASKS_BY_COMMAND: Record<ApplyCommand, number> = {
-  apply: 1,
+  apply: 0,
 };
 
 function getKeepRecentTasksByCommand(
@@ -47,7 +47,7 @@ export function createCompressionStateStore(options?: CompressionStateStoreOptio
           inProgressStart: new Map(),
           nudgeInjectedForTask: null,
           isApplySession: false,
-          isMainAgentMode: false,
+          isSubagentMode: false,
           applyCommand: null,
           keepRecentTasks: keepRecentTasksByCommand.apply,
           keepRecentTasksByCommand: { ...keepRecentTasksByCommand },
